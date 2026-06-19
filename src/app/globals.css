@@ -1,0 +1,63 @@
+@import "tailwindcss";
+
+:root {
+  --red: #f53333;
+  --red-dark: #d91f27;
+  --black: #0e0e0e;
+  --charcoal: #1f1f1f;
+  --text: #0a0a0a;
+  --muted: #555555;
+  --soft: #f7f7f7;
+  --line: #e2e2e2;
+  --white: #ffffff;
+}
+
+@theme inline {
+  --color-red: var(--red);
+  --color-red-dark: var(--red-dark);
+  --color-ink: var(--black);
+  --color-charcoal: var(--charcoal);
+  --color-muted: var(--muted);
+  --color-soft: var(--soft);
+  --color-line: var(--line);
+  --font-sans: var(--font-inter);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+section {
+  padding: 78px 0;
+}
+
+body {
+  background: var(--white);
+  color: var(--text);
+  font-family: var(--font-inter), Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.red-pill {
+  display: inline-block;
+  background: var(--red);
+  color: #fff;
+  border-radius: 6px;
+  padding: 0.03em 0.22em 0.1em;
+  line-height: 1.05;
+}
+
+.container-x {
+  width: min(1180px, calc(100% - 48px));
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  animation: marquee 28s linear infinite;
+}
