@@ -131,9 +131,11 @@ export type CaseStudy = {
   problem: string;
   headline: string;
   summary: string;
+  context?: string;
   challenge: string;
   model: string;
   outcome: string;
+  signal?: string;
   duration: string;
   accent: "retention" | "efficiency" | "genai";
   stat: { label: string; value: string }[];
@@ -147,29 +149,33 @@ export const caseStudies: CaseStudy[] = [
     region: "United Kingdom",
     industry: "HR-Tech",
     role: "Engineering apprentices",
-    problem: "High intern attrition was breaking team continuity and restarting hiring cycles.",
+    problem: "High intern attrition was resetting team continuity every 6-9 months, forcing repeated hiring and re-onboarding cycles.",
     headline: "How a UK HR-Tech enterprise eliminated intern attrition across 36 months",
     summary:
-      "A long-running apprentice deployment designed around work-integrated learning, mentor oversight and continuous performance visibility.",
+      "A structured apprentice deployment built on work-integrated learning, academic accountability, and a continuous mentor-company feedback loop.",
+    context:
+      "The team had run conventional intern programs for two years. Each intake completed a short placement window then disengaged or left, forcing the team to restart hiring, re-onboard new people, and rebuild institutional context. The cost was not just financial. Every exit reset the codebase familiarity and team rhythm the previous intern had built.",
     challenge:
-      "Traditional intern programs lose continuity when learners disengage or leave, forcing teams back into repeated hiring and onboarding cycles.",
+      "The team needed apprentice-level engineering capacity that could sustain contribution across multiple product cycles, not just a single placement window. The structural problem: traditional programs give learners no professional reason to stay. Disengagement carried no academic consequence, so the company absorbed all the risk.",
     model:
-      "KalviumX connected live engineering contribution with academic accountability, while mentors and company managers maintained a regular feedback loop.",
+      "KalviumX deployed apprentices whose B.Tech academic progress was directly tied to enterprise contribution. Work performance fed into their degree assessment. Kalvium mentors translated company feedback into academic signals, creating an early-intervention loop before disengagement could take hold. The company owned the work allocation and code review. Kalvium owned the accountability and intervention.",
     outcome:
-      "The engagement recorded zero attrition over 36 months, creating consistent contribution across the deployment.",
+      "The deployment sustained zero attrition across 36 months and three consecutive cohort cycles. The team stopped planning around placement windows and started treating the KalviumX pipeline as a continuous capacity layer, scheduling product work around apprentice availability rather than scrambling to backfill exits.",
+    signal:
+      "In Year 2, a performance concern surfaced with one apprentice. The feedback reached Kalvium mentors within 48 hours. Targeted coaching followed within the week. The apprentice continued through Year 3 without interruption.",
     duration: "36 months",
     accent: "retention",
     stat: [
-      { label: "Attrition", value: "0%" },
-      { label: "Engagement duration", value: "36 months" },
-      { label: "Capability", value: "Apprentices" },
+      { label: "Attrition across 36 months", value: "0%" },
+      { label: "Continuous engagement", value: "36 months" },
+      { label: "Cohort cycles completed", value: "3" },
     ],
     timeline: [
-      { step: "01", title: "JD alignment", copy: "Engineering needs and contribution expectations were mapped." },
-      { step: "02", title: "Talent curation", copy: "Relevant apprentices were assessed and shortlisted." },
-      { step: "03", title: "Readiness", copy: "Selected talent was prepared for the live team context." },
-      { step: "04", title: "Final selects", copy: "The enterprise confirmed the apprentices joining the team." },
-      { step: "05", title: "Deployment", copy: "Mentor oversight and feedback loops continued after joining." },
+      { step: "01", title: "JD alignment", copy: "The team shared their engineering backlog, sprint structure, and what productive in month two actually meant for their product context." },
+      { step: "02", title: "Talent curation", copy: "HEROS data filtered the pool by stack fit, project output, and professionalism signals. The team received five profiles, not fifty." },
+      { step: "03", title: "Readiness", copy: "Shortlisted apprentices completed a 2-week context sprint covering codebase conventions, ticketing workflow, and communication norms before day one." },
+      { step: "04", title: "Final selects", copy: "The enterprise ran one technical review round. Two apprentices joined the first cohort." },
+      { step: "05", title: "Deployment", copy: "Mentors attended the first two retrospectives. Monthly structured reviews kept the feedback loop active across all 36 months." },
     ],
   },
   {

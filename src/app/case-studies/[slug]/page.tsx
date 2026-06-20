@@ -89,6 +89,62 @@ export default async function CaseStudyPage({ params }: CaseStudyPageProps) {
         </div>
       </section>
 
+      {/* Narrative: context + challenge / model / outcome */}
+      {(study.context || study.challenge || study.model || study.outcome) && (
+        <section>
+          <div className="container-x space-y-10">
+            {study.context && (
+              <div className="max-w-3xl">
+                <div className="text-xs font-extrabold uppercase tracking-[0.16em] text-red mb-3">Context</div>
+                <p className="text-[17px] leading-relaxed text-[#444] font-medium">{study.context}</p>
+              </div>
+            )}
+
+            <div className="grid md:grid-cols-3 gap-6">
+              {[
+                { label: "Challenge", body: study.challenge },
+                { label: "Approach", body: study.model },
+                { label: "Outcome", body: study.outcome },
+              ].map(({ label, body }) => (
+                <div key={label} className="border border-line rounded-xl p-7">
+                  <div className="text-xs font-extrabold uppercase tracking-[0.16em] text-red mb-4">{label}</div>
+                  <p className="text-[15px] leading-relaxed text-[#444] font-medium">{body}</p>
+                </div>
+              ))}
+            </div>
+
+            {study.signal && (
+              <div className="border-l-4 border-red pl-6 py-1 max-w-3xl">
+                <div className="text-xs font-extrabold uppercase tracking-[0.14em] text-red mb-2">Signal</div>
+                <p className="text-[16px] leading-relaxed font-semibold text-ink">{study.signal}</p>
+              </div>
+            )}
+
+            {study.timeline && study.timeline.length > 0 && (
+              <div>
+                <div className="text-xs font-extrabold uppercase tracking-[0.16em] text-[#888] mb-6">How the deployment unfolded</div>
+                <div className="grid sm:grid-cols-5 gap-4">
+                  {study.timeline.map((item, index) => (
+                    <div key={item.step} className="relative">
+                      {index < study.timeline.length - 1 && (
+                        <div className="hidden sm:block absolute top-5 left-[calc(50%+20px)] right-[-50%] h-px bg-line" />
+                      )}
+                      <div className="flex flex-col gap-2">
+                        <div className="flex items-center gap-2.5">
+                          <span className="w-10 h-10 rounded-full bg-red text-white text-xs font-black grid place-items-center shrink-0">{item.step}</span>
+                          <span className="text-sm font-extrabold tracking-[-0.02em]">{item.title}</span>
+                        </div>
+                        <p className="text-[13px] leading-relaxed text-[#555] font-medium pl-0.5">{item.copy}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
       <CaseStudyExperience accent={study.accent} />
 
       <section className="bg-soft border-y border-line py-10">
