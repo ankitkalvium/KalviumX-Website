@@ -34,7 +34,7 @@ export default function RolesPage() {
 
       <section className="border-y border-line bg-soft">
         <div className="container-x">
-          <div className="grid grid-cols-3 divide-x divide-line text-center">
+          <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-line text-center">
             <div className="px-6 py-8">
               <strong className="block text-4xl font-black tracking-[-0.05em] text-red">0%</strong>
               <span className="block text-xs font-bold text-[#555] mt-1.5 uppercase tracking-[0.12em]">intern attrition across 36 months</span>

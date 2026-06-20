@@ -193,7 +193,14 @@ function BeforeWithSection() {
             </div>
           </div>
 
-          {/* VS */}
+          {/* VS — mobile/tablet row divider */}
+          <div className="flex lg:hidden items-center gap-4 my-2">
+            <div className="flex-1 h-px bg-line" />
+            <div className="w-9 h-9 rounded-full bg-ink text-white text-[10px] font-extrabold grid place-items-center shrink-0">vs.</div>
+            <div className="flex-1 h-px bg-line" />
+          </div>
+
+          {/* VS — desktop center column */}
           <div className="hidden lg:flex items-center justify-center">
             <div className="w-10 h-10 rounded-full bg-ink text-white text-[10px] font-extrabold grid place-items-center">
               vs.
@@ -304,7 +311,7 @@ function ContinuityGrid() {
                 m.type === "end"       ? "bg-red border-red" :
                 "bg-white/30 border-white/30"
               }`} />
-              <p className="mt-2 text-[10px] text-white/40 font-medium leading-snug">{m.label}</p>
+              <p className="hidden sm:block mt-2 text-[10px] text-white/40 font-medium leading-snug">{m.label}</p>
             </div>
           ))}
         </div>
