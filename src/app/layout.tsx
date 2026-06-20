@@ -36,6 +36,9 @@ export const metadata: Metadata = {
     description:
       "Share one JD. Get a curated, assessed intern shortlist in 7-12 days.",
   },
+  verification: {
+    google: "rl0rXr2IaOXcX5wlLWupdrXIjz4bnfv7fEUGm_DlgbA",
+  },
 };
 
 const organizationSchema = {
