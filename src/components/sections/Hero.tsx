@@ -3,7 +3,7 @@ import Button from "@/components/ui/Button";
 
 const proofPoints = [
   { value: "0%", label: "attrition" },
-  { value: "60%", label: "cheaper" },
+  { value: "60%", label: "cost effective" },
   { value: "12 days", label: "to deploy" },
   { value: "Pre-screened", label: "to your JD" },
 ];
@@ -94,7 +94,7 @@ export default function Hero() {
               }}
             >
               <Image
-                src="/images/hero-tech.png"
+                src="/images/hero-team.png"
                 alt="Kalvium engineering students collaborating"
                 fill
                 className="object-cover object-center"
