@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { navLinks } from "@/lib/data";
 import Button from "@/components/ui/Button";
@@ -16,12 +17,15 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-ink">
       <div className="container-x flex items-center justify-between gap-7 h-[72px]">
-        <Link href="/" className="flex items-center gap-2 text-2xl font-black tracking-[-0.065em]" aria-label="KalviumX home">
-          <span className="relative w-[27px] h-[27px] border-[3px] border-red grid place-items-center">
-            <span className="absolute left-[3px] top-[3px] w-[11px] h-[11px] border-l-[3px] border-b-[3px] border-red rotate-45" />
-          </span>
-          <span className="text-red">Kalvium</span>
-          <span className="text-ink -ml-1">X</span>
+        <Link href="/" aria-label="KalviumX home">
+          <Image
+            src="/images/logo.png"
+            alt="KalviumX"
+            width={184}
+            height={34}
+            priority
+            className="h-[34px] w-auto"
+          />
         </Link>
 
         <nav className="hidden lg:flex items-center justify-center gap-8 flex-1 text-sm font-bold">

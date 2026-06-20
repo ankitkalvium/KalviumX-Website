@@ -13,14 +13,26 @@ export default function Icon() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "#0e0e0e",
-          color: "#f53333",
-          fontSize: 22,
-          fontWeight: 900,
-          fontFamily: "sans-serif",
+          background: "transparent",
         }}
       >
-        X
+        <svg
+          viewBox="0 0 60 60"
+          width="32"
+          height="32"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <g transform="translate(4,4)">
+            <rect x="0" y="0" width="50" height="50" stroke="#FF3535" strokeWidth="6" fill="none" />
+            <path
+              d="M10 12 L43 12 L10 37 L43 48"
+              stroke="#FF3535"
+              strokeWidth="6"
+              strokeLinejoin="miter"
+              fill="none"
+            />
+          </g>
+        </svg>
       </div>
     ),
     { ...size }
