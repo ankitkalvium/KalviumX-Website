@@ -88,7 +88,7 @@ export default function CTAForm({ source = "website" }: CTAFormProps) {
         <h3 className="text-2xl font-extrabold tracking-[-0.03em] mb-2">Request received</h3>
         <p className="text-[#424242] text-[15px] leading-relaxed font-medium">
           A program lead will map the right KalviumX talent for your brief and follow up
-          within 1-2 business days.
+          same working day.
         </p>
       </div>
     );

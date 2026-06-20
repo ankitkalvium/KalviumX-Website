@@ -369,7 +369,7 @@ export const faqsGeneral: Faq[] = [
 export const faqsProcess: Faq[] = [
   {
     q: "How fast can we get a shortlist after sharing a JD?",
-    a: "Typically 7-12 days from JD share to a curated, pre-assessed shortlist ready for interviews.",
+    a: "We respond the same working day and deliver a curated, pre-assessed shortlist in under 48 hours of receiving your JD.",
   },
   {
     q: "What does the talent assessment involve?",
@@ -436,7 +436,7 @@ export const deploymentSteps: DeploymentStep[] = [
     title: "Role discovery",
     desc: "JD, stack, team context and expected output.",
     detail:
-      "A 30-minute call with your hiring manager captures the role, tech stack, team structure, codebase maturity and what 'productive' looks like in month one. This brief drives everything downstream.",
+      "A quick call with your hiring manager captures the role, tech stack, team structure, codebase maturity and what 'productive' looks like in month one. This brief drives everything downstream.",
   },
   {
     day: "Day 2-4",
@@ -470,7 +470,7 @@ export const deploymentSteps: DeploymentStep[] = [
 
 export const announcements = [
   "Campus drives give you volume. KalviumX gives you signal.",
-  "Share one JD. Get an assessed shortlist in 7-12 days.",
+  "Share one JD. Get an assessed shortlist in under 48 hours.",
   "Year 2 interns contribute 30 hrs/week - mentor-managed.",
   "Mentor-managed. Performance-tracked. Conversion-ready.",
 ];

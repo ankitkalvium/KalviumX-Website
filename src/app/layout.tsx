@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "KalviumX | Hire Engineering Interns Your Tech Teams Can Trust",
     description:
-      "Share one JD. Get a curated, assessed intern shortlist in 7-12 days.",
+      "Share one JD. Get a curated, assessed intern shortlist in under 48 hours.",
   },
   verification: {
     google: "rl0rXr2IaOXcX5wlLWupdrXIjz4bnfv7fEUGm_DlgbA",

@@ -112,7 +112,7 @@ export default async function RolePage({ params }: RolePageProps) {
             Ready to build your {role.shortTitle.toLowerCase()} bench?
           </h2>
           <p className="max-w-xl mx-auto text-[#424242] text-base font-medium mb-7">
-            Share your JD and get a curated, pre-assessed shortlist in 7-12 days.
+            Share your JD and get a curated, pre-assessed shortlist in under 48 hours.
           </p>
           <Button href="/start-a-pilot">Share a JD</Button>
         </div>

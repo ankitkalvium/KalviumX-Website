@@ -4,20 +4,20 @@ import CTAForm from "@/components/sections/CTAForm";
 export const metadata: Metadata = {
   title: "Start a Pilot | KalviumX",
   description:
-    "Share your internship JD and get a curated, pre-assessed shortlist of KalviumX engineering interns in 7-12 days.",
+    "Share your internship JD and get a curated, pre-assessed shortlist of KalviumX engineering interns in under 48 hours.",
 };
 
 const nextSteps = [
   {
-    title: "We respond in 1-2 business days",
-    desc: "A program lead reviews your JD and books a 30-minute role-discovery call.",
+    title: "We respond the same working day",
+    desc: "A program lead reviews your JD and reaches out within hours.",
   },
   {
     title: "Talent mapping starts immediately",
     desc: "Your brief is matched against the student pool - skills, projects, availability.",
   },
   {
-    title: "Shortlist in 7-12 days",
+    title: "Pre-screened candidates in under 2 days",
     desc: "You receive assessed profiles with project proof, scores and mentor notes.",
   },
 ];

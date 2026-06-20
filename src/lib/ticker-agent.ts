@@ -22,7 +22,7 @@ const FEEDS: { url: string; label: string }[] = [
 
 export const STATIC_FALLBACK: TickerItem[] = [
   { category: 'KALVIUMX', copy: 'Campus drives give you volume. We give you signal.' },
-  { category: 'KALVIUMX', copy: 'Share one JD. Assessed shortlist in 7-12 days.' },
+  { category: 'KALVIUMX', copy: 'Share one JD. Assessed shortlist in under 48 hours.' },
   { category: 'KALVIUMX', copy: '0% intern attrition across 36 months of deployment.' },
   { category: 'KALVIUMX', copy: 'Year 2 interns: 30 hrs/week, mentor-managed.' },
   { category: 'KALVIUMX', copy: 'AI/ML and Cloud/DevOps interns now available.' },
