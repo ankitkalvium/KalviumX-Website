@@ -19,7 +19,7 @@ export default function DeploymentStrip() {
           />
           <Link
             href="/deployment-model"
-            className="absolute top-0 right-0 text-sm font-extrabold text-red inline-flex items-center gap-1 hover:gap-2 transition-all whitespace-nowrap"
+            className="sm:absolute sm:top-0 sm:right-0 mt-4 sm:mt-0 inline-flex items-center gap-1 text-sm font-extrabold text-red hover:gap-2 transition-all whitespace-nowrap"
           >
             See the full deployment model <span aria-hidden>→</span>
           </Link>
