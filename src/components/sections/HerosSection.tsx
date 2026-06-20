@@ -1,10 +1,10 @@
 import Reveal from "@/components/ui/Reveal";
 
 const capabilities = [
-  "Continuously monitors student learning and progress",
-  "Identifies gaps early and enables mentor support",
-  "Evaluates performance using clear and consistent criteria",
-  "Tracks learning activity across every session and milestone",
+  "Skip resume stacks. See assessed skill, project output, and professionalism before your first interview.",
+  "HEROS flags performance gaps before deployment so your team receives a mentor-managed fix, not an unresolved problem.",
+  "Every shortlist is scored against your JD, not a generic rubric. Signal stays high. Volume stays low.",
+  "Performance data from HEROS follows each intern into the engagement, giving your team a live growth record from day one.",
 ];
 
 export default function HerosSection() {

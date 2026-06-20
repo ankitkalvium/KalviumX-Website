@@ -58,9 +58,20 @@ export default async function CaseStudyPage({ params }: CaseStudyPageProps) {
                 {study.headline}
               </h1>
               <div className="w-14 h-1 bg-red mt-6" />
-              <p className="mt-6 text-lg leading-relaxed text-[#555] font-medium max-w-3xl">
-                {study.problem} {study.summary}
-              </p>
+              {study.bulletPoints && study.bulletPoints.length > 0 ? (
+                <ul className="mt-6 space-y-2">
+                  {study.bulletPoints.map((point, i) => (
+                    <li key={i} className="flex items-center gap-2.5 text-[17px] font-semibold text-[#444]">
+                      <span className="w-5 h-5 rounded-full bg-red/10 text-red text-xs grid place-items-center shrink-0 font-black">✓</span>
+                      {point}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="mt-6 text-lg leading-relaxed text-[#555] font-medium max-w-3xl">
+                  {study.problem} {study.summary}
+                </p>
+              )}
             </div>
             <aside className="border-l border-line lg:pl-8 grid grid-cols-2 lg:grid-cols-1 gap-5">
               <MetaItem icon="industry" label="Industry" value={study.industry} />
@@ -73,11 +84,11 @@ export default async function CaseStudyPage({ params }: CaseStudyPageProps) {
       </section>
 
       <section className="py-7">
-        <div className="container-x bg-ink text-white rounded-lg grid sm:grid-cols-3">
+        <div className={`container-x bg-ink text-white rounded-lg grid ${study.stat.length === 4 ? "sm:grid-cols-2 lg:grid-cols-4" : "sm:grid-cols-3"}`}>
           {study.stat.map((stat, index) => (
             <div
               key={stat.label}
-              className={`py-7 px-7 flex items-center gap-4 ${index < study.stat.length - 1 ? "sm:border-r border-white/20" : ""}`}
+              className={`py-7 px-7 flex items-center gap-4 ${index < study.stat.length - 1 ? "border-b sm:border-b-0 sm:border-r border-white/20" : ""}`}
             >
               <MetricIcon accent={study.accent} index={index} />
               <div>
@@ -123,19 +134,17 @@ export default async function CaseStudyPage({ params }: CaseStudyPageProps) {
             {study.timeline && study.timeline.length > 0 && (
               <div>
                 <div className="text-xs font-extrabold uppercase tracking-[0.16em] text-[#888] mb-6">How the deployment unfolded</div>
-                <div className="grid sm:grid-cols-5 gap-4">
+                <div className="grid sm:grid-cols-5 gap-6">
                   {study.timeline.map((item, index) => (
-                    <div key={item.step} className="relative">
+                    <div key={item.step} className="relative flex flex-col items-center text-center">
                       {index < study.timeline.length - 1 && (
-                        <div className="hidden sm:block absolute top-5 left-[calc(50%+20px)] right-[-50%] h-px bg-line" />
+                        <div className="hidden sm:block absolute top-5 left-[calc(50%+20px)] right-[-50%] h-px bg-line -z-10" />
                       )}
-                      <div className="flex flex-col gap-2">
-                        <div className="flex items-center gap-2.5">
-                          <span className="w-10 h-10 rounded-full bg-red text-white text-xs font-black grid place-items-center shrink-0">{item.step}</span>
-                          <span className="text-sm font-extrabold tracking-[-0.02em]">{item.title}</span>
-                        </div>
-                        <p className="text-[13px] leading-relaxed text-[#555] font-medium pl-0.5">{item.copy}</p>
-                      </div>
+                      <span className="w-10 h-10 rounded-full bg-red text-white text-xs font-black grid place-items-center shrink-0 mb-3 relative z-10">
+                        {item.step}
+                      </span>
+                      <span className="text-[13px] font-extrabold tracking-[-0.02em] mb-1.5">{item.title}</span>
+                      <p className="text-[12px] leading-relaxed text-[#555] font-medium">{item.copy}</p>
                     </div>
                   ))}
                 </div>
@@ -147,7 +156,23 @@ export default async function CaseStudyPage({ params }: CaseStudyPageProps) {
 
       <CaseStudyExperience accent={study.accent} />
 
-      <section className="bg-soft border-y border-line py-10">
+      {study.executiveTakeaway && (
+        <section className="border-y border-line">
+          <div className="container-x grid lg:grid-cols-[200px_1fr] gap-8 items-center">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-full bg-red/10 text-red grid place-items-center shrink-0">
+                <svg viewBox="0 0 24 24" className="w-6 h-6 fill-red" aria-hidden>
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg>
+              </div>
+              <div className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#888]">Executive Takeaway</div>
+            </div>
+            <p className="text-[18px] font-semibold text-ink leading-relaxed">{study.executiveTakeaway}</p>
+          </div>
+        </section>
+      )}
+
+      <section className="bg-soft border-y border-line">
         <div className="container-x grid lg:grid-cols-[1fr_320px] gap-8">
           <div>
             <div className="text-xs font-extrabold uppercase tracking-[0.14em] text-[#777] mb-4">

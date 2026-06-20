@@ -44,6 +44,30 @@ export default function RoleIcon({ type, className = "w-10 h-10" }: RoleIconProp
         <path d="M10.5 10.5l2.8 2.8M26.7 26.7l2.8 2.8M10.5 29.5l2.8-2.8M26.7 13.3l2.8-2.8" stroke="#f53333" strokeWidth="1.5" strokeLinecap="round" opacity="0.6"/>
       </svg>
     ),
+    "AI/ML": (
+      <svg viewBox="0 0 40 40" fill="none" className={className}>
+        <circle cx="20" cy="8" r="3" stroke="#f53333" strokeWidth="1.5"/>
+        <circle cx="10" cy="22" r="3" stroke="#f53333" strokeWidth="1.5"/>
+        <circle cx="30" cy="22" r="3" stroke="#f53333" strokeWidth="1.5"/>
+        <circle cx="15" cy="34" r="3" stroke="#f53333" strokeWidth="1.5"/>
+        <circle cx="25" cy="34" r="3" stroke="#f53333" strokeWidth="1.5"/>
+        <line x1="20" y1="11" x2="10" y2="19" stroke="#f53333" strokeWidth="1.5" strokeLinecap="round"/>
+        <line x1="20" y1="11" x2="30" y2="19" stroke="#f53333" strokeWidth="1.5" strokeLinecap="round"/>
+        <line x1="10" y1="25" x2="15" y2="31" stroke="#f53333" strokeWidth="1.5" strokeLinecap="round"/>
+        <line x1="10" y1="25" x2="25" y2="31" stroke="#f53333" strokeWidth="1.5" strokeLinecap="round" opacity="0.5"/>
+        <line x1="30" y1="25" x2="15" y2="31" stroke="#f53333" strokeWidth="1.5" strokeLinecap="round" opacity="0.5"/>
+        <line x1="30" y1="25" x2="25" y2="31" stroke="#f53333" strokeWidth="1.5" strokeLinecap="round"/>
+      </svg>
+    ),
+    "Cloud/DevOps": (
+      <svg viewBox="0 0 40 40" fill="none" className={className}>
+        <path d="M29 20a7 7 0 0 0-4.5-12 9 9 0 0 0-14 6A6 6 0 0 0 12 26h17Z" stroke="#f53333" strokeWidth="1.5" strokeLinejoin="round"/>
+        <path d="M20 26v8" stroke="#f53333" strokeWidth="1.5" strokeLinecap="round"/>
+        <path d="M15 30l5 5 5-5" stroke="#f53333" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        <circle cx="28" cy="33" r="3.5" stroke="#f53333" strokeWidth="1.5" opacity="0.6"/>
+        <path d="M28 29.5v1.5M28 35v1.5M24.5 33h1.5M30 33h1.5" stroke="#f53333" strokeWidth="1.2" strokeLinecap="round" opacity="0.6"/>
+      </svg>
+    ),
   };
 
   return <>{icons[type] ?? icons["Full-Stack"]}</>;

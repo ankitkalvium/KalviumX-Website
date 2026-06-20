@@ -95,6 +95,8 @@ function RetentionExperience() {
 
   return (
     <>
+      <BeforeWithSection />
+
       <section className="bg-soft border-y border-line">
         <div className="container-x grid lg:grid-cols-[0.7fr_1.3fr] gap-12 items-start">
           <CaseIntro
@@ -109,20 +111,221 @@ function RetentionExperience() {
         </div>
       </section>
 
+      <section>
+        <div className="container-x grid lg:grid-cols-[0.75fr_1.25fr] gap-12 items-center">
+          <CaseIntro
+            label="Intervention proof"
+            title="Performance gaps caught before they become exits"
+            copy="The mentor-company feedback loop is not theoretical. One signal from Year 2 of this deployment shows how the model works in practice."
+          />
+          <InterventionProofCard />
+        </div>
+      </section>
+
       <section className="bg-ink text-white">
         <div className="container-x">
           <div className="grid lg:grid-cols-[0.75fr_1.25fr] gap-12 items-center">
             <CaseIntro
               dark
-              label="Continuity view"
-              title="Three years without a drop-off"
-              copy="Select a year to inspect the continuity signal. The engagement remained active through the full 36-month period."
+              label="36-month continuity"
+              title="Zero attrition, month by month"
+              copy="Every month across three cohort cycles. Select a year to inspect the continuity signal."
             />
-            <ContinuityChart />
+            <ContinuityGrid />
           </div>
         </div>
       </section>
     </>
+  );
+}
+
+function BeforeWithSection() {
+  const cycle = ["Hire", "Onboard", "Ramp", "Exit"];
+  const cohorts = [
+    { label: "Cohort 1", months: "M 1–12" },
+    { label: "Cohort 2", months: "M 13–24" },
+    { label: "Cohort 3", months: "M 25–36" },
+  ];
+
+  return (
+    <section className="border-b border-line">
+      <div className="container-x">
+        <div className="grid lg:grid-cols-[1fr_56px_1fr]">
+          {/* Before */}
+          <div className="pb-0 lg:pr-12">
+            <div className="text-[11px] font-black uppercase tracking-[0.18em] text-ink mb-3">Before KalviumX</div>
+            <p className="text-sm font-medium text-[#666] mb-6">
+              Conventional intern programs reset team continuity every 6–9 months.
+            </p>
+            {/* Legend */}
+            <div className="flex items-center gap-4 mb-4 flex-wrap">
+              {cycle.map((step, si) => (
+                <div key={step} className="flex items-center gap-1.5">
+                  <span className={`w-4 h-4 rounded-full border text-[7px] font-black grid place-items-center shrink-0 ${si === 3 ? "border-red/40 bg-red/5 text-red/60" : "border-[#e0e0e0] bg-[#f8f8f8] text-[#aaa]"}`}>
+                    {step[0]}
+                  </span>
+                  <span className="text-[10px] text-[#888] font-medium">{step}</span>
+                </div>
+              ))}
+            </div>
+            <div className="space-y-4">
+              {["Cycle 1", "Cycle 2", "Cycle 3"].map((label) => (
+                <div key={label} className="flex items-center gap-3">
+                  <span className="text-[10px] font-bold text-[#bbb] w-12 shrink-0">{label}</span>
+                  <div className="flex-1 flex items-center">
+                    {cycle.map((step, si) => (
+                      <div key={step} className="flex items-center flex-1 min-w-0">
+                        <div className="flex flex-col items-center gap-0.5 shrink-0">
+                          <span className={`w-6 h-6 rounded-full border text-[8px] font-bold grid place-items-center ${si === 3 ? "border-red/40 bg-red/5 text-red/60" : "border-[#e0e0e0] bg-[#f8f8f8] text-[#aaa]"}`}>
+                            {step[0]}
+                          </span>
+                        </div>
+                        {si < 3 && <div className="flex-1 h-px bg-[#e0e0e0] mx-0.5" />}
+                      </div>
+                    ))}
+                    <span className="text-[10px] font-bold text-red ml-2 whitespace-nowrap">6–9 mo</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="mt-6 mb-10 lg:mb-0 px-4 py-3 bg-[#f8f8f8] border border-line rounded-lg text-xs text-[#888] font-medium">
+              Repeated hiring and re-onboarding. Lost context. Slowed delivery.
+            </div>
+          </div>
+
+          {/* VS */}
+          <div className="hidden lg:flex items-center justify-center">
+            <div className="w-10 h-10 rounded-full bg-ink text-white text-[10px] font-extrabold grid place-items-center">
+              vs.
+            </div>
+          </div>
+
+          {/* With KalviumX */}
+          <div className="lg:pl-12">
+            <div className="text-[11px] font-black uppercase tracking-[0.18em] text-red mb-3">With KalviumX</div>
+            <p className="text-sm font-medium text-[#444] mb-8">
+              One continuous team. Compounding context. Consistent impact.
+            </p>
+            <div className="relative py-7 px-2">
+              <div className="absolute top-1/2 left-3 right-5 h-0.5 bg-red -translate-y-1/2" />
+              <svg className="absolute right-1 top-1/2 -translate-y-1/2" width="10" height="14" viewBox="0 0 10 14" fill="none">
+                <path d="M1 1l8 6-8 6" stroke="#f53333" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              <div className="relative flex justify-between items-center">
+                {cohorts.map((c) => (
+                  <div key={c.label} className="flex flex-col items-center gap-2">
+                    <span className="text-[11px] font-extrabold text-red">{c.label}</span>
+                    <div className="w-3.5 h-3.5 rounded-full bg-red border-2 border-white ring-2 ring-red/25" />
+                    <span className="text-[11px] text-[#666] font-medium">{c.months}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="flex items-center gap-4 px-5 py-4 bg-red/5 border border-red/15 rounded-lg">
+              <span className="text-4xl font-black text-red leading-none tracking-[-0.05em]">0%</span>
+              <div>
+                <div className="text-sm font-extrabold text-ink">attrition</div>
+                <div className="text-xs text-[#666] font-medium">across 36 months of uninterrupted contribution</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function InterventionProofCard() {
+  const steps = [
+    { label: "Feedback in", time: "48 hours", desc: "Performance concern surfaced. Company feedback reached Kalvium mentors." },
+    { label: "Coaching within", time: "1 week", desc: "Targeted intervention designed and delivered to the apprentice." },
+    { label: "Continued into", time: "Year 3", desc: "The apprentice completed the full engagement without interruption." },
+  ];
+  return (
+    <div className="border border-line rounded-xl overflow-hidden">
+      <div className="px-7 py-5 bg-soft border-b border-line flex items-center justify-between gap-4">
+        <div className="text-xs font-extrabold uppercase tracking-[0.14em] text-red">Year 2 incident</div>
+        <span className="text-xs font-bold text-[#777]">1 concern raised · 0 exits</span>
+      </div>
+      <div className="grid sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-line">
+        {steps.map((step) => (
+          <div key={step.label} className="p-6 flex flex-col gap-2">
+            <div className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-[#999]">{step.label}</div>
+            <div className="text-2xl font-black tracking-[-0.04em] text-ink">{step.time}</div>
+            <p className="text-[13px] text-[#666] font-medium leading-relaxed">{step.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ContinuityGrid() {
+  const milestones = [
+    { pct: 0,   month: "M 1",     label: "First cohort onboarded and aligned to JD", type: "start" },
+    { pct: 33,  month: "M 12/13", label: "Seamless handoff, no hiring restart",       type: "handoff" },
+    { pct: 50,  month: "M 18",    label: "1 concern raised, resolved within 1 week", type: "incident" },
+    { pct: 67,  month: "M 24/25", label: "Second seamless handoff",                  type: "handoff" },
+    { pct: 100, month: "M 36",    label: "Engagement complete. 0% attrition.",       type: "end" },
+  ];
+
+  return (
+    <div className="border border-white/15 rounded-xl p-6 sm:p-8 space-y-7">
+
+      {/* Cohort segments bar */}
+      <div>
+        <div className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-white/35 mb-3">
+          36-month deployment · 3 consecutive cohorts
+        </div>
+        <div className="flex gap-0.5 h-14 rounded-lg overflow-hidden">
+          {[
+            { label: "Cohort 1", range: "M 1–12",   opacity: "bg-red" },
+            { label: "Cohort 2", range: "M 13–24",  opacity: "bg-red/65" },
+            { label: "Cohort 3", range: "M 25–36",  opacity: "bg-red/45" },
+          ].map((c) => (
+            <div key={c.label} className={`flex-1 ${c.opacity} flex flex-col items-center justify-center gap-0.5`}>
+              <span className="text-white text-[11px] font-extrabold">{c.label}</span>
+              <span className="text-white/65 text-[9px] font-bold">{c.range}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Milestone rail */}
+      <div className="relative pt-1">
+        <div className="absolute top-[18px] left-0 right-0 h-px bg-white/10" />
+        <div className="relative flex justify-between">
+          {milestones.map((m) => (
+            <div key={m.month} className="flex flex-col items-center text-center" style={{ width: "20%" }}>
+              <span className="text-[9px] text-white/30 font-bold mb-1.5 leading-none">{m.month}</span>
+              <div className={`w-3 h-3 rounded-full relative z-10 border-2 ${
+                m.type === "incident"  ? "bg-amber-400 border-amber-400" :
+                m.type === "handoff"   ? "bg-white border-white" :
+                m.type === "end"       ? "bg-red border-red" :
+                "bg-white/30 border-white/30"
+              }`} />
+              <p className="mt-2 text-[10px] text-white/40 font-medium leading-snug">{m.label}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Bottom stats */}
+      <div className="grid grid-cols-3 gap-4 pt-5 border-t border-white/10">
+        <div>
+          <div className="text-2xl font-black text-white">2</div>
+          <div className="text-[10px] text-white/40 font-bold mt-0.5">seamless handoffs, no hiring restart</div>
+        </div>
+        <div>
+          <div className="text-2xl font-black text-amber-400">1</div>
+          <div className="text-[10px] text-white/40 font-bold mt-0.5">concern caught, closed in 7 days</div>
+        </div>
+        <div>
+          <div className="text-2xl font-black text-red">0%</div>
+          <div className="text-[10px] text-white/40 font-bold mt-0.5">attrition, every month</div>
+        </div>
+      </div>
+    </div>
   );
 }
 
