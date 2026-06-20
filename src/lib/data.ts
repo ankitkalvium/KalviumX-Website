@@ -125,72 +125,123 @@ export const roles: Role[] = [
 export type CaseStudy = {
   slug: string;
   company: string;
+  region: string;
   industry: string;
   role: string;
+  problem: string;
   headline: string;
-  quote: string;
-  person: string;
-  title: string;
+  summary: string;
+  challenge: string;
+  model: string;
+  outcome: string;
+  duration: string;
+  accent: "retention" | "efficiency" | "genai";
   stat: { label: string; value: string }[];
+  timeline: { step: string; title: string; copy: string }[];
 };
 
 export const caseStudies: CaseStudy[] = [
   {
-    slug: "fintech-full-stack-bench",
-    company: "Fintech Platform (GCC)",
-    industry: "Fintech / GCC",
-    role: "Full-Stack Engineers",
-    headline: "Built a 6-intern full-stack bench in under 2 weeks",
-    quote:
-      "We shared one JD and got a shortlist of pre-assessed candidates with project proof. Onboarding time dropped because the stack alignment was already done.",
-    person: "Engineering Director",
-    title: "GCC Engineering Leadership",
+    slug: "zero-attrition-hr-tech",
+    company: "HR-Tech Enterprise",
+    region: "United Kingdom",
+    industry: "HR-Tech",
+    role: "Engineering apprentices",
+    problem: "High intern attrition was breaking team continuity and restarting hiring cycles.",
+    headline: "How a UK HR-Tech enterprise eliminated intern attrition across 36 months",
+    summary:
+      "A long-running apprentice deployment designed around work-integrated learning, mentor oversight and continuous performance visibility.",
+    challenge:
+      "Traditional intern programs lose continuity when learners disengage or leave, forcing teams back into repeated hiring and onboarding cycles.",
+    model:
+      "KalviumX connected live engineering contribution with academic accountability, while mentors and company managers maintained a regular feedback loop.",
+    outcome:
+      "The engagement recorded zero attrition over 36 months, creating consistent contribution across the deployment.",
+    duration: "36 months",
+    accent: "retention",
     stat: [
-      { label: "Time to shortlist", value: "9 days" },
-      { label: "Interns deployed", value: "6" },
-      { label: "Stack match", value: "React / Node.js" },
+      { label: "Attrition", value: "0%" },
+      { label: "Engagement duration", value: "36 months" },
+      { label: "Capability", value: "Apprentices" },
+    ],
+    timeline: [
+      { step: "01", title: "JD alignment", copy: "Engineering needs and contribution expectations were mapped." },
+      { step: "02", title: "Talent curation", copy: "Relevant apprentices were assessed and shortlisted." },
+      { step: "03", title: "Readiness", copy: "Selected talent was prepared for the live team context." },
+      { step: "04", title: "Final selects", copy: "The enterprise confirmed the apprentices joining the team." },
+      { step: "05", title: "Deployment", copy: "Mentor oversight and feedback loops continued after joining." },
     ],
   },
   {
-    slug: "retail-backend-conversion",
-    company: "Retail / E-commerce",
-    industry: "Retail",
-    role: "Backend Engineers",
-    headline: "3 of 4 interns converted to full-time offers",
-    quote:
-      "The monthly feedback loop meant we caught skill gaps early and could course-correct with the mentor team before it became a performance issue.",
-    person: "VP Engineering",
-    title: "Retail Technology Group",
+    slug: "cost-efficient-bfsi-deployment",
+    company: "Global BFSI Major",
+    region: "United States",
+    industry: "Banking & Financial Services",
+    role: "MERN engineering deployment",
+    problem: "Tier-1 engineering capacity was too expensive to scale without reducing expected output.",
+    headline: "How a global BFSI team reduced engineering talent cost by ~60%",
+    summary:
+      "A MERN engineering deployment structured to reduce talent cost while preserving the output expected from Tier-1 engineering talent.",
+    challenge:
+      "The enterprise needed additional engineering capacity without accepting a trade-off between talent cost and production performance.",
+    model:
+      "KalviumX deployed assessed MERN talent with stack alignment, live team contribution and continued performance oversight.",
+    outcome:
+      "The deployment achieved approximately 60% cost efficiency compared with Tier-1 engineers, with no performance trade-off.",
+    duration: "Ongoing deployment",
+    accent: "efficiency",
     stat: [
-      { label: "Interns deployed", value: "4" },
-      { label: "Converted to FTE", value: "3" },
-      { label: "Avg ramp-up", value: "3 weeks" },
+      { label: "Cost efficiency", value: "~60%" },
+      { label: "Performance trade-off", value: "None" },
+      { label: "Capability", value: "MERN" },
+    ],
+    timeline: [
+      { step: "01", title: "JD alignment", copy: "The MERN role and expected output were mapped." },
+      { step: "02", title: "Talent curation", copy: "Relevant engineers were assessed and shortlisted." },
+      { step: "03", title: "Readiness", copy: "Technical fit and team context were validated." },
+      { step: "04", title: "Final selects", copy: "The enterprise confirmed the engineers joining the team." },
+      { step: "05", title: "Deployment", copy: "Selected talent joined live product engineering workflows." },
     ],
   },
   {
-    slug: "saas-qa-automation",
-    company: "B2B SaaS",
-    industry: "SaaS",
-    role: "QA / Automation",
-    headline: "Stood up a dedicated QA pod without a hiring cycle",
-    quote:
-      "Instead of running a 4-month hiring process, we deployed a QA pod in under 2 weeks with mentor oversight built in.",
-    person: "Head of Quality",
-    title: "B2B SaaS Company",
+    slug: "genai-upskilling-saas",
+    company: "B2B SaaS Firm",
+    region: "Japan",
+    industry: "B2B SaaS",
+    role: "MERN + GenAI",
+    problem: "The existing engineering deployment lacked practical GenAI readiness for new product work.",
+    headline: "How a Japan B2B SaaS firm closed its GenAI capability gap in four weeks",
+    summary:
+      "An existing MERN deployment was extended with focused prompt and GenAI capability aligned to the company's evolving product needs.",
+    challenge:
+      "The team needed practical GenAI capability quickly, without restarting its hiring motion or waiting for a traditional curriculum cycle.",
+    model:
+      "KalviumX delivered a focused four-week prompt upskilling intervention on top of the existing engineering foundation.",
+    outcome:
+      "Following the upskilling engagement, 12 additional hires were sanctioned.",
+    duration: "4-week upskilling",
+    accent: "genai",
     stat: [
-      { label: "Time to deployment", value: "12 days" },
-      { label: "Pod size", value: "3 interns" },
-      { label: "Replacement requests", value: "0" },
+      { label: "Upskilling duration", value: "4 weeks" },
+      { label: "Hires sanctioned", value: "12" },
+      { label: "Capability added", value: "GenAI" },
+    ],
+    timeline: [
+      { step: "01", title: "Gap identified", copy: "The deployment needed applied GenAI readiness." },
+      { step: "02", title: "Sprint designed", copy: "Prompt and GenAI learning was mapped to product needs." },
+      { step: "03", title: "Skills applied", copy: "Learners practiced the capability in relevant workflows." },
+      { step: "04", title: "Readiness reviewed", copy: "The four-week intervention was evaluated with the team." },
+      { step: "05", title: "Hiring expanded", copy: "The enterprise sanctioned 12 additional hires." },
     ],
   },
 ];
 
 export const navLinks = [
   { href: "/roles", label: "Roles" },
-  { href: "/deployment-model", label: "Deployment Model" },
-  { href: "/for-gccs", label: "For GCCs" },
-  { href: "/case-studies", label: "Case Studies" },
-  { href: "/commercials", label: "Commercials" },
+  { href: "/deployment-model", label: "How It Works" },
+  { href: "/for-gccs", label: "For Enterprise" },
+  { href: "/case-studies", label: "Results" },
+  { href: "/commercials", label: "Pricing" },
 ];
 
 export const trustLogos = [
@@ -313,8 +364,8 @@ export const deploymentSteps: DeploymentStep[] = [
   },
   {
     day: "Day 8-11",
-    title: "Final interview",
-    desc: "Your team interviews the shortlisted candidates and confirms the hire.",
+    title: "Final selects",
+    desc: "Your team interviews shortlisted candidates and confirms the hire.",
     detail:
       "Shortlisted candidates complete your interview rounds. Results come back with mentor commentary on strengths and readiness. You make the final call on who joins.",
   },

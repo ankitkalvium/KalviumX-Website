@@ -7,7 +7,7 @@ export default function DeploymentStrip() {
   return (
     <section className="border-y border-line">
       <div className="container-x">
-        <div className="flex flex-col md:flex-row justify-between gap-6 items-start mb-10">
+        <div className="relative mb-10 text-center">
           <SectionHeading
             eyebrow="Deployment"
             title={
@@ -15,10 +15,11 @@ export default function DeploymentStrip() {
                 JD to deployed intern in <span className="red-pill">12 days</span>
               </>
             }
+            align="center"
           />
           <Link
             href="/deployment-model"
-            className="text-sm font-extrabold text-red inline-flex items-center gap-1 hover:gap-2 transition-all whitespace-nowrap"
+            className="absolute top-0 right-0 text-sm font-extrabold text-red inline-flex items-center gap-1 hover:gap-2 transition-all whitespace-nowrap"
           >
             See the full deployment model <span aria-hidden>→</span>
           </Link>
