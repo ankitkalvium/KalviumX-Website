@@ -1,6 +1,6 @@
 import Link from "next/link";
+import Image from "next/image";
 import { navLinks } from "@/lib/data";
-import KalviumXLogo from "@/components/ui/KalviumXLogo";
 
 export default function Footer() {
   return (
@@ -8,7 +8,13 @@ export default function Footer() {
       <div className="container-x grid grid-cols-1 md:grid-cols-4 gap-10 pb-12 border-b border-white/10">
         <div className="md:col-span-2">
           <div className="mb-4">
-            <KalviumXLogo variant="reverse" height={32} />
+            <Image
+              src="/images/logo-white.png"
+              alt="KalviumX"
+              width={184}
+              height={34}
+              className="h-[32px] w-auto"
+            />
           </div>
           <p className="text-white/60 text-sm leading-relaxed max-w-sm">
             Enterprise intern hiring from Kalvium&apos;s work-integrated B.Tech ecosystem -
