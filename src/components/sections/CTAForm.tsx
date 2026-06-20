@@ -1,21 +1,20 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useState, useRef, type FormEvent } from "react";
+import { roleOptions } from "@/lib/data";
 
 interface FormFields {
+  name: string;
   email: string;
   role: string;
-  interns: string;
-  duration: string;
-  notes: string;
+  brief: string;
 }
 
 const initialFields: FormFields = {
+  name: "",
   email: "",
   role: "",
-  interns: "",
-  duration: "",
-  notes: "",
+  brief: "",
 };
 
 interface CTAFormProps {
@@ -27,6 +26,9 @@ export default function CTAForm({ source = "website" }: CTAFormProps) {
   const [errors, setErrors] = useState<Partial<Record<keyof FormFields, string>>>({});
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "failed">("idle");
   const [serverError, setServerError] = useState("");
+  // Honeypot value + mount timestamp for bot detection.
+  const honeypotRef = useRef("");
+  const loadedAtRef = useRef(Date.now());
 
   function update<K extends keyof FormFields>(key: K, value: string) {
     setFields((prev) => ({ ...prev, [key]: value }));
@@ -34,17 +36,14 @@ export default function CTAForm({ source = "website" }: CTAFormProps) {
 
   function validate(): boolean {
     const nextErrors: Partial<Record<keyof FormFields, string>> = {};
+    if (!fields.name.trim()) {
+      nextErrors.name = "Tell us your name.";
+    }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.email)) {
       nextErrors.email = "Enter a valid work email.";
     }
     if (!fields.role.trim()) {
-      nextErrors.role = "Tell us the role and stack.";
-    }
-    if (!fields.interns.trim() || Number.isNaN(Number(fields.interns))) {
-      nextErrors.interns = "Enter the number of interns needed.";
-    }
-    if (!fields.duration.trim()) {
-      nextErrors.duration = "Enter the internship duration.";
+      nextErrors.role = "Select a role or stack.";
     }
     setErrors(nextErrors);
     return Object.keys(nextErrors).length === 0;
@@ -60,7 +59,12 @@ export default function CTAForm({ source = "website" }: CTAFormProps) {
       const response = await fetch("/api/lead", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...fields, source }),
+        body: JSON.stringify({
+          ...fields,
+          source,
+          website: honeypotRef.current,
+          loadedAt: loadedAtRef.current,
+        }),
       });
       const data: { success: boolean; error?: string } = await response.json();
       if (data.success) {
@@ -83,7 +87,7 @@ export default function CTAForm({ source = "website" }: CTAFormProps) {
         </div>
         <h3 className="text-2xl font-extrabold tracking-[-0.03em] mb-2">Request received</h3>
         <p className="text-[#424242] text-[15px] leading-relaxed font-medium">
-          Our team will map the right KalviumX talent pool for your JD and follow up
+          A program lead will map the right KalviumX talent for your brief and follow up
           within 1-2 business days.
         </p>
       </div>
@@ -96,7 +100,35 @@ export default function CTAForm({ source = "website" }: CTAFormProps) {
       className="bg-white border border-line rounded-lg shadow-2xl p-5 sm:p-6"
       noValidate
     >
-      <div className="grid sm:grid-cols-2 gap-3.5">
+      {/* Honeypot — hidden from humans, bots fill it. */}
+      <div aria-hidden className="absolute left-[-9999px] top-[-9999px] w-px h-px overflow-hidden">
+        <label htmlFor="website">Website</label>
+        <input
+          id="website"
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+          onChange={(e) => {
+            honeypotRef.current = e.target.value;
+          }}
+        />
+      </div>
+
+      <div className="grid gap-3.5">
+        <div className="grid gap-1.5">
+          <label htmlFor="name" className="text-xs font-extrabold text-[#303030]">
+            Your name*
+          </label>
+          <input
+            id="name"
+            type="text"
+            placeholder="e.g. Ankit Singh"
+            value={fields.name}
+            onChange={(e) => update("name", e.target.value)}
+            className="w-full border border-line rounded-sm h-[42px] px-3 text-sm outline-none focus:border-red"
+          />
+          {errors.name && <span className="text-xs font-semibold text-red">{errors.name}</span>}
+        </div>
         <div className="grid gap-1.5">
           <label htmlFor="email" className="text-xs font-extrabold text-[#303030]">
             Work email*
@@ -115,54 +147,35 @@ export default function CTAForm({ source = "website" }: CTAFormProps) {
           <label htmlFor="role" className="text-xs font-extrabold text-[#303030]">
             Role / stack*
           </label>
-          <input
+          <select
             id="role"
-            type="text"
-            placeholder="e.g. Full-stack (React, Node.js)"
             value={fields.role}
             onChange={(e) => update("role", e.target.value)}
-            className="w-full border border-line rounded-sm h-[42px] px-3 text-sm outline-none focus:border-red"
-          />
+            className={`w-full border border-line rounded-sm h-[42px] px-3 text-sm outline-none focus:border-red bg-white ${
+              fields.role ? "text-ink" : "text-[#9a9a9a]"
+            }`}
+          >
+            <option value="" disabled>
+              Select the role you&apos;re hiring for
+            </option>
+            {roleOptions.map((option) => (
+              <option key={option} value={option} className="text-ink">
+                {option}
+              </option>
+            ))}
+          </select>
           {errors.role && <span className="text-xs font-semibold text-red">{errors.role}</span>}
         </div>
         <div className="grid gap-1.5">
-          <label htmlFor="interns" className="text-xs font-extrabold text-[#303030]">
-            No. of interns*
-          </label>
-          <input
-            id="interns"
-            type="text"
-            placeholder="e.g. 5"
-            value={fields.interns}
-            onChange={(e) => update("interns", e.target.value)}
-            className="w-full border border-line rounded-sm h-[42px] px-3 text-sm outline-none focus:border-red"
-          />
-          {errors.interns && <span className="text-xs font-semibold text-red">{errors.interns}</span>}
-        </div>
-        <div className="grid gap-1.5">
-          <label htmlFor="duration" className="text-xs font-extrabold text-[#303030]">
-            Internship duration*
-          </label>
-          <input
-            id="duration"
-            type="text"
-            placeholder="e.g. 6 months"
-            value={fields.duration}
-            onChange={(e) => update("duration", e.target.value)}
-            className="w-full border border-line rounded-sm h-[42px] px-3 text-sm outline-none focus:border-red"
-          />
-          {errors.duration && <span className="text-xs font-semibold text-red">{errors.duration}</span>}
-        </div>
-        <div className="sm:col-span-2 grid gap-1.5">
-          <label htmlFor="notes" className="text-xs font-extrabold text-[#303030]">
-            Additional notes (optional)
+          <label htmlFor="brief" className="text-xs font-extrabold text-[#303030]">
+            Paste your JD or a one-line brief (optional)
           </label>
           <textarea
-            id="notes"
-            placeholder="Share any specific skills, tools or preferences"
-            value={fields.notes}
-            onChange={(e) => update("notes", e.target.value)}
-            className="w-full border border-line rounded-sm h-[58px] px-3 py-2.5 text-sm outline-none resize-none focus:border-red"
+            id="brief"
+            placeholder="Drop a JD link, paste the JD, or describe what you need"
+            value={fields.brief}
+            onChange={(e) => update("brief", e.target.value)}
+            className="w-full border border-line rounded-sm h-[72px] px-3 py-2.5 text-sm outline-none resize-none focus:border-red"
           />
         </div>
       </div>

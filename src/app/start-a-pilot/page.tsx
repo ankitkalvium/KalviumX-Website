@@ -34,9 +34,9 @@ export default function StartAPilotPage() {
             One JD in. A curated <span className="red-pill">shortlist</span> out.
           </h1>
           <p className="text-lg leading-relaxed text-[#303030] font-medium mb-9 max-w-md">
-            Tell us the role, stack, and number of interns you need. No
-            recruitment fee, no resume dump - just a small pool of relevant,
-            pre-assessed candidates.
+            Tell us the role and stack you&apos;re hiring for. Share a JD or a
+            one-line brief, and we&apos;ll map a small pool of relevant,
+            pre-assessed candidates. No resume dump.
           </p>
           <div className="space-y-5 border-l-2 border-red pl-6">
             {nextSteps.map((step, i) => (

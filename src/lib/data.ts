@@ -317,6 +317,19 @@ export const navLinks = [
   { href: "/commercials", label: "Pricing" },
 ];
 
+// Fixed role options for the lead form dropdown — keeps CRM data clean and typo-free.
+export const roleOptions = [
+  "Full-Stack (React, Node)",
+  "Frontend (React, UI)",
+  "Backend (Java, Python, APIs)",
+  "AI / ML / Data",
+  "Cloud / DevOps",
+  "Mobile (Android, iOS, RN)",
+  "QA / Automation",
+  "Product Engineering",
+  "Other / Not sure yet",
+] as const;
+
 export const trustLogos = [
   "7-Eleven",
   "Lowe's",
