@@ -1,5 +1,22 @@
 export const ogImageSize = { width: 1200, height: 630 };
 
+// Brand mark as inline SVG — red square with white K strokes
+function BrandMark({ size = 80 }: { size?: number }) {
+  return (
+    <svg
+      viewBox="0 0 64 64"
+      width={size}
+      height={size}
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect width="64" height="64" fill="#f53333" />
+      <rect x="8" y="8" width="48" height="48" fill="white" />
+      <polygon points="8,8 32,32 8,56" fill="#f53333" />
+      <polygon points="64,8 32,32 64,56" fill="#f53333" />
+    </svg>
+  );
+}
+
 export function OgImageContent() {
   return (
     <div
@@ -18,24 +35,33 @@ export function OgImageContent() {
       <div
         style={{
           display: "flex",
-          alignItems: "baseline",
-          fontSize: 96,
-          fontWeight: 900,
-          letterSpacing: -4,
+          alignItems: "center",
+          gap: 24,
+          marginBottom: 32,
         }}
       >
-        <span style={{ color: "#f53333" }}>Kalvium</span>
-        <span style={{ color: "#ffffff" }}>X</span>
+        <BrandMark size={72} />
+        <div
+          style={{
+            display: "flex",
+            alignItems: "baseline",
+            fontSize: 72,
+            fontWeight: 900,
+            letterSpacing: -3,
+          }}
+        >
+          <span style={{ color: "#f53333" }}>Kalvium</span>
+          <span style={{ color: "#ffffff" }}>X</span>
+        </div>
       </div>
       <div
         style={{
           display: "flex",
-          marginTop: 28,
-          fontSize: 40,
+          fontSize: 44,
           fontWeight: 700,
           color: "#ffffff",
-          maxWidth: 880,
-          lineHeight: 1.3,
+          maxWidth: 900,
+          lineHeight: 1.25,
         }}
       >
         Hire engineering interns your tech teams can trust.

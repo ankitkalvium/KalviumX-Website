@@ -9,7 +9,7 @@ export default function Footer() {
         <div className="md:col-span-2">
           <div className="mb-4">
             <Image
-              src="/images/logo-white.png"
+              src="/images/brand/logo-reverse.png"
               alt="KalviumX"
               width={184}
               height={34}

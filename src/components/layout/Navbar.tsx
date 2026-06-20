@@ -19,7 +19,7 @@ export default function Navbar() {
       <div className="container-x flex items-center justify-between gap-7 h-[72px]">
         <Link href="/" aria-label="KalviumX home">
           <Image
-            src="/images/logo.png"
+            src="/images/brand/logo-primary.png"
             alt="KalviumX"
             width={184}
             height={34}
