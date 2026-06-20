@@ -4,15 +4,36 @@ import Button from "@/components/ui/Button";
 import CaseStudyVisual from "@/components/sections/CaseStudyVisual";
 import { caseStudies } from "@/lib/data";
 
+const SITE_URL = "https://x.kalvium.com";
+
 export const metadata: Metadata = {
-  title: "Case Studies",
+  title: "Engineering Intern Deployment Results | KalviumX Case Studies",
   description:
-    "Anonymized enterprise deployment results across retention, cost efficiency and GenAI upskilling.",
+    "Real outcomes from enterprise engineering teams: 0% intern attrition across 36 months, ~60% cost reduction vs Tier-1 benchmark, GenAI capability added in 4 weeks. Anonymized KalviumX deployment case studies.",
+  openGraph: {
+    title: "Engineering Intern Deployment Results | KalviumX Case Studies",
+    description:
+      "Real outcomes from enterprise engineering teams: 0% intern attrition, ~60% cost reduction, GenAI capability in 4 weeks. KalviumX.",
+    url: `${SITE_URL}/case-studies`,
+  },
+};
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+    { "@type": "ListItem", position: 2, name: "Case Studies", item: `${SITE_URL}/case-studies` },
+  ],
 };
 
 export default function CaseStudiesPage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
       <section className="border-b border-line">
         <div className="container-x grid lg:grid-cols-[1fr_0.7fr] gap-12 items-center">
           <div>

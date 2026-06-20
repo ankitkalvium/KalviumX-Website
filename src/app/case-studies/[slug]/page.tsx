@@ -5,6 +5,23 @@ import Button from "@/components/ui/Button";
 import CaseStudyExperience from "@/components/sections/CaseStudyExperience";
 import { caseStudies } from "@/lib/data";
 
+const SITE_URL = "https://x.kalvium.com";
+
+const SEO_TITLES: Record<string, string> = {
+  "zero-attrition-hr-tech": "0% Intern Attrition Across 36 Months: UK HR-Tech Engineering Deployment",
+  "cost-efficient-bfsi-deployment": "~60% Engineering Talent Cost Reduction: BFSI MERN Intern Deployment Results",
+  "genai-upskilling-saas": "GenAI Engineering Capability in 4 Weeks: B2B SaaS Intern Deployment Case Study",
+};
+
+const SEO_DESCRIPTIONS: Record<string, string> = {
+  "zero-attrition-hr-tech":
+    "A UK HR-Tech enterprise eliminated repeated intern churn with mentor-managed, work-integrated engineering apprentices. 0% attrition. 3 cohort cycles. Zero re-onboarding across 36 months.",
+  "cost-efficient-bfsi-deployment":
+    "A global BFSI firm deployed assessed MERN engineering interns at ~60% below Tier-1 talent costs with no output trade-off. Sprint-integrated, JD-matched, mentor-managed from day one.",
+  "genai-upskilling-saas":
+    "A Japan B2B SaaS firm added GenAI engineering capability to an existing MERN deployment in 4 weeks. 12 additional hires sanctioned post-sprint. No hiring pipeline restart needed.",
+};
+
 interface CaseStudyPageProps {
   params: Promise<{ slug: string }>;
 }
@@ -18,9 +35,18 @@ export async function generateMetadata({ params }: CaseStudyPageProps): Promise<
   const study = caseStudies.find((item) => item.slug === slug);
   if (!study) return {};
 
+  const title = SEO_TITLES[slug] ?? study.headline;
+  const description = SEO_DESCRIPTIONS[slug] ?? study.summary;
+
   return {
-    title: study.headline,
-    description: study.summary,
+    title,
+    description,
+    openGraph: {
+      title: `${title} | KalviumX`,
+      description,
+      url: `${SITE_URL}/case-studies/${slug}`,
+      type: "article",
+    },
   };
 }
 
@@ -37,8 +63,32 @@ export default async function CaseStudyPage({ params }: CaseStudyPageProps) {
         ? `Japan ${study.company}`
         : study.company;
 
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: SEO_TITLES[study.slug] ?? study.headline,
+    description: SEO_DESCRIPTIONS[study.slug] ?? study.summary,
+    author: { "@type": "Organization", name: "KalviumX", url: SITE_URL },
+    publisher: { "@type": "Organization", name: "KalviumX", url: SITE_URL },
+    url: `${SITE_URL}/case-studies/${study.slug}`,
+    articleBody: [study.context, study.challenge, study.model, study.outcome].filter(Boolean).join(" "),
+    keywords: [study.industry, study.role, "engineering intern", "intern deployment", "KalviumX"].join(", "),
+  };
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+      { "@type": "ListItem", position: 2, name: "Case Studies", item: `${SITE_URL}/case-studies` },
+      { "@type": "ListItem", position: 3, name: displayCompany, item: `${SITE_URL}/case-studies/${study.slug}` },
+    ],
+  };
+
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <section className="border-b border-line py-9 lg:py-12">
         <div className="container-x">
           <div className="flex items-center justify-between gap-5 mb-9">

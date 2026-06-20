@@ -6,9 +6,19 @@ import FaqAccordion from "@/components/sections/FaqAccordion";
 import { faqsPricing } from "@/lib/data";
 
 export const metadata: Metadata = {
-  title: "Commercials | KalviumX",
+  title: "Intern Hiring Cost: Zero Recruitment Fee, Monthly Stipend Model | KalviumX",
   description:
-    "KalviumX commercial model - monthly stipend plus program management fee, structured by year of engagement. No recruitment fee. Try the cost calculator.",
+    "KalviumX pricing: monthly stipend plus program management fee. No recruitment or placement commission. ~60% below Tier-1 talent cost. Structured by year of engagement.",
+};
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqsPricing.map((faq) => ({
+    "@type": "Question",
+    name: faq.q,
+    acceptedAnswer: { "@type": "Answer", text: faq.a },
+  })),
 };
 
 const yearRows = [
@@ -32,6 +42,7 @@ const yearRows = [
 export default function CommercialsPage() {
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <section className="border-b border-line bg-soft">
         <div className="container-x">
           <SectionHeading

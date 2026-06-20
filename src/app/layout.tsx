@@ -43,6 +43,10 @@ const organizationSchema = {
   "@type": "Organization",
   name: "KalviumX",
   url: SITE_URL,
+  sameAs: [
+    "https://kalvium.com",
+    "https://www.linkedin.com/company/kalvium",
+  ],
   parentOrganization: {
     "@type": "Organization",
     name: "Kalvium",
@@ -52,9 +56,37 @@ const organizationSchema = {
     "@type": "ContactPoint",
     telephone: "+91-9483-200-300",
     contactType: "sales",
+    areaServed: ["IN", "US", "GB", "JP"],
+    availableLanguage: "English",
   },
   description:
     "Enterprise intern hiring from Kalvium's work-integrated B.Tech ecosystem - pre-assessed, JD-matched, mentor-managed engineering talent.",
+};
+
+const serviceSchema = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  name: "KalviumX Engineering Intern Deployment",
+  provider: {
+    "@type": "Organization",
+    name: "KalviumX",
+    url: SITE_URL,
+  },
+  description:
+    "Curated, pre-assessed engineering interns deployed with mentor management, monthly feedback loops, and intern-to-FTE conversion paths. JD to deployed intern in 12 days.",
+  serviceType: "Engineering Intern Hiring Platform",
+  areaServed: ["IN", "US", "GB", "JP"],
+  hasOfferCatalog: {
+    "@type": "OfferCatalog",
+    name: "Engineering Intern Roles",
+    itemListElement: [
+      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Full-Stack Engineering Interns" } },
+      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Backend Engineering Interns" } },
+      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Frontend Engineering Interns" } },
+      { "@type": "Offer", itemOffered: { "@type": "Service", name: "AI/ML Engineering Interns" } },
+      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Cloud/DevOps Engineering Interns" } },
+    ],
+  },
 };
 
 export default function RootLayout({
@@ -68,6 +100,10 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
         />
         <AnnouncementBar />
         <Navbar />

@@ -6,9 +6,19 @@ import FaqAccordion from "@/components/sections/FaqAccordion";
 import { faqsProcess } from "@/lib/data";
 
 export const metadata: Metadata = {
-  title: "Deployment Model",
+  title: "Intern Deployment Model: JD to Deployed Engineer in 12 Days | KalviumX",
   description:
-    "How KalviumX moves from JD to deployed, mentor-managed engineering interns in 12 days - interactive step-by-step breakdown.",
+    "How KalviumX deploys pre-assessed, mentor-managed engineering interns in 12 days. Interactive step-by-step breakdown: talent assessment, context sprint, deployment, and ongoing oversight.",
+};
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqsProcess.map((faq) => ({
+    "@type": "Question",
+    name: faq.q,
+    acceptedAnswer: { "@type": "Answer", text: faq.a },
+  })),
 };
 
 const ownership = [
@@ -23,6 +33,7 @@ const ownership = [
 export default function DeploymentModelPage() {
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <section className="border-b border-line bg-soft">
         <div className="container-x">
           <SectionHeading
