@@ -6,9 +6,9 @@ import FaqAccordion from "@/components/sections/FaqAccordion";
 import { faqsPricing } from "@/lib/data";
 
 export const metadata: Metadata = {
-  title: "Intern Hiring Cost: Zero Recruitment Fee, Monthly Stipend Model | KalviumX",
+  title: "Intern Deployment Pricing: Transparent Monthly Cost by Year | KalviumX",
   description:
-    "KalviumX pricing: monthly stipend plus program management fee. No recruitment or placement commission. ~60% below Tier-1 talent cost. Structured by year of engagement.",
+    "KalviumX pricing: total monthly cost per intern is ₹35,000 (Year 2), ₹45,000 (Year 3), or ₹55,000 (Year 4). Includes stipend and program management. No placement commission.",
 };
 
 const faqSchema = {
@@ -21,39 +21,58 @@ const faqSchema = {
   })),
 };
 
-const yearRows = [
+const tiers = [
   {
     year: "Year 2",
+    semesters: "Sem 3 & 4",
     commitment: "30 hrs/week, remote",
-    structure: "Monthly stipend + program management fee",
+    stipend: 25000,
+    fee: 10000,
+    total: 35000,
+    highlight: false,
   },
   {
     year: "Year 3",
+    semesters: "Sem 5 & 6",
     commitment: "Full-time, onsite",
-    structure: "Monthly stipend + program management fee",
+    stipend: 35000,
+    fee: 10000,
+    total: 45000,
+    highlight: true,
   },
   {
     year: "Year 4",
+    semesters: "Sem 7 & 8",
     commitment: "Full-time, onsite",
-    structure: "Monthly stipend + program management fee",
+    stipend: 45000,
+    fee: 10000,
+    total: 55000,
+    highlight: false,
   },
 ];
+
+const formatInr = (n: number) => `₹${n.toLocaleString("en-IN")}`;
 
 export default function CommercialsPage() {
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+
+      {/* Hero */}
       <section className="border-b border-line bg-soft">
         <div className="container-x">
           <SectionHeading
             eyebrow="Commercials"
             title={
               <>
-                Predictable monthly cost.{" "}
-                <span className="red-pill">Zero recruitment fee.</span>
+                Transparent monthly cost.{" "}
+                <span className="red-pill">Structured by year.</span>
               </>
             }
-            copy="KalviumX runs on a monthly stipend plus a program management fee - structured by year of engagement. No placement commissions, no surprise costs."
+            copy="One monthly figure per intern covers everything: their stipend and KalviumX program management. No placement commission, no hidden costs, no surprise invoices."
           />
           <div className="mt-7">
             <Button href="/start-a-pilot">Request Commercial Sheet</Button>
@@ -61,37 +80,129 @@ export default function CommercialsPage() {
         </div>
       </section>
 
+      {/* How it works */}
+      <section className="border-b border-line">
+        <div className="container-x">
+          <div className="max-w-3xl">
+            <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-red mb-4">
+              How pricing works
+            </p>
+            <p className="text-[clamp(16px,1.4vw,20px)] font-semibold text-[#333] leading-relaxed">
+              The total monthly cost to your company is made up of two components:
+              the intern&apos;s stipend (paid to the student) and a fixed{" "}
+              <strong>₹10,000 KalviumX program management fee</strong> per intern
+              per month. The program fee covers mentor oversight, structured
+              performance reviews, cohort management, and deployment support.
+            </p>
+          </div>
+
+          <div className="mt-10 flex flex-wrap gap-6">
+            {[
+              { label: "Intern stipend", note: "Paid to student, varies by year" },
+              { label: "+ KalviumX program fee", note: "₹10,000 fixed per intern/month" },
+              { label: "= Total monthly cost", note: "One invoice, full visibility" },
+            ].map((item) => (
+              <div
+                key={item.label}
+                className="flex-1 min-w-[200px] border border-line rounded-lg px-6 py-5"
+              >
+                <p className="font-extrabold text-[15px] text-ink">{item.label}</p>
+                <p className="text-sm text-[#666] font-medium mt-1">{item.note}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing tiers */}
       <section>
         <div className="container-x">
-          <div className="overflow-x-auto border border-line rounded-lg">
-            <table className="w-full text-left text-sm">
-              <thead>
-                <tr className="bg-ink text-white">
-                  <th className="px-6 py-4 font-extrabold">Engagement Year</th>
-                  <th className="px-6 py-4 font-extrabold">Commitment</th>
-                  <th className="px-6 py-4 font-extrabold">Commercial Structure</th>
-                </tr>
-              </thead>
-              <tbody>
-                {yearRows.map((row, i) => (
-                  <tr key={row.year} className={i % 2 === 0 ? "bg-white" : "bg-soft"}>
-                    <td className="px-6 py-4 font-extrabold text-red">{row.year}</td>
-                    <td className="px-6 py-4 font-semibold">{row.commitment}</td>
-                    <td className="px-6 py-4 font-semibold">{row.structure}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="text-center max-w-xl mx-auto mb-12">
+            <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-red mb-3">
+              Monthly cost per intern
+            </p>
+            <h2 className="text-[clamp(26px,3vw,40px)] font-black tracking-[-0.05em] leading-[1.1]">
+              Pick the engagement year that fits your team
+            </h2>
           </div>
-          <p className="mt-5 text-sm text-[#555] font-semibold max-w-2xl">
-            Exact stipend and program management fee figures are shared in a
-            commercial sheet tailored to role, stack and number of interns.
+
+          <div className="grid md:grid-cols-3 gap-6">
+            {tiers.map((tier) => (
+              <div
+                key={tier.year}
+                className={`rounded-xl border-2 overflow-hidden flex flex-col ${
+                  tier.highlight
+                    ? "border-red"
+                    : "border-line"
+                }`}
+              >
+                {tier.highlight && (
+                  <div className="bg-red text-white text-center text-[11px] font-extrabold tracking-[0.14em] uppercase py-2">
+                    Most popular
+                  </div>
+                )}
+                <div className={`p-7 flex flex-col gap-6 flex-1 ${tier.highlight ? "bg-white" : "bg-soft"}`}>
+                  {/* Header */}
+                  <div>
+                    <p className="font-extrabold text-[13px] uppercase tracking-[0.12em] text-red mb-1">
+                      {tier.year}
+                    </p>
+                    <p className="text-sm text-[#666] font-semibold">{tier.semesters}</p>
+                  </div>
+
+                  {/* Total */}
+                  <div>
+                    <p className="text-[11px] font-extrabold uppercase tracking-[0.12em] text-[#888] mb-1">
+                      Total monthly cost
+                    </p>
+                    <p className="text-[clamp(38px,4vw,52px)] font-black tracking-[-0.04em] text-ink leading-none">
+                      {formatInr(tier.total)}
+                    </p>
+                    <p className="text-sm text-[#666] font-semibold mt-1">per intern / month</p>
+                  </div>
+
+                  {/* Breakdown */}
+                  <div className="border-t border-line pt-5 space-y-3">
+                    <p className="text-[11px] font-extrabold uppercase tracking-[0.12em] text-[#888] mb-3">
+                      Breakdown
+                    </p>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm font-semibold text-[#444]">Intern stipend</span>
+                      <span className="text-sm font-extrabold text-ink">{formatInr(tier.stipend)}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm font-semibold text-[#444]">KalviumX program fee</span>
+                      <span className="text-sm font-extrabold text-ink">{formatInr(tier.fee)}</span>
+                    </div>
+                    <div className="flex justify-between items-center border-t border-line pt-3 mt-1">
+                      <span className="text-sm font-extrabold text-ink">Total</span>
+                      <span className="text-sm font-extrabold text-red">{formatInr(tier.total)}</span>
+                    </div>
+                  </div>
+
+                  {/* Commitment */}
+                  <div className="mt-auto border border-line rounded-lg px-4 py-3">
+                    <p className="text-[11px] font-extrabold uppercase tracking-[0.1em] text-[#888] mb-1">
+                      Commitment
+                    </p>
+                    <p className="text-sm font-extrabold text-ink">{tier.commitment}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <p className="mt-6 text-sm text-[#666] font-semibold text-center">
+            Stipend figures are fixed per year tier. The ₹10,000 program management fee is constant across all tiers.
+            Exact commercial sheet shared within 1-2 business days of your request.
           </p>
         </div>
       </section>
 
+      {/* Cost comparison calculator */}
       <CostCalculator />
 
+      {/* FAQ */}
       <FaqAccordion
         faqs={faqsPricing}
         eyebrow="Pricing FAQ"
@@ -102,6 +213,7 @@ export default function CommercialsPage() {
         }
       />
 
+      {/* CTA */}
       <section className="text-center bg-soft border-t border-line">
         <div className="container-x">
           <h2 className="text-[clamp(28px,3.2vw,42px)] font-black tracking-[-0.05em] mb-4 max-w-2xl mx-auto">

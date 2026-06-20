@@ -374,12 +374,12 @@ export const faqsProcess: Faq[] = [
 
 export const faqsPricing: Faq[] = [
   {
-    q: "Is there a recruitment fee?",
-    a: "No. The commercial model is a monthly stipend plus a program management fee, structured by year of engagement - not a placement commission.",
+    q: "What is included in the monthly cost?",
+    a: "The total monthly cost per intern covers two components: the intern's stipend (paid to the student) and a ₹10,000 KalviumX program management fee. The program fee covers mentor oversight, structured performance reviews, cohort management, and end-to-end deployment support. There is no one-time placement or recruitment commission.",
   },
   {
     q: "When do we see exact numbers?",
-    a: "Exact stipend and program management fee figures are shared in a commercial sheet tailored to your role, stack and intern count - usually within 1-2 business days of your request.",
+    a: "Exact stipend figures and totals are shared in a commercial sheet tailored to your role, stack and intern count - usually within 1-2 business days of your request. The ₹10,000 program management fee is fixed per intern per month.",
   },
   {
     q: "Is there a cost to convert an intern to full-time?",
@@ -388,6 +388,10 @@ export const faqsPricing: Faq[] = [
   {
     q: "What's the minimum engagement?",
     a: "Engagements are structured year-wise starting from Year 2 (30 hrs/week remote). Pilot cohorts can start small - many companies begin with 2-5 interns.",
+  },
+  {
+    q: "Can we engage interns across multiple year cohorts simultaneously?",
+    a: "Yes. Companies often run a mix - Year 2 interns for exploratory or support work (30 hrs/week) alongside Year 3 or Year 4 interns on full-time delivery tracks. Pricing is per intern per month regardless of cohort mix.",
   },
 ];
 
