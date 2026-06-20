@@ -1,5 +1,6 @@
 import Parser from 'rss-parser';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { getPostHogClient } from '@/lib/posthog-server';
 
 export interface TickerItem {
   category: string;
@@ -107,8 +108,29 @@ export async function runTickerPipeline(): Promise<TickerItem[]> {
 
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ model: 'gemini-3.1-flash-lite' });
-    const result = await model.generateContent(PROMPT(headlines));
+    const prompt = PROMPT(headlines);
+    const traceId = crypto.randomUUID();
+    const t0 = Date.now();
+    const result = await model.generateContent(prompt);
+    const latency = (Date.now() - t0) / 1000;
     const raw = result.response.text().trim();
+
+    const posthog = getPostHogClient();
+    posthog.capture({
+      distinctId: 'ticker-agent',
+      event: '$ai_generation',
+      properties: {
+        $ai_trace_id: traceId,
+        $ai_span_name: 'ticker_pipeline',
+        $ai_model: 'gemini-3.1-flash-lite',
+        $ai_provider: 'google',
+        $ai_input: [{ role: 'user', content: prompt }],
+        $ai_input_tokens: result.response.usageMetadata?.promptTokenCount ?? null,
+        $ai_output_choices: [{ role: 'assistant', content: raw }],
+        $ai_output_tokens: result.response.usageMetadata?.candidatesTokenCount ?? null,
+        $ai_latency: latency,
+      },
+    });
 
     const json = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim();
     const items = JSON.parse(json) as TickerItem[];
@@ -118,6 +140,19 @@ export async function runTickerPipeline(): Promise<TickerItem[]> {
     return items.slice(0, 8);
   } catch (err) {
     console.error('[ticker-agent] pipeline error:', err);
+    const posthog = getPostHogClient();
+    posthog.capture({
+      distinctId: 'ticker-agent',
+      event: '$ai_generation',
+      properties: {
+        $ai_trace_id: crypto.randomUUID(),
+        $ai_span_name: 'ticker_pipeline',
+        $ai_model: 'gemini-3.1-flash-lite',
+        $ai_provider: 'google',
+        $ai_is_error: true,
+        $ai_error: err instanceof Error ? err.message : String(err),
+      },
+    });
     return STATIC_FALLBACK;
   }
 }
