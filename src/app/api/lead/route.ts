@@ -3,6 +3,7 @@ import { appendFile, mkdir } from "node:fs/promises";
 import path from "node:path";
 import { validateLead, isRateLimited } from "@/lib/lead-validation";
 import { createZohoLead } from "@/lib/zoho";
+import { getPostHogClient } from "@/lib/posthog-server";
 
 function getClientIp(request: Request): string {
   const forwarded = request.headers.get("x-forwarded-for");
@@ -31,6 +32,8 @@ export async function POST(request: Request) {
   if (!result.ok) {
     // Silent drop for bot signals — return success so bots get no signal.
     if (result.silent) {
+      const posthog = getPostHogClient();
+      posthog.capture({ distinctId: ip, event: "lead_api_bot_dropped", properties: { ip } });
       return NextResponse.json({ success: true });
     }
     return NextResponse.json({ success: false, error: result.error }, { status: 422 });
@@ -73,6 +76,19 @@ export async function POST(request: Request) {
   } catch (error: unknown) {
     console.error("Lead file log error", error);
   }
+
+  // Capture server-side lead event for analytics correlation.
+  const posthog = getPostHogClient();
+  posthog.capture({
+    distinctId: lead.email,
+    event: "lead_api_received",
+    properties: {
+      role: lead.role,
+      source: lead.source,
+      has_brief: (lead.brief ?? "").trim().length > 0,
+      zoho_ok: zoho.ok,
+    },
+  });
 
   // If Zoho failed but we captured the lead locally/via webhook, still succeed
   // for the user — we don't want to lose them over a transient CRM error.

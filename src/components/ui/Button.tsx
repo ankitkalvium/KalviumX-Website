@@ -6,6 +6,7 @@ interface ButtonProps {
   children: ReactNode;
   variant?: "primary" | "outline" | "dark" | "ghost";
   className?: string;
+  onClick?: () => void;
 }
 
 const variantStyles: Record<NonNullable<ButtonProps["variant"]>, string> = {
@@ -20,10 +21,12 @@ export default function Button({
   children,
   variant = "primary",
   className = "",
+  onClick,
 }: ButtonProps) {
   return (
     <Link
       href={href}
+      onClick={onClick}
       className={`inline-flex items-center justify-center rounded-md border-2 px-6 min-h-12 text-[15px] font-extrabold whitespace-nowrap transition-all duration-150 hover:-translate-y-0.5 ${variantStyles[variant]} ${className}`}
     >
       {children}

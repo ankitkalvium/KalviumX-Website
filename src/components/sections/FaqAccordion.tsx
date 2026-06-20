@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
+import posthog from "posthog-js";
 import SectionHeading from "@/components/ui/SectionHeading";
 import type { Faq } from "@/lib/data";
 
@@ -24,7 +25,13 @@ export default function FaqAccordion({ faqs, eyebrow = "FAQ", title }: FaqAccord
               <div key={faq.q}>
                 <button
                   type="button"
-                  onClick={() => setOpenIndex(isOpen ? null : i)}
+                  onClick={() => {
+                    const next = isOpen ? null : i;
+                    setOpenIndex(next);
+                    if (next !== null) {
+                      posthog.capture("faq_expanded", { question: faq.q, index: i });
+                    }
+                  }}
                   aria-expanded={isOpen}
                   className="w-full flex items-center justify-between gap-4 text-left py-5 font-extrabold text-lg tracking-[-0.02em]"
                 >

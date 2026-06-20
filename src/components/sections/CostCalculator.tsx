@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useRef } from "react";
 import Link from "next/link";
+import posthog from "posthog-js";
 
 const TIERS = [
   {
@@ -39,8 +40,16 @@ export default function CostCalculator() {
   const [interns, setInterns] = useState(5);
   const [tierIndex, setTierIndex] = useState(1);
   const [fresherLpa, setFresherLpa] = useState(6);
+  const interactedRef = useRef(false);
 
   const tier = TIERS[tierIndex];
+
+  function trackInteraction(params: { interns: number; tier: string; fresher_lpa: number; saving_pct: number }) {
+    if (!interactedRef.current) {
+      interactedRef.current = true;
+      posthog.capture("cost_calculator_interacted", params);
+    }
+  }
 
   const result = useMemo(() => {
     const kxMonthly = interns * tier.total;
@@ -86,7 +95,11 @@ export default function CostCalculator() {
                 min={1}
                 max={25}
                 value={interns}
-                onChange={(e) => setInterns(Number(e.target.value))}
+                onChange={(e) => {
+                const val = Number(e.target.value);
+                setInterns(val);
+                trackInteraction({ interns: val, tier: tier.label, fresher_lpa: fresherLpa, saving_pct: result.savingPct });
+              }}
                 className="w-full accent-[#f53333]"
               />
               <div className="flex justify-between text-xs text-white/40 font-bold mt-1">
@@ -102,7 +115,10 @@ export default function CostCalculator() {
                 {TIERS.map((t, i) => (
                   <button
                     key={t.label}
-                    onClick={() => setTierIndex(i)}
+                    onClick={() => {
+                      setTierIndex(i);
+                      trackInteraction({ interns, tier: t.label, fresher_lpa: fresherLpa, saving_pct: result.savingPct });
+                    }}
                     className={`rounded-lg py-3 px-2 text-center transition-all ${
                       tierIndex === i
                         ? "bg-red text-white font-extrabold"
@@ -134,7 +150,11 @@ export default function CostCalculator() {
                 max={15}
                 step={0.5}
                 value={fresherLpa}
-                onChange={(e) => setFresherLpa(Number(e.target.value))}
+                onChange={(e) => {
+                const val = Number(e.target.value);
+                setFresherLpa(val);
+                trackInteraction({ interns, tier: tier.label, fresher_lpa: val, saving_pct: result.savingPct });
+              }}
                 className="w-full accent-[#f53333]"
               />
               <div className="flex justify-between text-xs text-white/40 font-bold mt-1">
@@ -211,6 +231,12 @@ export default function CostCalculator() {
                   </div>
                   <Link
                     href="/start-a-pilot"
+                    onClick={() => posthog.capture("cost_calculator_cta_clicked", {
+                      interns,
+                      tier: tier.label,
+                      fresher_lpa: fresherLpa,
+                      saving_pct: result.savingPct,
+                    })}
                     className="inline-flex items-center justify-center rounded-md border-2 border-red bg-red text-white px-6 min-h-12 text-[15px] font-extrabold whitespace-nowrap hover:bg-ink hover:border-ink transition-all"
                   >
                     Get Exact Commercials
@@ -231,6 +257,12 @@ export default function CostCalculator() {
                   </div>
                   <Link
                     href="/start-a-pilot"
+                    onClick={() => posthog.capture("cost_calculator_cta_clicked", {
+                      interns,
+                      tier: tier.label,
+                      fresher_lpa: fresherLpa,
+                      saving_pct: result.savingPct,
+                    })}
                     className="inline-flex items-center justify-center rounded-md border-2 border-red bg-red text-white px-6 min-h-12 text-[15px] font-extrabold whitespace-nowrap hover:bg-ink hover:border-ink transition-all"
                   >
                     Get Exact Commercials

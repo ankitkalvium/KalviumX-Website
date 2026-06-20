@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import posthog from "posthog-js";
 import { navLinks } from "@/lib/data";
 import Button from "@/components/ui/Button";
 
@@ -48,6 +49,7 @@ export default function Navbar() {
         <div className="hidden lg:flex items-center gap-5">
           <a
             href="tel:+919483200300"
+            onClick={() => posthog.capture("phone_number_clicked", { location: "navbar_desktop" })}
             className="flex items-center gap-2 text-[15px] font-bold whitespace-nowrap hover:text-red transition-colors"
           >
             <svg viewBox="0 0 24 24" className="w-[18px] h-[18px] fill-red">
@@ -55,7 +57,12 @@ export default function Navbar() {
             </svg>
             +91 9483 200 300
           </a>
-          <Button href="/start-a-pilot">Get Shortlist</Button>
+          <Button
+            href="/start-a-pilot"
+            onClick={() => posthog.capture("navbar_cta_clicked", { location: "navbar_desktop" })}
+          >
+            Get Shortlist
+          </Button>
         </div>
 
         <button
@@ -87,10 +94,18 @@ export default function Navbar() {
                 {link.label}
               </Link>
             ))}
-            <a href="tel:+919483200300" className="py-3 border-b border-line">
+            <a
+              href="tel:+919483200300"
+              onClick={() => posthog.capture("phone_number_clicked", { location: "navbar_mobile" })}
+              className="py-3 border-b border-line"
+            >
               +91 9483 200 300
             </a>
-            <Button href="/start-a-pilot" className="mt-4 w-full">
+            <Button
+              href="/start-a-pilot"
+              onClick={() => posthog.capture("navbar_cta_clicked", { location: "navbar_mobile" })}
+              className="mt-4 w-full"
+            >
               Get Shortlist
             </Button>
           </nav>

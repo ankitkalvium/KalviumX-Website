@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import RoleIcon from "@/components/ui/RoleIcon";
 import Link from "next/link";
+import posthog from "posthog-js";
 import { roles } from "@/lib/data";
 
 const allStacks = Array.from(new Set(roles.flatMap((role) => role.stack))).sort();
@@ -26,9 +27,11 @@ export default function RoleExplorer() {
   }, [query, activeStacks]);
 
   function toggleStack(stack: string) {
-    setActiveStacks((prev) =>
-      prev.includes(stack) ? prev.filter((s) => s !== stack) : [...prev, stack]
-    );
+    const next = activeStacks.includes(stack)
+      ? activeStacks.filter((s) => s !== stack)
+      : [...activeStacks, stack];
+    setActiveStacks(next);
+    posthog.capture("role_filter_applied", { stack, active_filters: next });
   }
 
   return (
@@ -94,6 +97,7 @@ export default function RoleExplorer() {
               <Link
                 key={role.slug}
                 href={`/roles/${role.slug}`}
+                onClick={() => posthog.capture("role_card_clicked", { role: role.slug, role_title: role.shortTitle, active_filters: activeStacks })}
                 className="group border border-line rounded-lg p-7 bg-white hover:border-red hover:shadow-lg hover:-translate-y-1 transition-all"
               >
                 <div className="mb-4">

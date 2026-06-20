@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import posthog from "posthog-js";
 
 export default function StickyCTA() {
   const [visible, setVisible] = useState(false);
@@ -25,6 +26,7 @@ export default function StickyCTA() {
     >
       <Link
         href="/start-a-pilot"
+        onClick={() => posthog.capture("sticky_cta_clicked", { source_path: pathname })}
         className="flex items-center gap-2 bg-red text-white rounded-full pl-5 pr-6 py-3.5 text-sm font-extrabold shadow-2xl hover:bg-ink transition-colors"
       >
         <span className="w-2 h-2 rounded-full bg-white animate-pulse" />

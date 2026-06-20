@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Button from "@/components/ui/Button";
+import TrackableButton from "@/components/ui/TrackableButton";
 import { roles } from "@/lib/data";
 
 interface RolePageProps {
@@ -50,7 +51,7 @@ export default async function RolePage({ params }: RolePageProps) {
             ))}
           </div>
           <div className="flex flex-wrap gap-3.5">
-            <Button href="/start-a-pilot">Get {role.shortTitle} Shortlist</Button>
+            <TrackableButton href="/start-a-pilot" event="role_page_cta_clicked" properties={{ role: role.slug, location: "hero" }}>Get {role.shortTitle} Shortlist</TrackableButton>
             <Button href="/deployment-model" variant="outline">
               See Deployment Model
             </Button>
@@ -114,7 +115,7 @@ export default async function RolePage({ params }: RolePageProps) {
           <p className="max-w-xl mx-auto text-[#424242] text-base font-medium mb-7">
             Share your JD and get a curated, pre-assessed shortlist in under 48 hours.
           </p>
-          <Button href="/start-a-pilot">Share a JD</Button>
+          <TrackableButton href="/start-a-pilot" event="role_page_cta_clicked" properties={{ role: role.slug, location: "bottom" }}>Share a JD</TrackableButton>
         </div>
       </section>
     </>

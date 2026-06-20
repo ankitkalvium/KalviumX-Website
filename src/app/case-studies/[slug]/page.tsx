@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import Button from "@/components/ui/Button";
+import TrackableButton from "@/components/ui/TrackableButton";
 import CaseStudyExperience from "@/components/sections/CaseStudyExperience";
 import { caseStudies } from "@/lib/data";
 
@@ -246,7 +246,7 @@ export default async function CaseStudyPage({ params }: CaseStudyPageProps) {
           </div>
           <div className="bg-white border border-line rounded-lg p-6 text-center">
             <h2 className="text-xl font-extrabold tracking-[-0.03em]">Build these results for your team.</h2>
-            <Button href="/start-a-pilot" className="mt-5">Start a Pilot →</Button>
+            <TrackableButton href="/start-a-pilot" event="case_study_cta_clicked" properties={{ case_study: study.slug }} className="mt-5">Start a Pilot →</TrackableButton>
           </div>
         </div>
       </section>

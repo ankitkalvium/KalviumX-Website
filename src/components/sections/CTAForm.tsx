@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, type FormEvent } from "react";
+import posthog from "posthog-js";
 import { roleOptions } from "@/lib/data";
 
 interface FormFields {
@@ -28,7 +29,7 @@ export default function CTAForm({ source = "website" }: CTAFormProps) {
   const [serverError, setServerError] = useState("");
   // Honeypot value + mount timestamp for bot detection.
   const honeypotRef = useRef("");
-  const loadedAtRef = useRef(Date.now());
+  const [loadedAt] = useState<number>(() => Date.now());
 
   function update<K extends keyof FormFields>(key: K, value: string) {
     setFields((prev) => ({ ...prev, [key]: value }));
@@ -63,19 +64,36 @@ export default function CTAForm({ source = "website" }: CTAFormProps) {
           ...fields,
           source,
           website: honeypotRef.current,
-          loadedAt: loadedAtRef.current,
+          loadedAt,
         }),
       });
       const data: { success: boolean; error?: string } = await response.json();
       if (data.success) {
         setStatus("sent");
+        posthog.identify(fields.email, { name: fields.name, email: fields.email });
+        posthog.capture("lead_form_submitted", {
+          source,
+          role: fields.role,
+          has_brief: fields.brief.trim().length > 0,
+        });
       } else {
         setStatus("failed");
         setServerError(data.error ?? "Something went wrong. Please try again.");
+        posthog.capture("lead_form_failed", {
+          source,
+          role: fields.role,
+          error: data.error ?? "unknown_error",
+        });
       }
-    } catch {
+    } catch (err) {
       setStatus("failed");
       setServerError("Network error. Please check your connection and try again.");
+      posthog.captureException(err);
+      posthog.capture("lead_form_failed", {
+        source,
+        role: fields.role,
+        error: "network_error",
+      });
     }
   }
 
