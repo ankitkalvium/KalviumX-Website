@@ -1,33 +1,70 @@
 import SectionHeading from "@/components/ui/SectionHeading";
+import RoleIcon from "@/components/ui/RoleIcon";
 
-const categories = [
+const roleTiles = [
   {
-    label: "Web Engineering",
-    roles: [
-      { name: "Full-Stack", stacks: ["React", "Node.js", "MongoDB", "REST APIs", "Git"] },
-      { name: "Frontend", stacks: ["React", "JavaScript", "TypeScript", "Tailwind"] },
-      { name: "Backend", stacks: ["Java", "Python", "Spring", "REST APIs", "DBMS"] },
-    ],
+    name: "GenAI Engineering",
+    icon: "AI/ML",
+    label: "Priority capability",
+    description:
+      "Build RAG workflows, LLM integrations, AI agents, evaluation pipelines, and production-ready GenAI features.",
+    stacks: ["Python", "RAG", "LangChain", "AI Agents", "LLM Evaluation"],
+    featured: true,
   },
   {
-    label: "AI & Product",
-    roles: [
-      { name: "AI / ML Engineering", stacks: ["Python", "LangChain", "RAG", "PyTorch", "Prompt Engineering"] },
-      { name: "Product Engineering", stacks: ["Internal Tools", "Workflow Automation", "AI Apps", "API Integration"] },
-    ],
+    name: "AI Product Engineering",
+    icon: "Product Engineering",
+    label: "AI-native products",
+    description:
+      "Ship AI-assisted product experiences, internal copilots, workflow automation, and API-connected tools.",
+    stacks: ["AI Apps", "Copilots", "Automation", "API Integration"],
+    featured: true,
   },
   {
-    label: "Infrastructure & Quality",
-    roles: [
-      { name: "Cloud & DevOps", stacks: ["Kubernetes", "Terraform", "ArgoCD", "CI/CD", "AWS / GCP"] },
-      { name: "QA & Automation", stacks: ["Test Design", "Automation Basics", "API Testing", "Bug Reporting"] },
-    ],
+    name: "Full-Stack",
+    icon: "Full-Stack",
+    label: "Web engineering",
+    description:
+      "Deliver complete product features across modern interfaces, APIs, and application data layers.",
+    stacks: ["React", "Node.js", "MongoDB", "REST APIs"],
+  },
+  {
+    name: "Frontend",
+    icon: "Frontend",
+    label: "Web engineering",
+    description:
+      "Translate product designs into responsive, accessible, production-quality interfaces.",
+    stacks: ["React", "JavaScript", "TypeScript", "UI Integration"],
+  },
+  {
+    name: "Backend",
+    icon: "Backend",
+    label: "Core engineering",
+    description:
+      "Build reliable services, business logic, database workflows, and scalable API foundations.",
+    stacks: ["Java", "Python", "Spring", "REST APIs", "DBMS"],
+  },
+  {
+    name: "Cloud & DevOps",
+    icon: "Cloud/DevOps",
+    label: "Infrastructure",
+    description:
+      "Support cloud environments, infrastructure automation, deployment pipelines, and platform operations.",
+    stacks: ["Kubernetes", "Terraform", "CI/CD", "AWS / GCP"],
+  },
+  {
+    name: "QA & Automation",
+    icon: "QA & Automation",
+    label: "Quality engineering",
+    description:
+      "Strengthen product quality through test design, API validation, defect analysis, and automation.",
+    stacks: ["Test Design", "API Testing", "Automation", "Bug Reporting"],
   },
 ];
 
 export default function RolesGrid() {
   return (
-    <section className="border-b border-line bg-white">
+    <section id="roles" className="border-b border-line bg-white scroll-mt-20">
       <div className="container-x">
         <SectionHeading
           eyebrow="Roles"
@@ -36,35 +73,65 @@ export default function RolesGrid() {
           copy="Not every student is shown for every role. Each profile is mapped against your JD before it reaches your shortlist."
         />
 
-        <div className="mt-12 grid lg:grid-cols-3 gap-6 pb-4">
-          {categories.map((cat) => (
-            <div key={cat.label} className="rounded-2xl border border-line bg-soft p-6">
-              <div className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-red mb-5">
-                {cat.label}
+        <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 pb-4">
+          {roleTiles.map((role) => (
+            <article
+              key={role.name}
+              className={`relative overflow-hidden rounded-xl border p-6 sm:p-7 ${
+                role.featured
+                  ? "border-red bg-ink text-white"
+                  : "border-line bg-white"
+              }`}
+            >
+              {role.featured && (
+                <div
+                  className="absolute right-0 top-0 h-24 w-24 translate-x-8 -translate-y-8 rounded-full border-[18px] border-red/20"
+                  aria-hidden
+                />
+              )}
+
+              <div className="relative flex items-start justify-between gap-4">
+                <RoleIcon type={role.icon} className="w-10 h-10" />
+                <span
+                  className={`text-[10px] font-extrabold uppercase tracking-[0.14em] ${
+                    role.featured ? "text-red" : "text-[#777]"
+                  }`}
+                >
+                  {role.label}
+                </span>
               </div>
-              <div className="space-y-5">
-                {cat.roles.map((role) => (
-                  <div key={role.name}>
-                    <div className="text-[14px] font-extrabold text-ink mb-2">{role.name}</div>
-                    <div className="flex flex-wrap gap-1.5">
-                      {role.stacks.map((s) => (
-                        <span
-                          key={s}
-                          className="bg-white border border-line rounded-full px-3 py-1 text-[11px] font-bold text-[#444]"
-                        >
-                          {s}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
+
+              <h3 className="relative mt-7 text-xl sm:text-2xl font-black tracking-[-0.04em]">
+                {role.name}
+              </h3>
+              <p
+                className={`relative mt-3 text-sm leading-relaxed font-medium ${
+                  role.featured ? "text-white/70" : "text-[#4b4b4b]"
+                }`}
+              >
+                {role.description}
+              </p>
+
+              <div className="relative mt-5 flex flex-wrap gap-1.5">
+                {role.stacks.map((stack) => (
+                  <span
+                    key={stack}
+                    className={`rounded-full border px-3 py-1 text-[11px] font-bold ${
+                      role.featured
+                        ? "border-white/20 bg-white/10 text-white"
+                        : "border-line bg-soft text-[#444]"
+                    }`}
+                  >
+                    {stack}
+                  </span>
                 ))}
               </div>
-            </div>
+            </article>
           ))}
         </div>
 
         <p className="text-center pb-6 text-[12px] text-[#888] font-semibold">
-          Not recommended for: pure data-analyst, advanced cybersecurity, or specialist UI/UX research roles.
+          Final role and stack fit is mapped directly against your JD before shortlist creation.
         </p>
       </div>
     </section>

@@ -64,9 +64,22 @@ body {
 
 @keyframes marquee-logos {
   from { transform: translateX(0); }
-  to { transform: translateX(-100%); }
+  to { transform: translateX(-50%); }
 }
 
 .animate-marquee-logos {
-  animation: marquee-logos 40s linear infinite;
+  animation: marquee-logos 30s linear infinite;
+  will-change: transform;
+}
+
+@media (min-width: 640px) {
+  .animate-marquee-logos {
+    animation-duration: 30s;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee-logos {
+    animation-duration: 80s;
+  }
 }
