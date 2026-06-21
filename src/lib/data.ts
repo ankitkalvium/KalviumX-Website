@@ -310,9 +310,8 @@ export const caseStudies: CaseStudy[] = [
 ];
 
 export const navLinks = [
-  { href: "/roles", label: "Roles" },
   { href: "/deployment-model", label: "How It Works" },
-  { href: "/for-gccs", label: "For Enterprise" },
+  { href: "/for-companies", label: "For Companies" },
   { href: "/case-studies", label: "Results" },
   { href: "/commercials", label: "Pricing" },
 ];
@@ -330,19 +329,54 @@ export const roleOptions = [
   "Other / Not sure yet",
 ] as const;
 
-export const trustLogos = [
-  "7-Eleven",
-  "Lowe's",
-  "PhonePe",
-  "Rupeek",
-  "TATA 1mg",
-  "Indegene",
-  "Maersk",
-  "Josys",
-  "Axtria",
-  "Morgan Stanley",
-  "ThoughtWorks",
-  "Commvault",
+export type TrustBrand = {
+  name: string;
+  domain: string;
+  localSrc?: string;
+  preferLocal?: boolean;
+};
+
+export const trustBrands: TrustBrand[] = [
+  {
+    name: "Walmart",
+    domain: "walmart.com",
+    localSrc: "/images/logos/walmart.svg",
+    preferLocal: true,
+  },
+  { name: "ThoughtWorks", domain: "thoughtworks.com", localSrc: "/images/logos/thoughtworks.svg" },
+  { name: "Morgan Stanley", domain: "morganstanley.com", localSrc: "/images/logos/morgan-stanley.svg" },
+  {
+    name: "Maersk",
+    domain: "maersk.com",
+    localSrc: "/images/logos/maersk.svg",
+    preferLocal: true,
+  },
+  { name: "Commvault", domain: "commvault.com" },
+  { name: "7-Eleven", domain: "7-eleven.com" },
+  {
+    name: "Lowe's",
+    domain: "lowes.com",
+    localSrc: "/images/logos/lowes-white.png",
+    preferLocal: true,
+  },
+  {
+    name: "PhonePe",
+    domain: "phonepe.com",
+    localSrc: "/images/logos/phonepe.svg",
+    preferLocal: true,
+  },
+  { name: "TATA 1mg", domain: "1mg.com", localSrc: "/images/logos/tata1mg.svg", preferLocal: true },
+  { name: "Rupeek", domain: "rupeek.com", localSrc: "/images/logos/rupeek.svg", preferLocal: true },
+  { name: "Indegene", domain: "indegene.com", localSrc: "/images/logos/indegene.png", preferLocal: true },
+  { name: "Josys", domain: "josys.com", localSrc: "/images/logos/josys.png", preferLocal: true },
+  { name: "Axtria", domain: "axtria.com", localSrc: "/images/logos/axtria.png", preferLocal: true },
+  { name: "MeshDefend", domain: "meshdefend.com", localSrc: "/images/logos/meshdefend.svg", preferLocal: true },
+  { name: "NVIDIA", domain: "nvidia.com", localSrc: "/images/logos/nvidia.svg", preferLocal: true },
+  { name: "Flexera", domain: "flexera.com", localSrc: "/images/logos/flexera.png", preferLocal: true },
+  { name: "Hosted.ai", domain: "hosted.ai", localSrc: "/images/logos/hostedai.svg", preferLocal: true },
+  { name: "LevelShift", domain: "levelshift.com", localSrc: "/images/logos/levelshift.svg", preferLocal: true },
+  { name: "5Paisa", domain: "5paisa.com", localSrc: "/images/logos/5paisa.svg", preferLocal: true },
+  { name: "Blend", domain: "blend.com", localSrc: "/images/logos/blend.svg", preferLocal: true },
 ];
 
 export type Faq = { q: string; a: string };
@@ -420,6 +454,37 @@ export const faqsGcc: Faq[] = [
   {
     q: "Can the bootcamp align to our internal tooling and compliance training?",
     a: "Yes. The 2-3 week pre-deployment bootcamp is company-specific - internal tools, codebase context, workflows and any mandatory compliance modules.",
+  },
+];
+
+export const faqsEnterprise: Faq[] = [
+  {
+    q: "Does KalviumX headcount show up on our permanent employee rolls?",
+    a: "No. KalviumX engineers are engaged as interns or apprentices under a defined program structure, not as permanent employees. Your HR and legal team can classify the engagement per your company policy and India employment law.",
+  },
+  {
+    q: "Who owns the IP and code produced by KalviumX engineers on our assignments?",
+    a: "IP ownership follows your standard intern or contractor IP agreement. KalviumX does not claim ownership of any work product created during client assignment. Engineers sign your standard IP assignment clause at onboarding.",
+  },
+  {
+    q: "How does NAPS apprenticeship compliance work with KalviumX?",
+    a: "KalviumX supports NAPS (National Apprenticeship Promotion Scheme) registration documentation for your India entity. Eligible engineers are engaged under the Apprentices Act 1961 framework. The government reimburses up to ₹1,500 per apprentice per month. Your legal or HR team completes portal registration; KalviumX provides the supporting documentation package.",
+  },
+  {
+    q: "Can we run KalviumX alongside our existing campus hiring program?",
+    a: "Yes, and many companies do. KalviumX handles JD-matched, role-specific hiring. Campus drives handle bulk volume. They complement rather than replace each other.",
+  },
+  {
+    q: "Which tech stacks do you cover?",
+    a: "Full-stack (React, Node.js), backend (Java, Python, Go), AI and ML, cloud and DevOps, mobile (Android, iOS, React Native), and QA automation. For specialist or legacy stacks, a custom pre-deployment bootcamp track is scoped with your team.",
+  },
+  {
+    q: "What is the process if we need to exit an engagement?",
+    a: "Engagements are structured year-wise with notice terms specified in your commercial agreement. KalviumX provides a structured offboarding process and replacement support where applicable.",
+  },
+  {
+    q: "Can KalviumX engineers access our internal systems and codebases?",
+    a: "Yes. Engineers are onboarded with your standard access provisioning, the same as any contractor or intern. The pre-deployment bootcamp includes codebase context and your internal tooling setup.",
   },
 ];
 

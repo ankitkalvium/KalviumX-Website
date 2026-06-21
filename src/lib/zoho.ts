@@ -70,6 +70,7 @@ export interface ZohoLead {
   role: string;
   brief: string;
   source: string;
+  companySize?: string;
 }
 
 export async function createZohoLead(
@@ -87,13 +88,6 @@ export async function createZohoLead(
     return { ok: false, error: error instanceof Error ? error.message : "token error" };
   }
 
-  const descriptionLines = [
-    `Role / stack: ${lead.role}`,
-    lead.brief ? `\nBrief / JD:\n${lead.brief}` : "",
-  ]
-    .filter(Boolean)
-    .join("\n");
-
   const payload = {
     data: [
       {
@@ -101,11 +95,13 @@ export async function createZohoLead(
         First_Name: lead.firstName,
         Email: lead.email,
         Company: lead.company,
-        Lead_Source: lead.source,
-        Description: descriptionLines,
+        Designation: lead.role,
+        Description: lead.brief,
+        Lead_Source: "Website - KalviumX",
+        Tag: [{ name: "Inbound" }],
+        ...(lead.companySize ? { No_of_Employees: lead.companySize } : {}),
       },
     ],
-    // Skip Zoho workflows/blueprints on create to keep the API call fast.
     trigger: ["workflow"],
   };
 

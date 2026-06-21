@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" fill="none">
+  <defs>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="18" flood-color="#000000" flood-opacity="0.10"/>
+    </filter>
+    <style>
+      .title { font-family: Inter, Arial, sans-serif; font-weight: 800; fill: #0F1012; }
+      .heading { font-family: Inter, Arial, sans-serif; font-weight: 800; fill: #0F1012; font-size: 38px; }
+      .body { font-family: Inter, Arial, sans-serif; font-weight: 400; fill: #2C2F33; font-size: 24px; }
+      .center-logo-red { font-family: Inter, Arial, sans-serif; font-weight: 800; fill: #FF3638; }
+      .center-logo-black { font-family: Inter, Arial, sans-serif; font-weight: 800; fill: #111111; }
+      .center-title { font-family: Inter, Arial, sans-serif; font-weight: 800; fill: #111111; font-size: 36px; }
+      .center-body { font-family: Inter, Arial, sans-serif; font-weight: 500; fill: #2F3135; font-size: 22px; }
+      .small-icon { stroke: #111111; stroke-width: 4.5; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+      .arrow { stroke: #9A9A9A; stroke-width: 3.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="900" fill="#F7F7F5"/>
+
+  <!-- outer and inner rings -->
+  <circle cx="800" cy="450" r="230" stroke="#FF6B6C" stroke-width="2" stroke-dasharray="1 14"/>
+  <circle cx="800" cy="450" r="165" fill="#FFFFFF" stroke="#FF6B6C" stroke-width="2" filter="url(#shadow)"/>
+
+  <!-- top-left icon -->
+  <circle cx="430" cy="195" r="58" stroke="#FF3638" stroke-width="3" fill="#FFFFFF"/>
+  <path d="M415 181 L398 195 L415 209" class="small-icon"/>
+  <path d="M445 181 L462 195 L445 209" class="small-icon"/>
+  <path d="M434 173 L426 217" class="small-icon"/>
+
+  <!-- top-right icon -->
+  <circle cx="1170" cy="195" r="58" stroke="#FF3638" stroke-width="3" fill="#FFFFFF"/>
+  <circle cx="1156" cy="179" r="13" class="small-icon"/>
+  <path d="M1134 219 C1138 200, 1147 194, 1158 194 C1169 194, 1178 200, 1182 219" class="small-icon"/>
+  <circle cx="1203" cy="185" r="9" class="small-icon"/>
+  <path d="M1190 219 C1192 205, 1198 199, 1206 199 C1214 199, 1219 205, 1222 219" class="small-icon"/>
+
+  <!-- bottom-left icon -->
+  <circle cx="430" cy="705" r="58" stroke="#FF3638" stroke-width="3" fill="#FFFFFF"/>
+  <path d="M430 676 L456 688 V707 C456 722 446 734 430 740 C414 734 404 722 404 707 V688 L430 676 Z" class="small-icon"/>
+  <path d="M421 708 L428 715 L441 700" class="small-icon"/>
+
+  <!-- bottom-right icon -->
+  <circle cx="1170" cy="705" r="58" stroke="#FF3638" stroke-width="3" fill="#FFFFFF"/>
+  <path d="M1170 675 V705 H1200" class="small-icon"/>
+  <circle cx="1170" cy="705" r="30" class="small-icon"/>
+
+  <!-- arrows -->
+  <path d="M519 242 L584 298" class="arrow"/>
+  <path d="M571 292 L584 298 L580 281" class="arrow"/>
+
+  <path d="M1081 242 L1016 298" class="arrow"/>
+  <path d="M1020 281 L1016 298 L1029 292" class="arrow"/>
+
+  <path d="M519 658 L584 602" class="arrow"/>
+  <path d="M580 619 L584 602 L571 608" class="arrow"/>
+
+  <path d="M1081 658 L1016 602" class="arrow"/>
+  <path d="M1029 608 L1016 602 L1020 619" class="arrow"/>
+
+  <!-- center logo mark -->
+  <g transform="translate(800 334)">
+    <rect x="-26" y="-26" width="52" height="52" stroke="#FF3638" stroke-width="4" fill="none"/>
+    <path d="M 12 -18 L -12 0 L 12 18" stroke="#FF3638" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  </g>
+
+  <!-- center text -->
+  <text x="808" y="415" text-anchor="end" font-size="52" class="center-logo-red">Kalvium</text>
+  <text x="816" y="415" text-anchor="start" font-size="52" class="center-logo-black">X</text>
+  <text x="800" y="468" text-anchor="middle" class="center-title">Operating Layer</text>
+  <text x="800" y="522" text-anchor="middle" class="center-body">Mentor system</text>
+  <text x="800" y="562" text-anchor="middle" class="center-body">Governance</text>
+  <text x="800" y="602" text-anchor="middle" class="center-body">Performance evidence</text>
+
+  <!-- left top copy -->
+  <text x="82" y="180" class="heading">Engineering</text>
+  <text x="82" y="242" class="body">Usable talent</text>
+  <text x="82" y="288" class="body">Ownership clarity</text>
+  <text x="82" y="334" class="body">Faster ramp</text>
+
+  <!-- right top copy -->
+  <text x="1260" y="180" class="heading">HR / Workforce</text>
+  <text x="1260" y="242" class="body">Governed model</text>
+  <text x="1260" y="288" class="body">Workforce visibility</text>
+  <text x="1260" y="334" class="body">Consistent experience</text>
+
+  <!-- left bottom copy -->
+  <text x="48" y="625" class="heading">Legal / Procurement</text>
+  <text x="48" y="687" class="body">Clear agreements</text>
+  <text x="48" y="733" class="body">Risk controls</text>
+  <text x="48" y="779" class="body">Audit-ready</text>
+
+  <!-- right bottom copy -->
+  <text x="1260" y="625" class="heading">Finance</text>
+  <text x="1260" y="687" class="body">Cost predictability</text>
+  <text x="1260" y="733" class="body">No bench risk</text>
+  <text x="1260" y="779" class="body">Outcome visibility</text>
+</svg>

@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1050" viewBox="0 0 1400 1050">
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M1 1 11 6 1 11Z" fill="#9b9b9b"/>
+    </marker>
+    <filter id="soft-shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#161616" flood-opacity=".08"/>
+    </filter>
+  </defs>
+
+  <rect width="1400" height="1050" fill="#ffffff"/>
+
+  <!-- Outer system ring -->
+  <circle cx="700" cy="525" r="342" fill="none" stroke="#d3d3d3" stroke-width="2"
+    stroke-dasharray="5 11" shape-rendering="geometricPrecision"/>
+
+  <!-- Central operating layer -->
+  <circle cx="700" cy="525" r="258" fill="#ffffff" stroke="#ff3535" stroke-width="4"
+    filter="url(#soft-shadow)" shape-rendering="geometricPrecision"/>
+
+  <!-- Precise inward connectors -->
+  <g fill="none" stroke="#9b9b9b" stroke-width="4" stroke-linecap="round"
+    marker-end="url(#arrow)" shape-rendering="geometricPrecision">
+    <path d="M466 232 530 304"/>
+    <path d="M934 232 870 304"/>
+    <path d="M466 818 530 746"/>
+    <path d="M934 818 870 746"/>
+  </g>
+
+  <!-- Engineering icon -->
+  <circle cx="410" cy="170" r="74" fill="#ffffff" stroke="#ff3535" stroke-width="4"/>
+  <g fill="none" stroke="#111111" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m392 143-25 27 25 27"/>
+    <path d="m428 143 25 27-25 27"/>
+    <path d="m420 126-20 88"/>
+  </g>
+
+  <!-- HR icon -->
+  <circle cx="990" cy="170" r="74" fill="#ffffff" stroke="#ff3535" stroke-width="4"/>
+  <g fill="none" stroke="#111111" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="972" cy="150" r="13"/>
+    <path d="M944 197c4-25 14-35 28-35s24 10 28 35"/>
+    <path d="M1004 151h8c17 0 27 10 27 27"/>
+    <path d="M1006 175c17 0 28 8 34 24"/>
+  </g>
+
+  <!-- Legal icon -->
+  <circle cx="410" cy="880" r="74" fill="#ffffff" stroke="#ff3535" stroke-width="4"/>
+  <g fill="none" stroke="#111111" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m410 842-32 14v24c0 28 12 48 32 58 20-10 32-30 32-58v-24l-32-14Z"/>
+    <path d="M410 863v48"/>
+    <path d="m397 899 13 13 13-13"/>
+  </g>
+
+  <!-- Finance icon -->
+  <circle cx="990" cy="880" r="74" fill="#ffffff" stroke="#ff3535" stroke-width="4"/>
+  <g fill="none" stroke="#111111" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M984 839c-30 3-52 28-52 58 0 33 26 59 59 59s59-26 59-59h-66v-58Z"/>
+    <path d="M1004 839c24 5 42 23 47 47h-47v-47Z"/>
+  </g>
+
+  <!-- Stakeholder copy -->
+  <g font-family="Inter, Arial, sans-serif">
+    <text x="70" y="112" fill="#111111" font-size="34" font-weight="800">Engineering</text>
+    <text x="70" y="168" fill="#5c5c5c" font-size="26" font-weight="500">Usable talent</text>
+    <text x="70" y="210" fill="#5c5c5c" font-size="26" font-weight="500">Ownership clarity</text>
+    <text x="70" y="252" fill="#5c5c5c" font-size="26" font-weight="500">Faster ramp</text>
+
+    <text x="1090" y="112" fill="#111111" font-size="34" font-weight="800">HR / Workforce</text>
+    <text x="1090" y="168" fill="#5c5c5c" font-size="26" font-weight="500">Governed model</text>
+    <text x="1090" y="210" fill="#5c5c5c" font-size="26" font-weight="500">Workforce visibility</text>
+    <text x="1090" y="252" fill="#5c5c5c" font-size="26" font-weight="500">Consistent experience</text>
+
+    <text x="70" y="826" fill="#111111" font-size="34" font-weight="800">Legal /</text>
+    <text x="70" y="867" fill="#111111" font-size="34" font-weight="800">Procurement</text>
+    <text x="70" y="925" fill="#5c5c5c" font-size="26" font-weight="500">Clear agreements</text>
+    <text x="70" y="967" fill="#5c5c5c" font-size="26" font-weight="500">Risk controls</text>
+    <text x="70" y="1009" fill="#5c5c5c" font-size="26" font-weight="500">Audit-ready</text>
+
+    <text x="1090" y="845" fill="#111111" font-size="34" font-weight="800">Finance</text>
+    <text x="1090" y="903" fill="#5c5c5c" font-size="26" font-weight="500">Cost predictability</text>
+    <text x="1090" y="945" fill="#5c5c5c" font-size="26" font-weight="500">No bench risk</text>
+    <text x="1090" y="987" fill="#5c5c5c" font-size="26" font-weight="500">Outcome visibility</text>
+  </g>
+
+  <!-- Official Kalvium mark and wordmark -->
+  <text x="700" y="473" text-anchor="middle" fill="#111111"
+    font-family="Inter, Arial, sans-serif" font-size="58" font-weight="850" letter-spacing="-2">Kalvium</text>
+  <text x="700" y="524" text-anchor="middle" fill="#111111"
+    font-family="Inter, Arial, sans-serif" font-size="34" font-weight="800">Operating Layer</text>
+
+  <g text-anchor="middle" fill="#626262" font-family="Inter, Arial, sans-serif"
+    font-size="28" font-weight="550">
+    <text x="700" y="624">Mentor system</text>
+    <text x="700" y="670">Governance</text>
+    <text x="700" y="716">Performance evidence</text>
+  </g>
+</svg>

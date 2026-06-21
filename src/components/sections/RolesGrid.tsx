@@ -1,72 +1,70 @@
-import Link from "next/link";
 import SectionHeading from "@/components/ui/SectionHeading";
-import RoleIcon from "@/components/ui/RoleIcon";
-import { roles } from "@/lib/data";
 
-interface RolesGridProps {
-  showHeading?: boolean;
-  showAll?: boolean;
-}
+const categories = [
+  {
+    label: "Web Engineering",
+    roles: [
+      { name: "Full-Stack", stacks: ["React", "Node.js", "MongoDB", "REST APIs", "Git"] },
+      { name: "Frontend", stacks: ["React", "JavaScript", "TypeScript", "Tailwind"] },
+      { name: "Backend", stacks: ["Java", "Python", "Spring", "REST APIs", "DBMS"] },
+    ],
+  },
+  {
+    label: "AI & Product",
+    roles: [
+      { name: "AI / ML Engineering", stacks: ["Python", "LangChain", "RAG", "PyTorch", "Prompt Engineering"] },
+      { name: "Product Engineering", stacks: ["Internal Tools", "Workflow Automation", "AI Apps", "API Integration"] },
+    ],
+  },
+  {
+    label: "Infrastructure & Quality",
+    roles: [
+      { name: "Cloud & DevOps", stacks: ["Kubernetes", "Terraform", "ArgoCD", "CI/CD", "AWS / GCP"] },
+      { name: "QA & Automation", stacks: ["Test Design", "Automation Basics", "API Testing", "Bug Reporting"] },
+    ],
+  },
+];
 
-export default function RolesGrid({ showHeading = true, showAll = false }: RolesGridProps) {
-  const items = showAll ? roles : roles.slice(0, 5);
-
+export default function RolesGrid() {
   return (
-    <section>
+    <section className="border-b border-line bg-white">
       <div className="container-x">
-        {showHeading && (
-          <SectionHeading
-            eyebrow="Roles"
-            align="center"
-            title={
-              <>
-                Hire interns for <span className="red-pill">real engineering work</span>
-              </>
-            }
-            copy="Not every student is shown for every role. Each profile is mapped against your JD before it reaches your shortlist."
-          />
-        )}
-        <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {items.map((role) => (
-            <Link
-              key={role.slug}
-              href={`/roles/${role.slug}`}
-              className="group border border-line rounded-lg p-7 bg-white hover:border-red hover:shadow-lg transition-all"
-            >
-              <div className="mb-4">
-                <RoleIcon type={role.shortTitle} className="w-10 h-10" />
+        <SectionHeading
+          eyebrow="Roles"
+          align="center"
+          title={<>Hire interns for <span className="red-pill">real engineering work</span></>}
+          copy="Not every student is shown for every role. Each profile is mapped against your JD before it reaches your shortlist."
+        />
+
+        <div className="mt-12 grid lg:grid-cols-3 gap-6 pb-4">
+          {categories.map((cat) => (
+            <div key={cat.label} className="rounded-2xl border border-line bg-soft p-6">
+              <div className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-red mb-5">
+                {cat.label}
               </div>
-              <h3 className="text-xl font-extrabold tracking-[-0.03em] mb-2 group-hover:text-red transition-colors">
-                {role.shortTitle}
-              </h3>
-              <p className="text-[#424242] text-[15px] leading-relaxed font-medium mb-4">
-                {role.summary}
-              </p>
-              <div className="flex flex-wrap gap-2 mb-4">
-                {role.stack.map((s) => (
-                  <span key={s} className="bg-soft border border-line rounded-full px-3 py-1 text-xs font-bold">
-                    {s}
-                  </span>
+              <div className="space-y-5">
+                {cat.roles.map((role) => (
+                  <div key={role.name}>
+                    <div className="text-[14px] font-extrabold text-ink mb-2">{role.name}</div>
+                    <div className="flex flex-wrap gap-1.5">
+                      {role.stacks.map((s) => (
+                        <span
+                          key={s}
+                          className="bg-white border border-line rounded-full px-3 py-1 text-[11px] font-bold text-[#444]"
+                        >
+                          {s}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
                 ))}
               </div>
-              <span className="text-sm font-extrabold text-red inline-flex items-center gap-1">
-                View role details <span aria-hidden>→</span>
-              </span>
-            </Link>
+            </div>
           ))}
-          {!showAll && (
-            <Link
-              href="/roles"
-              className="flex flex-col items-center justify-center text-center border-2 border-dashed border-line rounded-lg p-7 hover:border-red hover:text-red transition-all"
-            >
-              <span className="text-3xl font-black mb-2">+</span>
-              <span className="font-extrabold">View all roles</span>
-            </Link>
-          )}
         </div>
-        <p className="text-center mt-8 text-sm text-[#555] font-semibold max-w-2xl mx-auto">
-          Not recommended for: pure data-analyst, advanced cybersecurity, or specialist
-          UI/UX research roles unless paired with a dedicated bootcamp track.
+
+        <p className="text-center pb-6 text-[12px] text-[#888] font-semibold">
+          Not recommended for: pure data-analyst, advanced cybersecurity, or specialist UI/UX research roles.
         </p>
       </div>
     </section>
