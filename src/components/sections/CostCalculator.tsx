@@ -39,7 +39,7 @@ const fmt = (n: number) => `₹${Math.round(n).toLocaleString("en-IN")}`;
 export default function CostCalculator() {
   const [interns, setInterns] = useState(5);
   const [tierIndex, setTierIndex] = useState(1);
-  const [fresherLpa, setFresherLpa] = useState(6);
+  const [fresherLpa, setFresherLpa] = useState(4);
   const interactedRef = useRef(false);
 
   const tier = TIERS[tierIndex];
@@ -146,7 +146,7 @@ export default function CostCalculator() {
               <input
                 id="salary-range"
                 type="range"
-                min={3}
+                min={4}
                 max={15}
                 step={0.5}
                 value={fresherLpa}
@@ -158,7 +158,7 @@ export default function CostCalculator() {
                 className="w-full accent-[#f53333]"
               />
               <div className="flex justify-between text-xs text-white/40 font-bold mt-1">
-                <span>₹3L</span>
+                <span>₹4L</span>
                 <span>₹15L</span>
               </div>
             </div>
@@ -252,7 +252,9 @@ export default function CostCalculator() {
                       {fmt(Math.abs(result.saving))} more/month
                     </div>
                     <div className="text-sm text-[#666] font-semibold mt-1">
-                      But KalviumX deploys in 12 days vs months of campus cycles
+                      {tier.fullTime
+                        ? `But KalviumX deploys experienced ${tier.label} talent in 12 days vs months of campus cycles`
+                        : "But KalviumX deploys in 12 days vs months of campus cycles"}
                     </div>
                   </div>
                   <Link

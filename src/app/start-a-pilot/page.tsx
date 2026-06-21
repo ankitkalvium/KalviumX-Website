@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import CTAForm from "@/components/sections/CTAForm";
 
 export const metadata: Metadata = {
-  title: "Start a Pilot | KalviumX",
+  title: "Start a Pilot",
   description:
     "Share your internship JD and get a curated, pre-assessed shortlist of KalviumX engineering interns in under 48 hours.",
 };

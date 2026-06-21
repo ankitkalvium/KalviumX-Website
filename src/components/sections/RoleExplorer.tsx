@@ -55,7 +55,7 @@ export default function RoleExplorer() {
                   type="button"
                   onClick={() => toggleStack(stack)}
                   aria-pressed={active}
-                  className={`rounded-full px-3.5 py-1.5 text-xs font-bold border transition-colors ${
+                  className={`min-h-10 rounded-full px-3.5 py-1.5 text-xs font-bold border transition-colors ${
                     active
                       ? "bg-red border-red text-white"
                       : "bg-white border-line text-[#333] hover:border-red hover:text-red"
@@ -69,7 +69,7 @@ export default function RoleExplorer() {
               <button
                 type="button"
                 onClick={() => setActiveStacks([])}
-                className="rounded-full px-3.5 py-1.5 text-xs font-bold text-red underline underline-offset-2"
+                className="min-h-10 rounded-full px-3.5 py-1.5 text-xs font-bold text-red underline underline-offset-2"
               >
                 Clear filters
               </button>

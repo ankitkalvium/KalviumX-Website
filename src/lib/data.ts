@@ -351,8 +351,18 @@ export const trustBrands: TrustBrand[] = [
     localSrc: "/images/logos/maersk.svg",
     preferLocal: true,
   },
-  { name: "Commvault", domain: "commvault.com" },
-  { name: "7-Eleven", domain: "7-eleven.com" },
+  {
+    name: "Commvault",
+    domain: "commvault.com",
+    localSrc: "/images/logos/commvault-white.svg",
+    preferLocal: true,
+  },
+  {
+    name: "7-Eleven",
+    domain: "7-eleven.com",
+    localSrc: "/images/logos/7-eleven-white.svg",
+    preferLocal: true,
+  },
   {
     name: "Lowe's",
     domain: "lowes.com",

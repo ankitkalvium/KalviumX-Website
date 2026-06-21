@@ -5,7 +5,7 @@ import HerosSection from "@/components/sections/HerosSection";
 import Button from "@/components/ui/Button";
 
 export const metadata: Metadata = {
-  title: "Roles | KalviumX",
+  title: "Roles",
   description:
     "Explore engineering intern roles available through KalviumX - filter by stack across full-stack, backend, frontend, QA and product engineering.",
 };
@@ -16,6 +16,7 @@ export default function RolesPage() {
       <section className="border-b border-line bg-soft">
         <div className="container-x">
           <SectionHeading
+            as="h1"
             eyebrow="Role Explorer"
             title={
               <>
