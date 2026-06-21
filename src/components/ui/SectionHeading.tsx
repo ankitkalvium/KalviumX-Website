@@ -6,6 +6,7 @@ interface SectionHeadingProps {
   copy?: ReactNode;
   align?: "left" | "center";
   className?: string;
+  as?: "h1" | "h2";
 }
 
 export default function SectionHeading({
@@ -14,8 +15,10 @@ export default function SectionHeading({
   copy,
   align = "left",
   className = "",
+  as = "h2",
 }: SectionHeadingProps) {
   const alignClass = align === "center" ? "text-center mx-auto" : "";
+  const Heading = as;
   return (
     <div className={`${alignClass} ${className}`}>
       {eyebrow && (
@@ -23,9 +26,9 @@ export default function SectionHeading({
           {eyebrow}
         </span>
       )}
-      <h2 className="text-[clamp(32px,4.5vw,56px)] font-black leading-[1.08] tracking-[-0.04em]">
+      <Heading className="text-[clamp(32px,4.5vw,56px)] font-black leading-[1.08] tracking-[-0.04em]">
         {title}
-      </h2>
+      </Heading>
       {copy && (
         <p
           className={`mt-5 text-lg leading-[1.6] text-[#303030] font-medium ${

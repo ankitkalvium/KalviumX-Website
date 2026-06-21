@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: RolePageProps): Promise<Metad
   const role = roles.find((r) => r.slug === slug);
   if (!role) return {};
   return {
-    title: `${role.title} | KalviumX`,
+    title: role.title,
     description: role.summary,
   };
 }
@@ -51,8 +51,15 @@ export default async function RolePage({ params }: RolePageProps) {
             ))}
           </div>
           <div className="flex flex-wrap gap-3.5">
-            <TrackableButton href="/start-a-pilot" event="role_page_cta_clicked" properties={{ role: role.slug, location: "hero" }}>Get {role.shortTitle} Shortlist</TrackableButton>
-            <Button href="/deployment-model" variant="outline">
+            <TrackableButton
+              href="/start-a-pilot"
+              event="role_page_cta_clicked"
+              properties={{ role: role.slug, location: "hero" }}
+              className="w-full whitespace-normal text-center sm:w-auto"
+            >
+              Get {role.shortTitle} Shortlist
+            </TrackableButton>
+            <Button href="/deployment-model" variant="outline" className="w-full whitespace-normal text-center sm:w-auto">
               See Deployment Model
             </Button>
           </div>

@@ -123,7 +123,7 @@ export default async function CaseStudyPage({ params }: CaseStudyPageProps) {
                 </p>
               )}
             </div>
-            <aside className="border-l border-line lg:pl-8 grid grid-cols-2 lg:grid-cols-1 gap-5">
+            <aside className="border-l border-line pl-5 lg:pl-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-5">
               <MetaItem icon="industry" label="Industry" value={study.industry} />
               <MetaItem icon="calendar" label="Engagement" value={study.duration} />
               <MetaItem icon="capability" label="Capability" value={study.role} />

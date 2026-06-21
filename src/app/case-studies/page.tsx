@@ -7,7 +7,7 @@ import { caseStudies } from "@/lib/data";
 const SITE_URL = "https://x.kalvium.com";
 
 export const metadata: Metadata = {
-  title: "Engineering Intern Deployment Results | KalviumX Case Studies",
+  title: "Engineering Intern Deployment Results",
   description:
     "Real outcomes from enterprise engineering teams: 0% intern attrition across 36 months, ~60% cost reduction vs Tier-1 benchmark, GenAI capability added in 4 weeks. Anonymized KalviumX deployment case studies.",
   openGraph: {
@@ -85,13 +85,18 @@ export default function CaseStudiesPage() {
                   <p className="mt-4 text-[15px] leading-relaxed text-[#444] font-semibold max-w-2xl">
                     <span className="text-ink font-extrabold">Problem:</span> {study.problem}
                   </p>
-                  <div className="mt-6 flex flex-wrap items-end gap-7">
+                  <div className="mt-6 inline-grid grid-cols-[auto_auto] items-stretch gap-3 sm:gap-6">
                     {study.stat.slice(0, 2).map((stat, index) => (
-                      <div key={stat.label} className={index === 1 ? "pl-7 border-l border-line" : ""}>
-                        <strong className="block text-3xl font-black tracking-[-0.05em] text-red">
+                      <div
+                        key={stat.label}
+                        className={`min-w-0 ${index === 1 ? "border-l border-line pl-3 sm:pl-6" : ""}`}
+                      >
+                        <strong className="block text-[clamp(1.35rem,7vw,1.75rem)] sm:text-3xl font-black leading-none tracking-[-0.05em] text-red whitespace-nowrap">
                           {stat.value}
                         </strong>
-                        <span className="block mt-1 text-xs font-bold text-[#555]">{stat.label}</span>
+                        <span className="block mt-1.5 text-[10px] sm:text-xs leading-tight font-bold text-[#555]">
+                          {stat.label}
+                        </span>
                       </div>
                     ))}
                   </div>

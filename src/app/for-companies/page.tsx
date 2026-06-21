@@ -10,7 +10,7 @@ import { faqsEnterprise } from "@/lib/data";
 import AudienceTabs from "./AudienceTabs";
 
 export const metadata: Metadata = {
-  title: "Engineering Talent for Companies | KalviumX",
+  title: "Engineering Talent for Companies",
   description:
     "One engineering talent model. Every company stakeholder aligned. KalviumX deploys mentor-managed B.Tech engineers for GCCs, MNCs, product companies, and startups, with governance, compliance, and reporting built in.",
   alternates: { canonical: "/for-companies" },
@@ -56,15 +56,6 @@ const rolloutSteps = [
     title: "Scale readiness",
     items: ["Pilot evidence meets quality bar", "Plan for cohort growth and role expansion"],
   },
-];
-
-const responsibilityRows = [
-  { label: "Define production work", enterprise: true, kalvium: false, shared: false },
-  { label: "Stack readiness", enterprise: true, kalvium: false, shared: false },
-  { label: "Day-to-day task allocation", enterprise: true, kalvium: false, shared: false },
-  { label: "Mentor intervention", enterprise: false, kalvium: true, shared: false },
-  { label: "Performance evidence", enterprise: false, kalvium: false, shared: true },
-  { label: "Conversion decision", enterprise: true, kalvium: false, shared: false },
 ];
 
 const companySizes = [
@@ -158,6 +149,7 @@ export default function ForCompaniesPage() {
         <div className="container-x grid lg:grid-cols-2 gap-12 items-center">
           <div>
             <SectionHeading
+              as="h1"
               eyebrow="For Companies"
               title={
                 <>
@@ -297,83 +289,7 @@ export default function ForCompaniesPage() {
         </div>
       </section>
 
-      {/* ── 4. No ambiguity after deployment ─────────────────────────────────── */}
-      <section>
-        <div className="container-x">
-          <SectionHeading
-            eyebrow="Responsibility split"
-            title={
-              <>
-                No ambiguity{" "}
-                <span className="red-pill">after deployment.</span>
-              </>
-            }
-            copy="Every team knows exactly what they own. There is no grey area on who handles what when an engineer is in the field."
-          />
-
-          <div className="mt-12 grid lg:grid-cols-[1fr_280px] gap-8 items-start">
-            {/* Table */}
-            <div className="rounded-2xl border border-line overflow-hidden">
-              {/* Header */}
-              <div className="grid grid-cols-[1fr_120px_120px_90px] bg-ink text-white text-[11px] font-extrabold uppercase tracking-[0.1em]">
-                <div className="px-5 py-4">Responsibility</div>
-                <div className="px-4 py-4 text-center border-l border-white/10">
-                  Enterprise team
-                </div>
-                <div className="px-4 py-4 text-center border-l border-white/10 text-red">
-                  KalviumX
-                </div>
-                <div className="px-4 py-4 text-center border-l border-white/10 text-white/50">
-                  Shared
-                </div>
-              </div>
-
-              {responsibilityRows.map((row, i) => (
-                <div
-                  key={row.label}
-                  className={`grid grid-cols-[1fr_120px_120px_90px] border-t border-line ${
-                    i % 2 === 0 ? "bg-white" : "bg-soft"
-                  }`}
-                >
-                  <div className="px-5 py-4 text-[14px] font-semibold text-ink">
-                    {row.label}
-                  </div>
-                  <div className="px-4 py-4 flex items-center justify-center border-l border-line">
-                    {row.enterprise && (
-                      <span className="text-ink font-black text-base">✓</span>
-                    )}
-                  </div>
-                  <div className="px-4 py-4 flex items-center justify-center border-l border-line">
-                    {row.kalvium && (
-                      <span className="text-red font-black text-base">✓</span>
-                    )}
-                  </div>
-                  <div className="px-4 py-4 flex items-center justify-center border-l border-line">
-                    {row.shared && (
-                      <span className="text-[#888] font-black text-base">✓</span>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Callout */}
-            <div className="bg-ink text-white rounded-2xl p-7">
-              <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center mb-5 text-xl">
-                🏛
-              </div>
-              <p className="text-[18px] font-black tracking-[-0.03em] leading-snug mb-3">
-                Your managers own the work.
-              </p>
-              <p className="text-red font-black text-[17px] tracking-[-0.03em] leading-snug">
-                KalviumX owns the support system around the engineer.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── 5. Governance ────────────────────────────────────────────────────── */}
+      {/* ── 4. Governance ────────────────────────────────────────────────────── */}
       <section className="bg-ink text-white">
         <div className="container-x">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -469,7 +385,7 @@ export default function ForCompaniesPage() {
         </div>
       </section>
 
-      {/* ── 6. Everything procurement asks for ───────────────────────────────── */}
+      {/* ── 5. Everything procurement asks for ───────────────────────────────── */}
       <section className="bg-soft border-y border-line">
         <div className="container-x">
           <SectionHeading

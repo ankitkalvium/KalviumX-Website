@@ -20,7 +20,7 @@ export default function StickyCTA() {
 
   return (
     <div
-      className={`fixed bottom-5 right-5 z-50 transition-all duration-300 ${
+      className={`hidden sm:block fixed bottom-5 right-5 z-50 transition-all duration-300 ${
         visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6 pointer-events-none"
       }`}
     >
