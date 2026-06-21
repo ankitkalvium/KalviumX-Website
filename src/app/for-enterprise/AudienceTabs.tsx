@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 
 // ── Stakeholder tab icons ──────────────────────────────────────────────────
 const EngineeringIcon = () => (
@@ -106,7 +106,7 @@ const PieChartIcon = () => (
 
 // ── Data ───────────────────────────────────────────────────────────────────
 type NeedItem = {
-  Icon: () => JSX.Element;
+  Icon: () => React.ReactElement;
   title: string;
   desc: string;
 };
@@ -114,7 +114,7 @@ type NeedItem = {
 type Stakeholder = {
   id: string;
   label: string;
-  Icon: () => JSX.Element;
+  Icon: () => React.ReactElement;
   question: string;
   answer: string;
   needs: NeedItem[];
