@@ -1,5 +1,8 @@
-// Zoho CRM (India DC) lead creation. Self-client OAuth: a long-lived refresh
+// Zoho CRM (India DC) lead upsert. Self-client OAuth: a long-lived refresh
 // token is exchanged for a short-lived access token, cached in module memory.
+// Deduplication: search by Email first; merge tags + upgrade status if found.
+
+import { createHmac, timingSafeEqual } from "node:crypto";
 
 interface ZohoConfig {
   clientId: string;
@@ -14,7 +17,6 @@ function getConfig(): ZohoConfig | null {
   const clientSecret = process.env.ZOHO_CLIENT_SECRET;
   const refreshToken = process.env.ZOHO_REFRESH_TOKEN;
   if (!clientId || !clientSecret || !refreshToken) return null;
-
   return {
     clientId,
     clientSecret,
@@ -24,14 +26,11 @@ function getConfig(): ZohoConfig | null {
   };
 }
 
-// Cached access token shared across warm serverless invocations.
 let cachedToken: { value: string; expiresAt: number } | null = null;
 
 async function getAccessToken(config: ZohoConfig): Promise<string> {
   const now = Date.now();
-  if (cachedToken && cachedToken.expiresAt > now + 60_000) {
-    return cachedToken.value;
-  }
+  if (cachedToken && cachedToken.expiresAt > now + 60_000) return cachedToken.value;
 
   const params = new URLSearchParams({
     grant_type: "refresh_token",
@@ -40,92 +39,181 @@ async function getAccessToken(config: ZohoConfig): Promise<string> {
     refresh_token: config.refreshToken,
   });
 
-  const response = await fetch(`${config.accountsDomain}/oauth/v2/token`, {
+  const res = await fetch(`${config.accountsDomain}/oauth/v2/token`, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: params.toString(),
   });
 
-  if (!response.ok) {
-    throw new Error(`Zoho token refresh failed: ${response.status}`);
-  }
+  if (!res.ok) throw new Error(`Zoho token refresh failed: ${res.status}`);
 
-  const data: { access_token?: string; expires_in?: number; error?: string } =
-    await response.json();
-
-  if (!data.access_token) {
-    throw new Error(`Zoho token refresh error: ${data.error ?? "no access_token"}`);
-  }
+  const data: { access_token?: string; expires_in?: number; error?: string } = await res.json();
+  if (!data.access_token) throw new Error(`Zoho token error: ${data.error ?? "no token"}`);
 
   const expiresInMs = (data.expires_in ?? 3600) * 1000;
   cachedToken = { value: data.access_token, expiresAt: now + expiresInMs };
   return data.access_token;
 }
 
-export interface ZohoLead {
+// Status rank: higher = more progressed. Never downgrade a lead's status.
+const STATUS_RANK: Record<string, number> = {
+  "Not Contacted": 1,
+  "Attempted to Contact": 2,
+  "Contact in Future": 2,
+  "Contacted": 3,
+  "Appointment Scheduled": 4,
+};
+
+function mergeStatus(existing: string, incoming: string): string {
+  return (STATUS_RANK[incoming] ?? 0) > (STATUS_RANK[existing] ?? 0) ? incoming : existing;
+}
+
+export interface ZohoLeadInput {
   firstName: string;
   lastName: string;
   email: string;
   company: string;
-  role: string;
-  brief: string;
+  role?: string;
+  brief?: string;
   source: string;
   companySize?: string;
+  tags: string[];
+  status: string;
 }
 
-export async function createZohoLead(
-  lead: Readonly<ZohoLead>,
-): Promise<{ ok: true; id: string } | { ok: false; error: string }> {
+interface ExistingRecord {
+  id: string;
+  tags: string[];
+  status: string;
+}
+
+async function findByEmail(
+  config: ZohoConfig,
+  token: string,
+  email: string,
+): Promise<ExistingRecord | null> {
+  const criteria = `(Email:equals:${encodeURIComponent(email)})`;
+  const res = await fetch(
+    `${config.apiDomain}/crm/v2/Leads/search?criteria=${criteria}&fields=id,Tag,Lead_Status`,
+    { headers: { Authorization: `Zoho-oauthtoken ${token}` } },
+  );
+  if (res.status === 204) return null;
+  if (!res.ok) return null;
+
+  const data: { data?: { id?: string; Lead_Status?: string; Tag?: { name: string }[] }[] } =
+    await res.json();
+  const record = data.data?.[0];
+  if (!record?.id) return null;
+
+  return {
+    id: record.id,
+    tags: (record.Tag ?? []).map((t) => t.name),
+    status: record.Lead_Status ?? "Not Contacted",
+  };
+}
+
+export async function upsertZohoLead(
+  lead: Readonly<ZohoLeadInput>,
+): Promise<{ ok: true; id: string; action: "created" | "updated" } | { ok: false; error: string }> {
   const config = getConfig();
-  if (!config) {
-    return { ok: false, error: "Zoho not configured" };
-  }
+  if (!config) return { ok: false, error: "Zoho not configured" };
 
   let token: string;
   try {
     token = await getAccessToken(config);
-  } catch (error: unknown) {
-    return { ok: false, error: error instanceof Error ? error.message : "token error" };
+  } catch (err: unknown) {
+    return { ok: false, error: err instanceof Error ? err.message : "token error" };
   }
 
-  const payload = {
-    data: [
-      {
-        Last_Name: lead.lastName,
-        First_Name: lead.firstName,
-        Email: lead.email,
-        Company: lead.company,
-        Designation: lead.role,
-        Description: lead.brief,
-        Lead_Source: "Website - KalviumX",
-        Tag: [{ name: "Inbound" }],
-        ...(lead.companySize ? { No_of_Employees: lead.companySize } : {}),
-      },
-    ],
-    trigger: ["workflow"],
-  };
-
   try {
-    const response = await fetch(`${config.apiDomain}/crm/v2/Leads`, {
+    const existing = await findByEmail(config, token, lead.email);
+
+    if (existing) {
+      // Merge tags (union) and upgrade status if incoming is higher.
+      const mergedTags = Array.from(new Set([...existing.tags, ...lead.tags])).map((name) => ({
+        name,
+      }));
+      const mergedStatus = mergeStatus(existing.status, lead.status);
+
+      const updatePayload = {
+        data: [
+          {
+            Tag: mergedTags,
+            Lead_Status: mergedStatus,
+            Lead_Source: lead.source,
+            ...(lead.role ? { Designation: lead.role } : {}),
+            ...(lead.brief ? { Description: lead.brief } : {}),
+            ...(lead.companySize ? { No_of_Employees: lead.companySize } : {}),
+          },
+        ],
+        trigger: ["workflow"],
+      };
+
+      const res = await fetch(`${config.apiDomain}/crm/v2/Leads/${existing.id}`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Zoho-oauthtoken ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatePayload),
+      });
+
+      const result: { data?: { code?: string; details?: { id?: string } }[] } = await res.json();
+      const record = result.data?.[0];
+
+      if (res.ok && record?.code === "SUCCESS") {
+        return { ok: true, id: existing.id, action: "updated" };
+      }
+      return { ok: false, error: `Zoho update failed: ${res.status}` };
+    }
+
+    // No existing record — create fresh.
+    const createPayload = {
+      data: [
+        {
+          Last_Name: lead.lastName,
+          First_Name: lead.firstName,
+          Email: lead.email,
+          Company: lead.company,
+          Lead_Status: lead.status,
+          Lead_Source: lead.source,
+          Tag: lead.tags.map((name) => ({ name })),
+          ...(lead.role ? { Designation: lead.role } : {}),
+          ...(lead.brief ? { Description: lead.brief } : {}),
+          ...(lead.companySize ? { No_of_Employees: lead.companySize } : {}),
+        },
+      ],
+      trigger: ["workflow"],
+    };
+
+    const res = await fetch(`${config.apiDomain}/crm/v2/Leads`, {
       method: "POST",
       headers: {
         Authorization: `Zoho-oauthtoken ${token}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(payload),
+      body: JSON.stringify(createPayload),
     });
 
-    const result: {
-      data?: { code?: string; details?: { id?: string }; message?: string }[];
-    } = await response.json();
-
+    const result: { data?: { code?: string; details?: { id?: string }; message?: string }[] } =
+      await res.json();
     const record = result.data?.[0];
-    if (response.ok && record?.code === "SUCCESS" && record.details?.id) {
-      return { ok: true, id: record.details.id };
-    }
 
-    return { ok: false, error: record?.message ?? `Zoho create failed: ${response.status}` };
-  } catch (error: unknown) {
-    return { ok: false, error: error instanceof Error ? error.message : "request error" };
+    if (res.ok && record?.code === "SUCCESS" && record.details?.id) {
+      return { ok: true, id: record.details.id, action: "created" };
+    }
+    return { ok: false, error: record?.message ?? `Zoho create failed: ${res.status}` };
+  } catch (err: unknown) {
+    return { ok: false, error: err instanceof Error ? err.message : "request error" };
+  }
+}
+
+// Cal.com webhook signature verification (HMAC-SHA256).
+export function verifyCalSignature(rawBody: string, header: string, secret: string): boolean {
+  const expected = createHmac("sha256", secret).update(rawBody).digest("hex");
+  try {
+    return timingSafeEqual(Buffer.from(header), Buffer.from(expected));
+  } catch {
+    return false;
   }
 }

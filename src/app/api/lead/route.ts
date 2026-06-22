@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { appendFile, mkdir } from "node:fs/promises";
 import path from "node:path";
 import { validateLead, isRateLimited } from "@/lib/lead-validation";
-import { createZohoLead } from "@/lib/zoho";
+import { upsertZohoLead } from "@/lib/zoho";
 import { getPostHogClient } from "@/lib/posthog-server";
 
 function getClientIp(request: Request): string {
@@ -42,10 +42,14 @@ export async function POST(request: Request) {
   const { lead } = result;
   const record = { ...lead, ip, receivedAt: new Date().toISOString() };
 
-  // Primary destination: Zoho CRM.
-  const zoho = await createZohoLead(lead);
+  // Primary destination: Zoho CRM (upsert — deduplicates by email, merges tags).
+  const zoho = await upsertZohoLead({
+    ...lead,
+    tags: ["Inbound", "Form-Filled"],
+    status: "Not Contacted",
+  });
   if (!zoho.ok) {
-    console.error("Zoho lead create failed", zoho.error);
+    console.error("Zoho lead upsert failed", zoho.error);
   }
 
   // Optional secondary webhook (Slack/Brevo/etc.) when configured.
@@ -87,6 +91,7 @@ export async function POST(request: Request) {
       source: lead.source,
       has_brief: (lead.brief ?? "").trim().length > 0,
       zoho_ok: zoho.ok,
+      zoho_action: zoho.ok ? zoho.action : null,
     },
   });
 
