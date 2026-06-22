@@ -112,6 +112,72 @@ async function findByEmail(
   };
 }
 
+async function getById(
+  config: ZohoConfig,
+  token: string,
+  id: string,
+): Promise<ExistingRecord | null> {
+  const res = await fetch(`${config.apiDomain}/crm/v2/Leads/${id}?fields=id,Tag,Lead_Status`, {
+    headers: { Authorization: `Zoho-oauthtoken ${token}` },
+  });
+  if (!res.ok) return null;
+
+  const data: { data?: { id?: string; Lead_Status?: string; Tag?: { name: string }[] }[] } =
+    await res.json();
+  const record = data.data?.[0];
+  if (!record?.id) return null;
+
+  return {
+    id: record.id,
+    tags: (record.Tag ?? []).map((t) => t.name),
+    status: record.Lead_Status ?? "Not Contacted",
+  };
+}
+
+async function updateExisting(
+  config: ZohoConfig,
+  token: string,
+  existing: ExistingRecord,
+  lead: Readonly<ZohoLeadInput>,
+): Promise<{ ok: true; id: string; action: "updated" } | { ok: false; error: string }> {
+  // Merge tags (union) and upgrade status if incoming is higher.
+  const mergedTags = Array.from(new Set([...existing.tags, ...lead.tags])).map((name) => ({
+    name,
+  }));
+  const mergedStatus = mergeStatus(existing.status, lead.status);
+
+  const updatePayload = {
+    data: [
+      {
+        Tag: mergedTags,
+        Lead_Status: mergedStatus,
+        Lead_Source: lead.source,
+        ...(lead.role ? { Designation: lead.role } : {}),
+        ...(lead.brief ? { Description: lead.brief } : {}),
+        ...(lead.companySize ? { No_of_Employees: lead.companySize } : {}),
+      },
+    ],
+    trigger: ["workflow"],
+  };
+
+  const res = await fetch(`${config.apiDomain}/crm/v2/Leads/${existing.id}`, {
+    method: "PUT",
+    headers: {
+      Authorization: `Zoho-oauthtoken ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(updatePayload),
+  });
+
+  const result: { data?: { code?: string }[] } = await res.json();
+  const record = result.data?.[0];
+
+  if (res.ok && record?.code === "SUCCESS") {
+    return { ok: true, id: existing.id, action: "updated" };
+  }
+  return { ok: false, error: `Zoho update failed: ${res.status}` };
+}
+
 export async function upsertZohoLead(
   lead: Readonly<ZohoLeadInput>,
 ): Promise<{ ok: true; id: string; action: "created" | "updated" } | { ok: false; error: string }> {
@@ -129,45 +195,10 @@ export async function upsertZohoLead(
     const existing = await findByEmail(config, token, lead.email);
 
     if (existing) {
-      // Merge tags (union) and upgrade status if incoming is higher.
-      const mergedTags = Array.from(new Set([...existing.tags, ...lead.tags])).map((name) => ({
-        name,
-      }));
-      const mergedStatus = mergeStatus(existing.status, lead.status);
-
-      const updatePayload = {
-        data: [
-          {
-            Tag: mergedTags,
-            Lead_Status: mergedStatus,
-            Lead_Source: lead.source,
-            ...(lead.role ? { Designation: lead.role } : {}),
-            ...(lead.brief ? { Description: lead.brief } : {}),
-            ...(lead.companySize ? { No_of_Employees: lead.companySize } : {}),
-          },
-        ],
-        trigger: ["workflow"],
-      };
-
-      const res = await fetch(`${config.apiDomain}/crm/v2/Leads/${existing.id}`, {
-        method: "PUT",
-        headers: {
-          Authorization: `Zoho-oauthtoken ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(updatePayload),
-      });
-
-      const result: { data?: { code?: string; details?: { id?: string } }[] } = await res.json();
-      const record = result.data?.[0];
-
-      if (res.ok && record?.code === "SUCCESS") {
-        return { ok: true, id: existing.id, action: "updated" };
-      }
-      return { ok: false, error: `Zoho update failed: ${res.status}` };
+      return await updateExisting(config, token, existing, lead);
     }
 
-    // No existing record — create fresh.
+    // No existing record found via search — create fresh.
     const createPayload = {
       data: [
         {
@@ -195,13 +226,30 @@ export async function upsertZohoLead(
       body: JSON.stringify(createPayload),
     });
 
-    const result: { data?: { code?: string; details?: { id?: string }; message?: string }[] } =
-      await res.json();
+    const result: {
+      data?: {
+        code?: string;
+        details?: { id?: string; duplicate_record?: { id?: string } };
+        message?: string;
+      }[];
+    } = await res.json();
     const record = result.data?.[0];
 
     if (res.ok && record?.code === "SUCCESS" && record.details?.id) {
       return { ok: true, id: record.details.id, action: "created" };
     }
+
+    // Search-by-email can lag right after a record is created elsewhere (e.g.
+    // a Cal booking moments before a form submit). Zoho's create call still
+    // catches the duplicate — fall back to updating that record directly.
+    const duplicateId = record?.details?.duplicate_record?.id;
+    if (record?.code === "DUPLICATE_DATA" && duplicateId) {
+      const existingById = await getById(config, token, duplicateId);
+      if (existingById) {
+        return await updateExisting(config, token, existingById, lead);
+      }
+    }
+
     return { ok: false, error: record?.message ?? `Zoho create failed: ${res.status}` };
   } catch (err: unknown) {
     return { ok: false, error: err instanceof Error ? err.message : "request error" };

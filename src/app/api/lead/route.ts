@@ -70,15 +70,18 @@ export async function POST(request: Request) {
   }
 
   // Local fallback log so no lead is ever lost in development.
-  try {
-    const dir = path.join(process.cwd(), ".leads");
-    await mkdir(dir, { recursive: true });
-    await appendFile(
-      path.join(dir, "leads.jsonl"),
-      `${JSON.stringify({ ...record, zohoId: zoho.ok ? zoho.id : null })}\n`,
-    );
-  } catch (error: unknown) {
-    console.error("Lead file log error", error);
+  // Skipped on Vercel — the deployment filesystem is read-only outside /tmp.
+  if (!process.env.VERCEL) {
+    try {
+      const dir = path.join(process.cwd(), ".leads");
+      await mkdir(dir, { recursive: true });
+      await appendFile(
+        path.join(dir, "leads.jsonl"),
+        `${JSON.stringify({ ...record, zohoId: zoho.ok ? zoho.id : null })}\n`,
+      );
+    } catch (error: unknown) {
+      console.error("Lead file log error", error);
+    }
   }
 
   // Capture server-side lead event for analytics correlation.
