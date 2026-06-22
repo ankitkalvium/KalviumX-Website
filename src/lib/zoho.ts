@@ -87,6 +87,10 @@ interface ExistingRecord {
   status: string;
 }
 
+// A non-204 error response means the search itself failed (auth, scope,
+// rate limit) — distinct from a genuine "no record matches." Conflating the
+// two would silently skip dedup and blind-create duplicates whenever Zoho
+// access is misconfigured, so callers must see this as an error, not a miss.
 async function findByEmail(
   config: ZohoConfig,
   token: string,
@@ -98,7 +102,10 @@ async function findByEmail(
     { headers: { Authorization: `Zoho-oauthtoken ${token}` } },
   );
   if (res.status === 204) return null;
-  if (!res.ok) return null;
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`Zoho search failed: ${res.status} ${body}`);
+  }
 
   const data: { data?: { id?: string; Lead_Status?: string; Tag?: { name: string }[] }[] } =
     await res.json();
