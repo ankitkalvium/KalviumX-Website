@@ -377,7 +377,6 @@ export const trustBrands: TrustBrand[] = [
   { name: "LevelShift", domain: "levelshift.com", localSrc: "/images/logos/levelshift.svg", preferLocal: true },
   { name: "5Paisa", domain: "5paisa.com", localSrc: "/images/logos/5paisa.svg", preferLocal: true },
   { name: "Blend", domain: "blend.com", localSrc: "/images/logos/blend.svg", preferLocal: true },
-  { name: "yellow.ai", domain: "yellow.ai", localSrc: "/images/logos/yellowai.svg", preferLocal: true },
 ];
 
 export type Faq = { q: string; a: string };

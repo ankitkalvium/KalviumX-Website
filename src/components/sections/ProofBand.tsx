@@ -51,7 +51,7 @@ function BrandItem({ brand }: { brand: TrustBrand }) {
 function MarqueeTrack({ hidden }: { hidden?: boolean }) {
   return (
     <div
-      className="flex items-center gap-16 pr-16 shrink-0"
+      className="flex items-center gap-16 pr-16 shrink-0 animate-marquee-logos"
       aria-hidden={hidden || undefined}
     >
       {trustBrands.map((brand, i) => (
@@ -78,7 +78,7 @@ export default function ProofBand() {
       <div className="relative">
         <div className="absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-[#161616] to-transparent z-10" />
         <div className="absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-[#161616] to-transparent z-10" />
-        <div className="flex whitespace-nowrap animate-marquee-logos">
+        <div className="flex whitespace-nowrap">
           <MarqueeTrack />
           <MarqueeTrack hidden />
         </div>
