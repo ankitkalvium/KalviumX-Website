@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 72" fill="#1a1a1a">
+  <!-- Left arm: speech bubble shape (rounded rect with bottom-right pointer notch) -->
+  <path d="M7,0 C0,0 0,0 0,7 L0,37 C0,44 0,44 7,44 L19,44 L27,54 L27,44 L37,44 C44,44 44,44 44,37 L44,7 C44,0 44,0 37,0 Z"/>
+  <!-- Right diagonal arm -->
+  <polygon points="48,0 68,0 52,54 32,54"/>
+  <!-- Stem -->
+  <polygon points="19,54 35,54 29,72 13,72"/>
+  <!-- wordmark -->
+  <text x="80" y="52" font-family="'Helvetica Neue',Arial,sans-serif" font-weight="900" font-size="43" letter-spacing="-1.5">yellow.ai</text>
+</svg>
