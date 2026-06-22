@@ -88,6 +88,35 @@ export async function POST(request: Request) {
     console.error("Cal webhook: Zoho upsert failed", zoho.error);
   }
 
+  // Mirror to the "Calls Booked" sheet tab (same Apps Script endpoint as
+  // /api/lead, routed by `type`).
+  const webhookUrl = process.env.LEAD_WEBHOOK_URL;
+  if (webhookUrl) {
+    try {
+      const response = await fetch(webhookUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "booking",
+          firstName,
+          lastName,
+          email,
+          company,
+          startTime,
+          brief,
+          source: "Cal - Let's Talk",
+          receivedAt: new Date().toISOString(),
+          zohoId: zoho.ok ? zoho.id : null,
+        }),
+      });
+      if (!response.ok) {
+        console.error(`Cal booking webhook failed with status ${response.status}`);
+      }
+    } catch (error: unknown) {
+      console.error("Cal booking webhook error", error);
+    }
+  }
+
   const posthog = getPostHogClient();
   posthog.capture({
     distinctId: email,

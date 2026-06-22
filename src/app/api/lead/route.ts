@@ -59,7 +59,7 @@ export async function POST(request: Request) {
       const response = await fetch(webhookUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...record, zohoId: zoho.ok ? zoho.id : null }),
+        body: JSON.stringify({ ...record, type: "lead", zohoId: zoho.ok ? zoho.id : null }),
       });
       if (!response.ok) {
         console.error(`Lead webhook failed with status ${response.status}`);
