@@ -5,7 +5,8 @@ import TrackableButton from "@/components/ui/TrackableButton";
 import CaseStudyExperience from "@/components/sections/CaseStudyExperience";
 import { caseStudies } from "@/lib/data";
 
-const SITE_URL = "https://x.kalvium.com";
+// x.kalvium.com is an unrelated WordPress site, not this project.
+const SITE_URL = "https://kalvium-x-website.vercel.app";
 
 const SEO_TITLES: Record<string, string> = {
   "zero-attrition-hr-tech": "0% Intern Attrition Across 36 Months: UK HR-Tech Engineering Deployment",

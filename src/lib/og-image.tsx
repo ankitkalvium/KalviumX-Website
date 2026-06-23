@@ -75,7 +75,7 @@ export function OgImageContent() {
           color: "#999999",
         }}
       >
-        Pre-assessed · JD-matched · Mentor-managed · x.kalvium.com
+        Pre-assessed · JD-matched · Mentor-managed
       </div>
       <div
         style={{

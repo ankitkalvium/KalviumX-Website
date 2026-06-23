@@ -4,7 +4,8 @@ import Button from "@/components/ui/Button";
 import CaseStudyVisual from "@/components/sections/CaseStudyVisual";
 import { caseStudies } from "@/lib/data";
 
-const SITE_URL = "https://x.kalvium.com";
+// x.kalvium.com is an unrelated WordPress site, not this project.
+const SITE_URL = "https://kalvium-x-website.vercel.app";
 
 export const metadata: Metadata = {
   title: "Engineering Intern Deployment Results",

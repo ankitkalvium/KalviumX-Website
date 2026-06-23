@@ -7,6 +7,7 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: "/api/",
     },
-    sitemap: "https://x.kalvium.com/sitemap.xml",
+    // x.kalvium.com is an unrelated WordPress site, not this project.
+    sitemap: "https://kalvium-x-website.vercel.app/sitemap.xml",
   };
 }

@@ -1,7 +1,8 @@
 import type { MetadataRoute } from "next";
 import { roles, caseStudies } from "@/lib/data";
 
-const SITE_URL = "https://x.kalvium.com";
+// x.kalvium.com is an unrelated WordPress site, not this project.
+const SITE_URL = "https://kalvium-x-website.vercel.app";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticPages = [

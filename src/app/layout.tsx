@@ -12,7 +12,10 @@ const inter = Inter({
   weight: ["400", "500", "600", "700", "800", "900"],
 });
 
-const SITE_URL = "https://x.kalvium.com";
+// x.kalvium.com is an unrelated WordPress site, not this project — there is
+// no custom domain wired up yet, so metadataBase must point at the actual
+// live URL or every absolute OG/Twitter image link 404s.
+const SITE_URL = "https://kalvium-x-website.vercel.app";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
