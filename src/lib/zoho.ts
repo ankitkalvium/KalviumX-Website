@@ -188,7 +188,10 @@ async function updateExisting(
 
 export async function upsertZohoLead(
   lead: Readonly<ZohoLeadInput>,
-): Promise<{ ok: true; id: string; action: "created" | "updated" } | { ok: false; error: string }> {
+): Promise<
+  | { ok: true; id: string; action: "created" | "updated" | "existing_contact" }
+  | { ok: false; error: string }
+> {
   const config = getConfig();
   if (!config) return { ok: false, error: "Zoho not configured" };
 
@@ -250,7 +253,10 @@ export async function upsertZohoLead(
     const result: {
       data?: {
         code?: string;
-        details?: { id?: string; duplicate_record?: { id?: string } };
+        details?: {
+          id?: string;
+          duplicate_record?: { id?: string; module?: { api_name?: string } };
+        };
         message?: string;
       }[];
     } = await res.json();
@@ -264,11 +270,21 @@ export async function upsertZohoLead(
     // a Cal booking moments before a form submit). Zoho's create call still
     // catches the duplicate — fall back to updating that record directly.
     const duplicateId = record?.details?.duplicate_record?.id;
+    const duplicateModule = record?.details?.duplicate_record?.module?.api_name;
     if (record?.code === "DUPLICATE_DATA" && duplicateId) {
-      const existingById = await getById(config, token, duplicateId);
-      if (existingById) {
-        return await updateExisting(config, token, existingById, lead);
+      if (duplicateModule === "Leads") {
+        const existingById = await getById(config, token, duplicateId);
+        if (existingById) {
+          return await updateExisting(config, token, existingById, lead);
+        }
       }
+      // Zoho's duplicate check also flags Contacts, not just Leads — e.g.
+      // this email is already a known business contact, never converted
+      // from a lead. There's nothing to merge tags/status into (Contacts
+      // don't carry our Lead_Status/Tag workflow), so this isn't an error —
+      // just acknowledge it instead of failing every booking from someone
+      // already in the CRM as a contact.
+      return { ok: true, id: duplicateId, action: "existing_contact" };
     }
 
     return { ok: false, error: record?.message ?? `Zoho create failed: ${res.status}` };
