@@ -58,6 +58,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "No attendee email" }, { status: 400 });
   }
 
+  // TEMP DEBUG — remove once custom question field keys are confirmed.
+  console.log("Cal webhook raw responses:", JSON.stringify(body.payload?.responses));
+
   const { firstName, lastName } = deriveNames(attendee.name ?? attendee.email);
   const email = attendee.email.trim().toLowerCase();
   const company = email.split("@")[1] ?? "unknown";
