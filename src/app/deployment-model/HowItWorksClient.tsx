@@ -19,6 +19,13 @@ const ownership = [
   { area: "Replacement support", company: false, kalvium: true },
 ];
 
+const herosSignals = [
+  { label: "Skill proficiency", pct: 82 },
+  { label: "Project output quality", pct: 91 },
+  { label: "Learning velocity", pct: 78 },
+  { label: "Professionalism score", pct: 88 },
+];
+
 const universities = [
   "Kalasalingam University",
   "Lovely Professional University",
@@ -236,14 +243,14 @@ export default function HowItWorksClient() {
           <section className="border-b border-line bg-ink text-white">
             <div className="container-x">
               <div className="grid lg:grid-cols-[1fr_340px] gap-16 items-start">
-                <div>
+                <div className="min-w-0">
                   <span className="inline-block text-[11px] font-extrabold uppercase tracking-[0.16em] text-red mb-4">After Deployment</span>
                   <h2 className="text-[clamp(26px,3vw,40px)] font-black leading-[1.1] tracking-[-0.05em] mb-4">
                     Who owns what.
                   </h2>
                   <p className="text-white/55 font-medium mb-10 max-w-md">A clean split of responsibilities so your managers are never running a training program.</p>
-                  <div className="border border-white/10 rounded-xl overflow-hidden">
-                    <table className="w-full text-left text-sm">
+                  <div className="max-w-full overflow-x-auto border border-white/10 rounded-xl">
+                    <table className="w-full min-w-[420px] text-left text-sm">
                       <thead>
                         <tr className="border-b border-white/10">
                           <th className="px-5 py-3.5 font-extrabold text-white/40 text-[11px] uppercase tracking-[0.12em]">Responsibility</th>
@@ -305,16 +312,26 @@ export default function HowItWorksClient() {
                 <span className="inline-block bg-red text-white font-black text-[11px] tracking-[0.1em] uppercase rounded-md px-4 py-1.5 mb-5">HEROS</span>
                 <h2 className="text-[clamp(22px,2.8vw,36px)] font-black leading-[1.14] tracking-[-0.05em] mb-4">The same system that curated your shortlist tracks performance throughout.</h2>
                 <p className="text-[#555] font-medium leading-relaxed mb-6">HEROS data powers Day 2-4 talent mapping. From deployment, it feeds the monthly feedback loop with performance signals, giving mentors early warning before gaps surface on your team.</p>
-                <Button href="/roles" variant="dark">See what HEROS tracks →</Button>
+                <div className="border-l-2 border-red pl-4">
+                  <div className="text-[11px] font-extrabold uppercase tracking-[0.12em] text-[#777] mb-3">
+                    Signals monitored continuously
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {herosSignals.map(({ label }) => (
+                      <span
+                        key={label}
+                        className="inline-flex items-center gap-2 rounded-full border border-line bg-soft px-3 py-2 text-xs font-bold text-[#333]"
+                      >
+                        <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-red" />
+                        {label}
+                      </span>
+                    ))}
+                  </div>
+                </div>
               </div>
               <div className="bg-ink rounded-2xl p-6">
                 <div className="text-[10px] font-extrabold uppercase tracking-[0.16em] text-white/30 mb-5">Live signal dashboard</div>
-                {[
-                  { label: "Skill proficiency", pct: 82 },
-                  { label: "Project output quality", pct: 91 },
-                  { label: "Learning velocity", pct: 78 },
-                  { label: "Professionalism score", pct: 88 },
-                ].map(({ label, pct }) => (
+                {herosSignals.map(({ label, pct }) => (
                   <div key={label} className="mb-4 last:mb-0">
                     <div className="flex justify-between text-xs font-bold mb-1.5">
                       <span className="text-white/60">{label}</span>

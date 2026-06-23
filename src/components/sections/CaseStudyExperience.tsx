@@ -250,7 +250,7 @@ function InterventionProofCard() {
   ];
   return (
     <div className="border border-line rounded-xl overflow-hidden">
-      <div className="px-7 py-5 bg-soft border-b border-line flex items-center justify-between gap-4">
+      <div className="px-6 sm:px-7 py-5 bg-soft border-b border-line flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4">
         <div className="text-xs font-extrabold uppercase tracking-[0.14em] text-red">Year 2 incident</div>
         <span className="text-xs font-bold text-[#777]">1 concern raised · 0 exits</span>
       </div>
@@ -318,12 +318,12 @@ function ContinuityGrid() {
       </div>
 
       {/* Bottom stats */}
-      <div className="grid grid-cols-3 gap-4 pt-5 border-t border-white/10">
-        <div>
+      <div className="grid sm:grid-cols-3 gap-4 pt-5 border-t border-white/10">
+        <div className="border-b border-white/10 pb-4 sm:border-0 sm:pb-0">
           <div className="text-2xl font-black text-white">2</div>
           <div className="text-[10px] text-white/40 font-bold mt-0.5">seamless handoffs, no hiring restart</div>
         </div>
-        <div>
+        <div className="border-b border-white/10 pb-4 sm:border-0 sm:pb-0">
           <div className="text-2xl font-black text-amber-400">1</div>
           <div className="text-[10px] text-white/40 font-bold mt-0.5">concern caught, closed in 7 days</div>
         </div>
@@ -517,44 +517,6 @@ function EvidenceList({ items, dark = false }: { items: string[]; dark?: boolean
           <span className="text-red mr-2">✓</span>{item}
         </div>
       ))}
-    </div>
-  );
-}
-
-function ContinuityChart() {
-  const [year, setYear] = useState(0);
-  const years = [
-    ["Year 1", "Foundation", "The engagement established the work, feedback and accountability rhythm."],
-    ["Year 2", "Sustained contribution", "The same operating model continued without an attrition break."],
-    ["Year 3", "Long-term continuity", "The deployment reached 36 months with zero attrition."],
-  ];
-
-  return (
-    <div className="border border-white/15 rounded-xl p-7 sm:p-9">
-      <div className="grid grid-cols-3 gap-2">
-        {years.map((item, index) => (
-          <button
-            key={item[0]}
-            type="button"
-            onClick={() => setYear(index)}
-            className={`rounded-md min-h-12 text-sm font-extrabold border ${year === index ? "bg-red border-red" : "border-white/15 text-white/55"}`}
-          >
-            {item[0]}
-          </button>
-        ))}
-      </div>
-      <div className="mt-8 grid grid-cols-12 gap-1.5" aria-label="36 month continuity chart">
-        {Array.from({ length: 36 }, (_, index) => (
-          <span key={index} className={`h-16 rounded-sm ${index < (year + 1) * 12 ? "bg-red" : "bg-white/10"}`} />
-        ))}
-      </div>
-      <div className="mt-7 flex items-end justify-between gap-6">
-        <div>
-          <div className="text-xs font-extrabold uppercase tracking-[0.13em] text-red">{years[year][1]}</div>
-          <p className="mt-2 text-white/65 font-medium">{years[year][2]}</p>
-        </div>
-        <strong className="text-4xl font-black whitespace-nowrap">{(year + 1) * 12} months</strong>
-      </div>
     </div>
   );
 }

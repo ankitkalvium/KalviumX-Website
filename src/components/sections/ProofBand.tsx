@@ -31,7 +31,11 @@ function BrandItem({ brand }: { brand: TrustBrand }) {
         alt={`${brand.name} logo`}
         height={36}
         referrerPolicy="strict-origin-when-cross-origin"
-        className="h-9 w-auto max-w-[180px] object-contain brightness-0 invert"
+        className={`w-auto object-contain brightness-0 invert ${
+          brand.name === "7-Eleven"
+            ? "h-12 max-w-[48px]"
+            : "h-9 max-w-[180px]"
+        }`}
         onError={() =>
           setSrc((currentSrc) =>
             currentSrc !== brand.localSrc ? brand.localSrc : undefined
@@ -48,10 +52,10 @@ function BrandItem({ brand }: { brand: TrustBrand }) {
   );
 }
 
-function MarqueeTrack({ hidden }: { hidden?: boolean }) {
+function BrandSequence({ hidden = false }: { hidden?: boolean }) {
   return (
     <div
-      className="flex items-center gap-16 pr-16 shrink-0 animate-marquee-logos"
+      className="flex shrink-0 items-center gap-10 pr-10 sm:gap-16 sm:pr-16"
       aria-hidden={hidden || undefined}
     >
       {trustBrands.map((brand, i) => (
@@ -76,11 +80,11 @@ export default function ProofBand() {
         </p>
       </div>
       <div className="relative">
-        <div className="absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-[#161616] to-transparent z-10" />
-        <div className="absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-[#161616] to-transparent z-10" />
-        <div className="flex whitespace-nowrap">
-          <MarqueeTrack />
-          <MarqueeTrack hidden />
+        <div className="absolute inset-y-0 left-0 w-8 sm:w-20 bg-gradient-to-r from-[#161616] to-transparent z-10 pointer-events-none" />
+        <div className="absolute inset-y-0 right-0 w-8 sm:w-20 bg-gradient-to-l from-[#161616] to-transparent z-10 pointer-events-none" />
+        <div className="flex w-max whitespace-nowrap animate-marquee-logos">
+          <BrandSequence />
+          <BrandSequence hidden />
         </div>
       </div>
     </section>

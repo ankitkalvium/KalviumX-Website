@@ -11,43 +11,23 @@ import Button from "@/components/ui/Button";
 
 const CAL_LINK = "ankitkalvi/30min";
 
-export default function Navbar() {
-  const [open, setOpen] = useState(false);
-  const [booked, setBooked] = useState(false);
-  const pathname = usePathname();
+type CalFunction = (...args: unknown[]) => void;
 
-  const isActive = (href: string) =>
-    href === "/" ? pathname === "/" : pathname.startsWith(href);
-
-  useEffect(() => {
-    const tryListen = () => {
-      const cal = (window as { Cal?: Function }).Cal;
-      if (typeof cal !== "function") return false;
-      cal("on", {
-        action: "bookingSuccessful",
-        callback: () => {
-          posthog.capture("booking_confirmed", { source: "navbar_lets_talk" });
-          setBooked(true);
-          setTimeout(() => setBooked(false), 3000);
-        },
-      });
-      return true;
-    };
-
-    if (!tryListen()) {
-      const interval = setInterval(() => {
-        if (tryListen()) clearInterval(interval);
-      }, 400);
-      return () => clearInterval(interval);
-    }
-  }, []);
-
-  const LetsTalkButton = ({ className = "" }: { className?: string }) => (
+function LetsTalkButton({
+  booked,
+  className = "",
+  onClick,
+}: {
+  booked: boolean;
+  className?: string;
+  onClick: () => void;
+}) {
+  return (
     <button
       type="button"
       data-cal-link={CAL_LINK}
       data-cal-origin="https://cal.com"
-      onClick={() => posthog.capture("lets_talk_clicked")}
+      onClick={onClick}
       className={`inline-flex items-center justify-center gap-2 rounded-md border-2 border-ink px-5 min-h-[42px] text-[14px] font-extrabold whitespace-nowrap transition-all duration-300 ${
         booked
           ? "border-green-600 bg-green-50 text-green-700"
@@ -75,6 +55,38 @@ export default function Navbar() {
       )}
     </button>
   );
+}
+
+export default function Navbar() {
+  const [open, setOpen] = useState(false);
+  const [booked, setBooked] = useState(false);
+  const pathname = usePathname();
+
+  const isActive = (href: string) =>
+    href === "/" ? pathname === "/" : pathname.startsWith(href);
+
+  useEffect(() => {
+    const tryListen = () => {
+      const cal = (window as { Cal?: CalFunction }).Cal;
+      if (typeof cal !== "function") return false;
+      cal("on", {
+        action: "bookingSuccessful",
+        callback: () => {
+          posthog.capture("booking_confirmed", { source: "navbar_lets_talk" });
+          setBooked(true);
+          setTimeout(() => setBooked(false), 3000);
+        },
+      });
+      return true;
+    };
+
+    if (!tryListen()) {
+      const interval = setInterval(() => {
+        if (tryListen()) clearInterval(interval);
+      }, 400);
+      return () => clearInterval(interval);
+    }
+  }, []);
 
   return (
     <>
@@ -99,6 +111,7 @@ Cal("ui", {"styles":{"branding":{"brandColor":"#ff3638"}},"hideEventTypeDetails"
               height={34}
               priority
               className="h-[34px] w-auto"
+              style={{ height: 34, width: "auto" }}
             />
           </Link>
 
@@ -120,7 +133,10 @@ Cal("ui", {"styles":{"branding":{"brandColor":"#ff3638"}},"hideEventTypeDetails"
           </nav>
 
           <div className="hidden lg:flex items-center gap-3">
-            <LetsTalkButton />
+            <LetsTalkButton
+              booked={booked}
+              onClick={() => posthog.capture("lets_talk_clicked")}
+            />
             <Button
               href="/start-a-pilot"
               onClick={() => posthog.capture("navbar_cta_clicked", { location: "navbar_desktop" })}
@@ -159,7 +175,11 @@ Cal("ui", {"styles":{"branding":{"brandColor":"#ff3638"}},"hideEventTypeDetails"
                 </Link>
               ))}
               <div className="mt-4 flex flex-col gap-3">
-                <LetsTalkButton className="w-full" />
+                <LetsTalkButton
+                  booked={booked}
+                  className="w-full"
+                  onClick={() => posthog.capture("lets_talk_clicked")}
+                />
                 <Button
                   href="/start-a-pilot"
                   onClick={() => posthog.capture("navbar_cta_clicked", { location: "navbar_mobile" })}

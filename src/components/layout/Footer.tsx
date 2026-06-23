@@ -17,8 +17,9 @@ export default function Footer() {
             />
           </div>
           <p className="text-white/60 text-sm leading-relaxed max-w-sm">
-            Enterprise intern hiring from Kalvium&apos;s work-integrated B.Tech ecosystem -
-            pre-assessed, JD-matched, mentor-managed, and built for intern-to-FTE conversion.
+            Build your next generation of engineers with talent assessed for your roles,
+            prepared for your stack, supported through delivery, and proven before
+            full-time conversion.
           </p>
           <p className="text-white/35 text-xs leading-relaxed max-w-sm mt-3">
             403, 22nd Cross Rd, Parangi Palaya, BDA Layout,<br />
@@ -26,7 +27,7 @@ export default function Footer() {
           </p>
         </div>
         <div>
-          <div className="text-xs font-extrabold uppercase tracking-[0.16em] text-white/40 mb-4">For Companies</div>
+          <div className="text-xs font-extrabold uppercase tracking-[0.16em] text-white/40 mb-4">Explore</div>
           <ul className="flex flex-col gap-3 text-sm font-semibold">
             {navLinks.map((link) => (
               <li key={link.href}>
@@ -38,16 +39,20 @@ export default function Footer() {
           </ul>
         </div>
         <div>
-          <div className="text-xs font-extrabold uppercase tracking-[0.16em] text-white/40 mb-4">Get Started</div>
+          <div className="text-xs font-extrabold uppercase tracking-[0.16em] text-white/40 mb-4">Talk to Our Team</div>
           <ul className="flex flex-col gap-3 text-sm font-semibold">
             <li>
               <Link href="/start-a-pilot" className="hover:text-red transition-colors">
-                Start a Pilot
+                Share Your JD
               </Link>
             </li>
             <li>
-              <a href="tel:+919483200300" className="hover:text-red transition-colors">
-                +91 9483 200 300
+              <a
+                href="tel:+919483200300"
+                aria-label="Call KalviumX sales at +91 9483 200 300"
+                className="hover:text-red transition-colors"
+              >
+                Call +91 9483 200 300
               </a>
             </li>
           </ul>
@@ -59,7 +64,7 @@ export default function Footer() {
           <Link href="/privacy" className="hover:text-red transition-colors">
             Privacy Policy
           </Link>
-          <span>x.kalvium.com</span>
+          <span>Bengaluru, India</span>
         </span>
       </div>
     </footer>

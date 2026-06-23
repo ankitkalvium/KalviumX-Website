@@ -55,7 +55,7 @@ export default function InteractiveTimeline() {
               type="button"
               onClick={() => setActiveIndex((i) => Math.max(0, i - 1))}
               disabled={activeIndex === 0}
-              className="text-sm font-extrabold text-red disabled:text-[#bbb] disabled:cursor-not-allowed"
+              className="min-h-11 px-2 text-sm font-extrabold text-red disabled:text-[#bbb] disabled:cursor-not-allowed"
             >
               ← Previous
             </button>
@@ -65,7 +65,7 @@ export default function InteractiveTimeline() {
                 setActiveIndex((i) => Math.min(deploymentSteps.length - 1, i + 1))
               }
               disabled={activeIndex === deploymentSteps.length - 1}
-              className="text-sm font-extrabold text-red disabled:text-[#bbb] disabled:cursor-not-allowed"
+              className="min-h-11 px-2 text-sm font-extrabold text-red disabled:text-[#bbb] disabled:cursor-not-allowed"
             >
               Next →
             </button>
