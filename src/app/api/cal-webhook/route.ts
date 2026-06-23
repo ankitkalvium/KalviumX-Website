@@ -25,6 +25,65 @@ interface CalWebhookBody {
   };
 }
 
+// Each handled trigger maps to a Zoho tag, a Zoho status (status never
+// downgrades — see mergeStatus — so anything other than BOOKING_CREATED
+// passing "Not Contacted"/"Contacted" is safe and only upgrades a lead that
+// somehow skipped the create step), and a sheet eventType/status label for
+// the Apps Script to apply to the existing "Calls Booked" row.
+const EVENT_CONFIG: Record<
+  string,
+  { zohoTag: string; zohoStatus: string; sheetEventType: string; sheetStatus: string }
+> = {
+  BOOKING_CREATED: {
+    zohoTag: "Booked",
+    zohoStatus: "Appointment Scheduled",
+    sheetEventType: "created",
+    sheetStatus: "Scheduled",
+  },
+  BOOKING_CANCELLED: {
+    zohoTag: "Booking-Cancelled",
+    zohoStatus: "Not Contacted",
+    sheetEventType: "cancelled",
+    sheetStatus: "Cancelled",
+  },
+  BOOKING_RESCHEDULED: {
+    zohoTag: "Booking-Rescheduled",
+    zohoStatus: "Not Contacted",
+    sheetEventType: "rescheduled",
+    sheetStatus: "Rescheduled",
+  },
+  BOOKING_NO_SHOW_UPDATED: {
+    zohoTag: "No-Show",
+    zohoStatus: "Not Contacted",
+    sheetEventType: "no_show",
+    sheetStatus: "No-Show",
+  },
+  MEETING_STARTED: {
+    zohoTag: "Meeting-Started",
+    zohoStatus: "Not Contacted",
+    sheetEventType: "meeting_started",
+    sheetStatus: "Meeting Started",
+  },
+  MEETING_ENDED: {
+    zohoTag: "Meeting-Completed",
+    zohoStatus: "Contacted",
+    sheetEventType: "meeting_ended",
+    sheetStatus: "Completed",
+  },
+  AFTER_HOSTS_DIDNT_JOIN: {
+    zohoTag: "Host-No-Show",
+    zohoStatus: "Not Contacted",
+    sheetEventType: "host_no_show",
+    sheetStatus: "Host No-Show",
+  },
+  AFTER_GUESTS_DIDNT_JOIN: {
+    zohoTag: "Guest-No-Show",
+    zohoStatus: "Not Contacted",
+    sheetEventType: "guest_no_show",
+    sheetStatus: "Guest No-Show",
+  },
+};
+
 function deriveNames(name: string): { firstName: string; lastName: string } {
   const parts = name.trim().split(/\s+/);
   const firstName = parts[0] ?? "Lead";
@@ -51,12 +110,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  const triggerEvent = body.triggerEvent;
-  if (
-    triggerEvent !== "BOOKING_CREATED" &&
-    triggerEvent !== "BOOKING_CANCELLED" &&
-    triggerEvent !== "BOOKING_RESCHEDULED"
-  ) {
+  const triggerEvent = body.triggerEvent ?? "";
+  const config = EVENT_CONFIG[triggerEvent];
+  if (!config) {
     return NextResponse.json({ ok: true, skipped: true });
   }
 
@@ -76,7 +132,8 @@ export async function POST(request: Request) {
   const bookingUid = body.payload?.uid ?? "unknown";
   const startTime = body.payload?.startTime ?? "";
   // For a reschedule, the row to update in the sheet is the *original*
-  // booking (fromReschedule), not the new uid Cal.com generates.
+  // booking (fromReschedule), not the new uid Cal.com generates. Every
+  // other lifecycle event references the same uid as the original booking.
   const targetBookingId = body.payload?.fromReschedule ?? bookingUid;
 
   const brief = [
@@ -87,12 +144,6 @@ export async function POST(request: Request) {
     .filter(Boolean)
     .join("\n");
 
-  const zohoTagsByEvent: Record<string, string> = {
-    BOOKING_CREATED: "Booked",
-    BOOKING_CANCELLED: "Booking-Cancelled",
-    BOOKING_RESCHEDULED: "Booking-Rescheduled",
-  };
-
   const zoho = await upsertZohoLead({
     firstName,
     lastName,
@@ -100,10 +151,8 @@ export async function POST(request: Request) {
     company,
     brief,
     source: "Cal - Let's Talk",
-    tags: ["Inbound", zohoTagsByEvent[triggerEvent]],
-    // Cancellation/reschedule never downgrade status — mergeStatus only
-    // upgrades, so "Not Contacted" here is a no-op once a lead is past it.
-    status: triggerEvent === "BOOKING_CREATED" ? "Appointment Scheduled" : "Not Contacted",
+    tags: ["Inbound", config.zohoTag],
+    status: config.zohoStatus,
   });
 
   if (!zoho.ok) {
@@ -112,14 +161,8 @@ export async function POST(request: Request) {
 
   // Mirror to the "Calls Booked" sheet tab (same Apps Script endpoint as
   // /api/lead, routed by `type`). eventType + bookingId let the Apps Script
-  // update the existing row in place for cancel/reschedule instead of
+  // update the existing row in place for any lifecycle event instead of
   // appending a new one, and skip duplicate inserts on webhook retries.
-  const eventTypeByTrigger: Record<string, string> = {
-    BOOKING_CREATED: "created",
-    BOOKING_CANCELLED: "cancelled",
-    BOOKING_RESCHEDULED: "rescheduled",
-  };
-
   const webhookUrl = process.env.LEAD_WEBHOOK_URL;
   if (webhookUrl) {
     try {
@@ -128,7 +171,8 @@ export async function POST(request: Request) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           type: "booking",
-          eventType: eventTypeByTrigger[triggerEvent],
+          eventType: config.sheetEventType,
+          sheetStatus: config.sheetStatus,
           bookingId: targetBookingId,
           firstName,
           lastName,
