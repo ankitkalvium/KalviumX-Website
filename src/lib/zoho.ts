@@ -120,6 +120,10 @@ async function findByEmail(
   };
 }
 
+// Converted leads return an empty body from this endpoint (the live record
+// moved to Contacts/Deals) — guard the JSON parse so that doesn't throw and
+// instead falls through to the caller's graceful "nothing to merge into"
+// handling, same as a genuine not-found.
 async function getById(
   config: ZohoConfig,
   token: string,
@@ -130,8 +134,13 @@ async function getById(
   });
   if (!res.ok) return null;
 
-  const data: { data?: { id?: string; Lead_Status?: string; Tag?: { name: string }[] }[] } =
-    await res.json();
+  let data: { data?: { id?: string; Lead_Status?: string; Tag?: { name: string }[] }[] };
+  try {
+    data = await res.json();
+  } catch {
+    return null;
+  }
+
   const record = data.data?.[0];
   if (!record?.id) return null;
 
@@ -262,9 +271,6 @@ export async function upsertZohoLead(
     } = await res.json();
     const record = result.data?.[0];
 
-    // TEMP DEBUG — remove once duplicate-record shape is confirmed.
-    console.log("Zoho create raw result:", JSON.stringify(result));
-
     if (res.ok && record?.code === "SUCCESS" && record.details?.id) {
       return { ok: true, id: record.details.id, action: "created" };
     }
@@ -272,10 +278,17 @@ export async function upsertZohoLead(
     // Search-by-email can lag right after a record is created elsewhere (e.g.
     // a Cal booking moments before a form submit). Zoho's create call still
     // catches the duplicate — fall back to updating that record directly.
-    const duplicateId = record?.details?.duplicate_record?.id;
+    // The duplicate id sometimes comes back nested under duplicate_record
+    // (with a module hint) and sometimes flat as details.id (no module
+    // hint at all, seen when the create payload includes trigger:
+    // ["workflow"]) — read whichever is present.
+    const duplicateId = record?.details?.duplicate_record?.id ?? record?.details?.id;
     const duplicateModule = record?.details?.duplicate_record?.module?.api_name;
     if (record?.code === "DUPLICATE_DATA" && duplicateId) {
-      if (duplicateModule === "Leads") {
+      // Unknown module (flat-shape response) is treated the same as "Leads"
+      // — try the lookup; getById already degrades to null gracefully if
+      // the id actually belongs to a converted lead or another module.
+      if (duplicateModule !== "Contacts") {
         const existingById = await getById(config, token, duplicateId);
         if (existingById) {
           return await updateExisting(config, token, existingById, lead);
