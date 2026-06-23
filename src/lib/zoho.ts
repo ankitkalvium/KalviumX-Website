@@ -199,7 +199,20 @@ export async function upsertZohoLead(
   }
 
   try {
-    const existing = await findByEmail(config, token, lead.email);
+    // Dedup search can fail independently of create/update (e.g. the OAuth
+    // scope only covers CREATE). Don't let a search failure block lead
+    // capture entirely — log it loudly and fall through to create, same as
+    // a genuine "no match", so a misconfigured scope degrades to
+    // no-dedup instead of dropping the lead.
+    let existing: ExistingRecord | null = null;
+    try {
+      existing = await findByEmail(config, token, lead.email);
+    } catch (err: unknown) {
+      console.error(
+        "Zoho dedup search failed — creating without dedup",
+        err instanceof Error ? err.message : err,
+      );
+    }
 
     if (existing) {
       return await updateExisting(config, token, existing, lead);
