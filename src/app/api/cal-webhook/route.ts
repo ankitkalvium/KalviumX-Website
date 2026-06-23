@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { upsertZohoLead, verifyCalSignature } from "@/lib/zoho";
 import { getPostHogClient } from "@/lib/posthog-server";
+import { fetchWithRetry } from "@/lib/fetch-retry";
 
 interface CalAttendee {
   email: string;
@@ -12,6 +13,9 @@ interface CalWebhookBody {
   triggerEvent?: string;
   payload?: {
     uid?: string;
+    // Cal.com includes this on the BOOKING_RESCHEDULED payload, pointing at
+    // the uid of the booking being replaced.
+    fromReschedule?: string;
     startTime?: string;
     attendees?: CalAttendee[];
     responses?: {
@@ -47,8 +51,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  // Only act on booking creation. Acknowledge all other events with 200.
-  if (body.triggerEvent !== "BOOKING_CREATED") {
+  const triggerEvent = body.triggerEvent;
+  if (
+    triggerEvent !== "BOOKING_CREATED" &&
+    triggerEvent !== "BOOKING_CANCELLED" &&
+    triggerEvent !== "BOOKING_RESCHEDULED"
+  ) {
     return NextResponse.json({ ok: true, skipped: true });
   }
 
@@ -67,6 +75,9 @@ export async function POST(request: Request) {
   const notes = body.payload?.responses?.notes?.value ?? "";
   const bookingUid = body.payload?.uid ?? "unknown";
   const startTime = body.payload?.startTime ?? "";
+  // For a reschedule, the row to update in the sheet is the *original*
+  // booking (fromReschedule), not the new uid Cal.com generates.
+  const targetBookingId = body.payload?.fromReschedule ?? bookingUid;
 
   const brief = [
     notes ? `Booking notes: ${notes}` : "",
@@ -76,6 +87,12 @@ export async function POST(request: Request) {
     .filter(Boolean)
     .join("\n");
 
+  const zohoTagsByEvent: Record<string, string> = {
+    BOOKING_CREATED: "Booked",
+    BOOKING_CANCELLED: "Booking-Cancelled",
+    BOOKING_RESCHEDULED: "Booking-Rescheduled",
+  };
+
   const zoho = await upsertZohoLead({
     firstName,
     lastName,
@@ -83,8 +100,10 @@ export async function POST(request: Request) {
     company,
     brief,
     source: "Cal - Let's Talk",
-    tags: ["Inbound", "Booked"],
-    status: "Appointment Scheduled",
+    tags: ["Inbound", zohoTagsByEvent[triggerEvent]],
+    // Cancellation/reschedule never downgrade status — mergeStatus only
+    // upgrades, so "Not Contacted" here is a no-op once a lead is past it.
+    status: triggerEvent === "BOOKING_CREATED" ? "Appointment Scheduled" : "Not Contacted",
   });
 
   if (!zoho.ok) {
@@ -92,15 +111,25 @@ export async function POST(request: Request) {
   }
 
   // Mirror to the "Calls Booked" sheet tab (same Apps Script endpoint as
-  // /api/lead, routed by `type`).
+  // /api/lead, routed by `type`). eventType + bookingId let the Apps Script
+  // update the existing row in place for cancel/reschedule instead of
+  // appending a new one, and skip duplicate inserts on webhook retries.
+  const eventTypeByTrigger: Record<string, string> = {
+    BOOKING_CREATED: "created",
+    BOOKING_CANCELLED: "cancelled",
+    BOOKING_RESCHEDULED: "rescheduled",
+  };
+
   const webhookUrl = process.env.LEAD_WEBHOOK_URL;
   if (webhookUrl) {
     try {
-      const response = await fetch(webhookUrl, {
+      const response = await fetchWithRetry(webhookUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           type: "booking",
+          eventType: eventTypeByTrigger[triggerEvent],
+          bookingId: targetBookingId,
           firstName,
           lastName,
           email,
@@ -125,6 +154,7 @@ export async function POST(request: Request) {
     distinctId: email,
     event: "cal_booking_crm_upsert",
     properties: {
+      trigger_event: triggerEvent,
       zoho_ok: zoho.ok,
       zoho_action: zoho.ok ? zoho.action : null,
       booking_uid: bookingUid,

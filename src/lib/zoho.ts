@@ -3,6 +3,7 @@
 // Deduplication: search by Email first; merge tags + upgrade status if found.
 
 import { createHmac, timingSafeEqual } from "node:crypto";
+import { fetchWithRetry } from "@/lib/fetch-retry";
 
 interface ZohoConfig {
   clientId: string;
@@ -39,7 +40,7 @@ async function getAccessToken(config: ZohoConfig): Promise<string> {
     refresh_token: config.refreshToken,
   });
 
-  const res = await fetch(`${config.accountsDomain}/oauth/v2/token`, {
+  const res = await fetchWithRetry(`${config.accountsDomain}/oauth/v2/token`, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: params.toString(),
@@ -97,7 +98,7 @@ async function findByEmail(
   email: string,
 ): Promise<ExistingRecord | null> {
   const criteria = `(Email:equals:${encodeURIComponent(email)})`;
-  const res = await fetch(
+  const res = await fetchWithRetry(
     `${config.apiDomain}/crm/v2/Leads/search?criteria=${criteria}&fields=id,Tag,Lead_Status`,
     { headers: { Authorization: `Zoho-oauthtoken ${token}` } },
   );
@@ -124,7 +125,7 @@ async function getById(
   token: string,
   id: string,
 ): Promise<ExistingRecord | null> {
-  const res = await fetch(`${config.apiDomain}/crm/v2/Leads/${id}?fields=id,Tag,Lead_Status`, {
+  const res = await fetchWithRetry(`${config.apiDomain}/crm/v2/Leads/${id}?fields=id,Tag,Lead_Status`, {
     headers: { Authorization: `Zoho-oauthtoken ${token}` },
   });
   if (!res.ok) return null;
@@ -167,7 +168,7 @@ async function updateExisting(
     trigger: ["workflow"],
   };
 
-  const res = await fetch(`${config.apiDomain}/crm/v2/Leads/${existing.id}`, {
+  const res = await fetchWithRetry(`${config.apiDomain}/crm/v2/Leads/${existing.id}`, {
     method: "PUT",
     headers: {
       Authorization: `Zoho-oauthtoken ${token}`,
@@ -237,7 +238,7 @@ export async function upsertZohoLead(
       trigger: ["workflow"],
     };
 
-    const res = await fetch(`${config.apiDomain}/crm/v2/Leads`, {
+    const res = await fetchWithRetry(`${config.apiDomain}/crm/v2/Leads`, {
       method: "POST",
       headers: {
         Authorization: `Zoho-oauthtoken ${token}`,

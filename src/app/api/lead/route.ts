@@ -4,6 +4,7 @@ import path from "node:path";
 import { validateLead, isRateLimited } from "@/lib/lead-validation";
 import { upsertZohoLead } from "@/lib/zoho";
 import { getPostHogClient } from "@/lib/posthog-server";
+import { fetchWithRetry } from "@/lib/fetch-retry";
 
 function getClientIp(request: Request): string {
   const forwarded = request.headers.get("x-forwarded-for");
@@ -56,7 +57,7 @@ export async function POST(request: Request) {
   const webhookUrl = process.env.LEAD_WEBHOOK_URL;
   if (webhookUrl) {
     try {
-      const response = await fetch(webhookUrl, {
+      const response = await fetchWithRetry(webhookUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...record, type: "lead", zohoId: zoho.ok ? zoho.id : null }),
