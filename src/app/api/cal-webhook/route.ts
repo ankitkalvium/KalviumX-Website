@@ -35,10 +35,6 @@ export async function POST(request: Request) {
   const secret = process.env.CAL_WEBHOOK_SECRET;
   if (secret) {
     const signature = request.headers.get("x-cal-signature-256") ?? "";
-    // TEMP DEBUG — remove once signature mismatch is diagnosed.
-    console.log("Cal webhook headers:", JSON.stringify([...request.headers.entries()]));
-    console.log("Cal webhook received signature:", signature);
-    console.log("Cal webhook secret length:", secret.length);
     if (!verifyCalSignature(rawBody, signature, secret)) {
       return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
     }
