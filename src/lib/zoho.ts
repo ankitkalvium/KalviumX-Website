@@ -262,6 +262,9 @@ export async function upsertZohoLead(
     } = await res.json();
     const record = result.data?.[0];
 
+    // TEMP DEBUG — remove once duplicate-record shape is confirmed.
+    console.log("Zoho create raw result:", JSON.stringify(result));
+
     if (res.ok && record?.code === "SUCCESS" && record.details?.id) {
       return { ok: true, id: record.details.id, action: "created" };
     }
