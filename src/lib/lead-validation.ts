@@ -28,7 +28,9 @@ const FREE_EMAIL_DOMAINS = new Set([
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 // Minimum time (ms) a human takes to fill the form. Faster = bot.
-const MIN_FILL_MS = 3000;
+// Kept low enough that browser autofill (name/email/role in well under a
+// second) doesn't get misclassified as a bot and silently dropped.
+const MIN_FILL_MS = 800;
 
 export interface RawLeadInput {
   name?: unknown;
