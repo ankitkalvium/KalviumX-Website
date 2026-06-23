@@ -9,6 +9,12 @@ interface CalAttendee {
   timeZone?: string;
 }
 
+interface CalResponseField {
+  label?: string;
+  value?: string | string[] | { value?: string };
+  isHidden?: boolean;
+}
+
 interface CalWebhookBody {
   triggerEvent?: string;
   payload?: {
@@ -18,10 +24,7 @@ interface CalWebhookBody {
     fromReschedule?: string;
     startTime?: string;
     attendees?: CalAttendee[];
-    responses?: {
-      notes?: { value?: string };
-      [key: string]: unknown;
-    };
+    responses?: Record<string, CalResponseField>;
   };
 }
 
@@ -91,6 +94,18 @@ function deriveNames(name: string): { firstName: string; lastName: string } {
   return { firstName, lastName };
 }
 
+// Cal.com's "Exploring Candidates For" custom question — a multi-select,
+// so its value comes back as a string array (e.g. ["Full Stack"]).
+function extractRoles(field: CalResponseField | undefined): string {
+  if (!field?.value || !Array.isArray(field.value)) return "";
+  return field.value.join(", ");
+}
+
+function extractText(field: CalResponseField | undefined): string {
+  if (typeof field?.value === "string") return field.value.trim();
+  return "";
+}
+
 export async function POST(request: Request) {
   const rawBody = await request.text();
 
@@ -122,13 +137,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "No attendee email" }, { status: 400 });
   }
 
-  // TEMP DEBUG — remove once custom question field keys are confirmed.
-  console.log("Cal webhook raw responses:", JSON.stringify(body.payload?.responses));
-
+  const responses = body.payload?.responses;
   const { firstName, lastName } = deriveNames(attendee.name ?? attendee.email);
   const email = attendee.email.trim().toLowerCase();
-  const company = email.split("@")[1] ?? "unknown";
-  const notes = body.payload?.responses?.notes?.value ?? "";
+  const companyName = extractText(responses?.["Company-Name"]);
+  const company = companyName || email.split("@")[1] || "unknown";
+  const roles = extractRoles(responses?.["Exploring-Candidates-For"]);
   const bookingUid = body.payload?.uid ?? "unknown";
   const startTime = body.payload?.startTime ?? "";
   // For a reschedule, the row to update in the sheet is the *original*
@@ -136,20 +150,35 @@ export async function POST(request: Request) {
   // other lifecycle event references the same uid as the original booking.
   const targetBookingId = body.payload?.fromReschedule ?? bookingUid;
 
-  const brief = [
-    notes ? `Booking notes: ${notes}` : "",
+  // Sheet "Notes" column always gets full scheduling context regardless of
+  // whether a role was given — this is operational detail, not the lead's
+  // role description.
+  const sheetNotes = [
+    roles ? `Exploring: ${roles}` : "",
     startTime ? `Scheduled: ${startTime}` : "",
     `Booking ID: ${bookingUid}`,
   ]
     .filter(Boolean)
     .join("\n");
 
+  // Zoho's Description field follows the rule: only update it when this
+  // booking actually specifies a role. If no role was given, leave
+  // Description alone — whatever the JD form (or an earlier Cal booking
+  // with a role) already set stays as-is. upsertZohoLead only overwrites
+  // Description when `brief` is truthy, so an empty string here is a no-op.
+  const zohoDescription = roles
+    ? [`Exploring Candidates For: ${roles}`, `Scheduled: ${startTime}`, `Booking ID: ${bookingUid}`]
+        .filter(Boolean)
+        .join("\n")
+    : "";
+
   const zoho = await upsertZohoLead({
     firstName,
     lastName,
     email,
     company,
-    brief,
+    role: roles || undefined,
+    brief: zohoDescription,
     source: "Cal - Let's Talk",
     tags: ["Inbound", config.zohoTag],
     status: config.zohoStatus,
@@ -179,7 +208,7 @@ export async function POST(request: Request) {
           email,
           company,
           startTime,
-          brief,
+          brief: sheetNotes,
           source: "Cal - Let's Talk",
           receivedAt: new Date().toISOString(),
           zohoId: zoho.ok ? zoho.id : null,
