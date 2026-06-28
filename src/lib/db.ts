@@ -6,6 +6,7 @@ import type {
   OpportunityDraft,
   OpportunityRecord,
 } from "@/lib/opportunity-types";
+import type { LeadRecord, LeadStatus } from "@/lib/lead-types";
 
 let sqlClient: NeonQueryFunction<false, false> | null = null;
 let tableReady: Promise<void> | null = null;
@@ -296,6 +297,116 @@ export async function deleteOpportunitiesBulk(ids: string[]) {
   let count = 0;
   for (const id of ids) {
     if (await deleteOpportunity(id)) count += 1;
+  }
+  return count;
+}
+
+// "Hiring Interest" — leads captured by the standalone "Share Your JD" form
+// (/api/lead), separate from KAL AI's conversational opportunity intake.
+let leadsTableReady: Promise<void> | null = null;
+
+export async function ensureLeadsTable() {
+  if (leadsTableReady) return leadsTableReady;
+  leadsTableReady = prepareLeadsTable().catch((error) => {
+    leadsTableReady = null;
+    throw error;
+  });
+  return leadsTableReady;
+}
+
+async function prepareLeadsTable() {
+  const sql = getSql();
+  await sql`
+    CREATE TABLE IF NOT EXISTS leads (
+      id TEXT PRIMARY KEY,
+      first_name TEXT NOT NULL DEFAULT '',
+      last_name TEXT NOT NULL DEFAULT '',
+      email TEXT NOT NULL,
+      company TEXT NOT NULL DEFAULT '',
+      role TEXT NOT NULL DEFAULT '',
+      brief TEXT NOT NULL DEFAULT '',
+      source TEXT NOT NULL DEFAULT 'website',
+      status TEXT NOT NULL DEFAULT 'new',
+      zoho_id TEXT,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `;
+  await sql`CREATE INDEX IF NOT EXISTS leads_status_created_idx ON leads (status, created_at DESC)`;
+}
+
+function mapLead(row: Record<string, unknown>): LeadRecord {
+  return {
+    id: String(row.id),
+    firstName: String(row.first_name ?? ""),
+    lastName: String(row.last_name ?? ""),
+    email: String(row.email),
+    company: String(row.company ?? ""),
+    role: String(row.role ?? ""),
+    brief: String(row.brief ?? ""),
+    source: String(row.source ?? "website"),
+    status: (row.status as LeadStatus) ?? "new",
+    zohoId: row.zoho_id ? String(row.zoho_id) : null,
+    createdAt: new Date(String(row.created_at)).toISOString(),
+  };
+}
+
+export async function insertLead(input: {
+  firstName: string;
+  lastName: string;
+  email: string;
+  company: string;
+  role: string;
+  brief: string;
+  source: string;
+  zohoId?: string | null;
+}) {
+  await ensureLeadsTable();
+  const sql = getSql();
+  const id = crypto.randomUUID();
+  const rows = await sql`
+    INSERT INTO leads (id, first_name, last_name, email, company, role, brief, source, zoho_id)
+    VALUES (
+      ${id}, ${input.firstName}, ${input.lastName}, ${input.email}, ${input.company},
+      ${input.role}, ${input.brief}, ${input.source}, ${input.zohoId ?? null}
+    )
+    RETURNING *
+  `;
+  return mapLead(rows[0] as Record<string, unknown>);
+}
+
+export async function listLeads() {
+  await ensureLeadsTable();
+  const rows = await getSql()`SELECT * FROM leads ORDER BY created_at DESC LIMIT 200`;
+  return rows.map((row) => mapLead(row as Record<string, unknown>));
+}
+
+export async function updateLeadStatus(id: string, status: LeadStatus) {
+  await ensureLeadsTable();
+  const rows = await getSql()`
+    UPDATE leads SET status = ${status} WHERE id = ${id} RETURNING *
+  `;
+  return rows[0] ? mapLead(rows[0] as Record<string, unknown>) : null;
+}
+
+export async function updateLeadStatusBulk(ids: string[], status: LeadStatus) {
+  const updated: LeadRecord[] = [];
+  for (const id of ids) {
+    const result = await updateLeadStatus(id, status);
+    if (result) updated.push(result);
+  }
+  return updated;
+}
+
+export async function deleteLead(id: string) {
+  await ensureLeadsTable();
+  const rows = await getSql()`DELETE FROM leads WHERE id = ${id} RETURNING id`;
+  return rows.length > 0;
+}
+
+export async function deleteLeadsBulk(ids: string[]) {
+  let count = 0;
+  for (const id of ids) {
+    if (await deleteLead(id)) count += 1;
   }
   return count;
 }
