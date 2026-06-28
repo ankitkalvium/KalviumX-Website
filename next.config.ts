@@ -5,7 +5,10 @@ const nextConfig: NextConfig = {
     root: __dirname,
   },
   images: {
-    remotePatterns: [new URL("https://x.kalvium.com/**")],
+    remotePatterns: [
+      { protocol: "https", hostname: "x.kalvium.com", pathname: "/**" },
+      { protocol: "https", hostname: "cdn.sanity.io", pathname: "/**" },
+    ],
   },
   async rewrites() {
     return [

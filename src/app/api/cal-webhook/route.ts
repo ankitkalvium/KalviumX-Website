@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { upsertZohoLead, verifyCalSignature } from "@/lib/zoho";
 import { getPostHogClient } from "@/lib/posthog-server";
 import { fetchWithRetry } from "@/lib/fetch-retry";
+import { getLatestOpportunityForEmail } from "@/lib/db";
+import { upsertMeeting, type MeetingStatus } from "@/lib/db-meetings";
 
 interface CalAttendee {
   email: string;
@@ -35,55 +37,63 @@ interface CalWebhookBody {
 // the Apps Script to apply to the existing "Calls Booked" row.
 const EVENT_CONFIG: Record<
   string,
-  { zohoTag: string; zohoStatus: string; sheetEventType: string; sheetStatus: string }
+  { zohoTag: string; zohoStatus: string; sheetEventType: string; sheetStatus: string; meetingStatus: MeetingStatus }
 > = {
   BOOKING_CREATED: {
     zohoTag: "Booked",
     zohoStatus: "Appointment Scheduled",
     sheetEventType: "created",
     sheetStatus: "Scheduled",
+    meetingStatus: "upcoming",
   },
   BOOKING_CANCELLED: {
     zohoTag: "Booking-Cancelled",
     zohoStatus: "Not Contacted",
     sheetEventType: "cancelled",
     sheetStatus: "Cancelled",
+    meetingStatus: "cancelled",
   },
   BOOKING_RESCHEDULED: {
     zohoTag: "Booking-Rescheduled",
     zohoStatus: "Not Contacted",
     sheetEventType: "rescheduled",
     sheetStatus: "Rescheduled",
+    meetingStatus: "rescheduled",
   },
   BOOKING_NO_SHOW_UPDATED: {
     zohoTag: "No-Show",
     zohoStatus: "Not Contacted",
     sheetEventType: "no_show",
     sheetStatus: "No-Show",
+    meetingStatus: "no_show",
   },
   MEETING_STARTED: {
     zohoTag: "Meeting-Started",
     zohoStatus: "Not Contacted",
     sheetEventType: "meeting_started",
     sheetStatus: "Meeting Started",
+    meetingStatus: "upcoming",
   },
   MEETING_ENDED: {
     zohoTag: "Meeting-Completed",
     zohoStatus: "Contacted",
     sheetEventType: "meeting_ended",
     sheetStatus: "Completed",
+    meetingStatus: "completed",
   },
   AFTER_HOSTS_DIDNT_JOIN: {
     zohoTag: "Host-No-Show",
     zohoStatus: "Not Contacted",
     sheetEventType: "host_no_show",
     sheetStatus: "Host No-Show",
+    meetingStatus: "no_show",
   },
   AFTER_GUESTS_DIDNT_JOIN: {
     zohoTag: "Guest-No-Show",
     zohoStatus: "Not Contacted",
     sheetEventType: "guest_no_show",
     sheetStatus: "Guest No-Show",
+    meetingStatus: "no_show",
   },
 };
 
@@ -109,9 +119,14 @@ function extractText(field: CalResponseField | undefined): string {
 export async function POST(request: Request) {
   const rawBody = await request.text();
 
-  // Verify Cal.com webhook signature if secret is configured.
+  // Verify Cal.com webhook signature. Required in production — an unset
+  // secret there would otherwise accept unauthenticated forged bookings.
   const secret = process.env.CAL_WEBHOOK_SECRET;
-  if (secret) {
+  if (!secret) {
+    if (process.env.NODE_ENV === "production") {
+      return NextResponse.json({ error: "Webhook is not configured on the server." }, { status: 503 });
+    }
+  } else {
     const signature = request.headers.get("x-cal-signature-256") ?? "";
     if (!verifyCalSignature(rawBody, signature, secret)) {
       return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
@@ -186,6 +201,26 @@ export async function POST(request: Request) {
 
   if (!zoho.ok) {
     console.error("Cal webhook: Zoho upsert failed", zoho.error);
+  }
+
+  // Mirrors every site-wide Cal.com booking into the admin Meetings tracker,
+  // matched to an Inbound by email if one exists (best-effort, no error if
+  // the table write fails — Zoho/sheet above are the systems of record).
+  try {
+    const inbound = await getLatestOpportunityForEmail(email);
+    await upsertMeeting({
+      id: targetBookingId,
+      companyName: company,
+      contactName: `${firstName} ${lastName}`.trim(),
+      contactEmail: email,
+      roleTitle: roles,
+      startTime: startTime || null,
+      status: config.meetingStatus,
+      inboundId: inbound?.id ?? null,
+      raw: body as unknown as Record<string, unknown>,
+    });
+  } catch (error: unknown) {
+    console.error("Cal webhook: meetings table write failed", error);
   }
 
   // Mirror to the "Calls Booked" sheet tab (same Apps Script endpoint as

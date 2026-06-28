@@ -2,7 +2,7 @@ import { roleOptions } from "@/lib/data";
 
 // Personal/free mail domains are rejected — we only want work emails. Keeps the
 // CRM clean and blocks the most common throwaway-signup spam.
-const FREE_EMAIL_DOMAINS = new Set([
+export const FREE_EMAIL_DOMAINS = new Set([
   "gmail.com",
   "googlemail.com",
   "yahoo.com",
@@ -26,6 +26,16 @@ const FREE_EMAIL_DOMAINS = new Set([
 ]);
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+export function validateWorkEmail(value: string): string | null {
+  const email = value.trim().toLowerCase();
+  if (!EMAIL_RE.test(email)) return "Enter a valid work email.";
+  const domain = email.split("@")[1] ?? "";
+  if (FREE_EMAIL_DOMAINS.has(domain)) {
+    return "Please use your work email, not a personal one.";
+  }
+  return null;
+}
 
 // Minimum time (ms) a human takes to fill the form. Faster = bot.
 // Kept low enough that browser autofill (name/email/role in well under a
@@ -125,14 +135,15 @@ const RATE_LIMIT = 4;
 const RATE_WINDOW_MS = 15 * 60 * 1000;
 const hits = new Map<string, number[]>();
 
-export function isRateLimited(ip: string): boolean {
+export function isRateLimited(ip: string, bucket = "lead", limit = RATE_LIMIT): boolean {
+  const key = `${bucket}:${ip}`;
   const now = Date.now();
-  const recent = (hits.get(ip) ?? []).filter((t) => now - t < RATE_WINDOW_MS);
-  if (recent.length >= RATE_LIMIT) {
-    hits.set(ip, recent);
+  const recent = (hits.get(key) ?? []).filter((t) => now - t < RATE_WINDOW_MS);
+  if (recent.length >= limit) {
+    hits.set(key, recent);
     return true;
   }
   recent.push(now);
-  hits.set(ip, recent);
+  hits.set(key, recent);
   return false;
 }

@@ -313,6 +313,7 @@ export const navLinks = [
   { href: "/deployment-model", label: "How It Works" },
   { href: "/for-companies", label: "For Companies" },
   { href: "/case-studies", label: "Results" },
+  { href: "/blog", label: "Blog" },
   { href: "/commercials", label: "Pricing" },
 ];
 

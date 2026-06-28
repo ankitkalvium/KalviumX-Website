@@ -1,14 +1,17 @@
 import type { MetadataRoute } from "next";
 import { roles, caseStudies } from "@/lib/data";
+import { isSanityConfigured } from "@/sanity/env";
+import { getAllPosts } from "@/sanity/lib/queries";
 
 // x.kalvium.com is an unrelated WordPress site, not this project.
 const SITE_URL = "https://kalvium-x-website.vercel.app";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticPages = [
     { path: "", priority: 1.0 },
     { path: "/roles", priority: 0.9 },
     { path: "/case-studies", priority: 0.9 },
+    { path: "/blog", priority: 0.8 },
     { path: "/deployment-model", priority: 0.8 },
     { path: "/for-gccs", priority: 0.8 },
     { path: "/commercials", priority: 0.8 },
@@ -35,5 +38,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.85,
   }));
 
-  return [...staticPages, ...rolePages, ...caseStudyPages];
+  const posts = isSanityConfigured() ? await getAllPosts().catch(() => []) : [];
+  const blogPages = posts.map((post) => ({
+    url: `${SITE_URL}/blog/${post.slug}`,
+    lastModified: new Date(post.publishedAt),
+    changeFrequency: "monthly" as const,
+    priority: 0.7,
+  }));
+
+  return [...staticPages, ...rolePages, ...caseStudyPages, ...blogPages];
 }

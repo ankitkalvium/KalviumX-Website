@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Why Hiring Isn't the Same as Readiness — KalviumX</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 16px; }
+  body { background: #F8F8F8; font-family: 'Inter', sans-serif; color: #111; -webkit-font-smoothing: antialiased; line-height: 1.6; }
+
+  .page { max-width: 800px; margin: 0 auto; background: #fff; box-shadow: 0 4px 30px rgba(0,0,0,0.03); }
+
+  /* NAV */
+  .nav { padding: 24px 48px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #f0f0f0; }
+  .nav-logo { font-family: 'DM Serif Display', serif; font-size: 22px; font-weight: 400; color: #111; letter-spacing: -.3px; text-decoration: none; }
+  .nav-meta { font-size: 11px; color: #aaa; letter-spacing: .08em; text-transform: uppercase; font-weight: 600; }
+
+  /* SECTIONS */
+  .sec { padding: 64px 48px; }
+  .sec--dark { background: #0D0D0D; color: #fff; }
+  .sec--red { background: #EF3738; color: #fff; }
+  .sec--light { background: #FAFAFA; border-top: 1px solid #f0f0f0; border-bottom: 1px solid #f0f0f0; }
+
+  /* LABELS & HEADINGS */
+  .label { font-size: 11px; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; color: #EF3738; margin-bottom: 16px; display: flex; align-items: center; gap: 12px; }
+  .label::before { content: ''; width: 20px; height: 2px; background: #EF3738; border-radius: 2px; }
+  .label--muted { color: #888; }
+  .label--muted::before { background: #ccc; }
+
+  .h1 { font-family: 'DM Serif Display', serif; font-size: 52px; line-height: 1.1; font-weight: 400; color: #111; margin-bottom: 20px; letter-spacing: -.5px; }
+  .h1 em { color: #EF3738; font-style: italic; }
+  .h2 { font-family: 'DM Serif Display', serif; font-size: 38px; line-height: 1.2; font-weight: 400; color: #111; margin-bottom: 16px; }
+  .sec--dark .h2 { color: #fff; }
+
+  .body { font-size: 16px; line-height: 1.7; color: #444; }
+  .body strong { color: #111; font-weight: 600; }
+  .body-max { max-width: 560px; }
+
+  /* HERO SPECIFIC */
+  .hero { padding: 64px 48px 32px; background: #fff; }
+  .hero-kicker { font-size: 11px; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; color: #EF3738; margin-bottom: 16px; }
+  .hero-sub { font-size: 18px; line-height: 1.6; color: #555; max-width: 580px; margin-bottom: 32px; }
+  .hero-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; border-top: 1px solid #f0f0f0; padding-top: 20px; font-size: 12px; color: #999; }
+  .hero-pill { background: #f0f0f0; color: #555; font-size: 11px; font-weight: 500; padding: 4px 12px; border-radius: 20px; letter-spacing: .02em; }
+
+  /* CARDS & SPLITS */
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 32px; }
+  .card { border-radius: 12px; padding: 36px; position: relative; display: flex; flex-direction: column; justify-content: space-between; }
+  .card--red { background: #EF3738; color: #fff; }
+  .card--dark { background: #111; color: #fff; }
+  .card-label { font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 20px; opacity: 0.8; }
+  .card-quote { font-family: 'DM Serif Display', serif; font-size: 24px; line-height: 1.3; margin-bottom: 12px; }
+  .card-desc { font-size: 14px; line-height: 1.6; opacity: 0.85; }
+
+  /* VISUAL WRAPPERS */
+  .graphic-container { background: #fff; border: 1px solid #eef0f2; border-radius: 12px; padding: 24px; margin: 32px 0; width: 100%; display: block; }
+  .sec--light .graphic-container { background: #fff; }
+  .road-wrap { padding: 0 48px 40px; background: #fff; }
+  .iceberg-wrap { display: flex; justify-content: center; margin: 40px 0; }
+
+  .insight-box { background: #111; border-radius: 12px; padding: 32px; margin-top: 40px; text-align: center; }
+  .insight-box p { font-family: 'DM Serif Display', serif; font-size: 24px; font-style: italic; color: #fff; margin-bottom: 8px; }
+  .insight-box span { font-size: 13px; color: #888; letter-spacing: .02em; }
+
+  /* TIMELINE */
+  .timeline { margin: 40px 0 16px; }
+  .tl-item { display: flex; gap: 24px; }
+  .tl-left { display: flex; flex-direction: column; align-items: center; }
+  .tl-dot { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+  .tl-dot--r { background: #EF3738; color: #fff; }
+  .tl-dot--g { background: #111; color: #fff; }
+  .tl-dot--m { background: #e0e0e0; color: #555; }
+  .tl-line { width: 2px; flex: 1; background: #eef0f2; margin: 8px 0; min-height: 32px; }
+  .tl-body { padding-bottom: 32px; flex: 1; }
+  .tl-tag { font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; padding: 3px 8px; border-radius: 4px; margin-bottom: 8px; display: inline-block; }
+  .tl-tag--r { background: #FFF0F0; color: #EF3738; }
+  .tl-tag--g { background: #f0f0f0; color: #555; }
+  .tl-body h4 { font-size: 16px; font-weight: 600; color: #111; margin-bottom: 6px; }
+  .tl-body p { font-size: 14px; color: #666; line-height: 1.6; }
+
+  /* BADGES & DIFFERENCE SECTION */
+  .split-cmp { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 32px; }
+  .cmp-card { border-radius: 12px; padding: 32px; border: 1px solid #eef0f2; background: #FAFAFA; display: flex; flex-direction: column; }
+  .cmp-card--r { border-color: #ffdadb; background: #FFF9F9; }
+  .cmp-card h4 { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 12px; }
+  .cmp-card h4.red { color: #EF3738; }
+  .cmp-card h4.dark { color: #555; }
+  .cmp-val { font-family: 'DM Serif Display', serif; font-size: 32px; line-height: 1.2; margin-bottom: 8px; }
+  .cmp-desc { font-size: 14px; color: #666; line-height: 1.6; }
+
+  .badges { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 24px; }
+  .badge { display: flex; align-items: center; gap: 12px; background: #FAFAFA; border: 1px solid #eef0f2; border-radius: 8px; padding: 14px 18px; font-size: 14px; color: #333; font-weight: 500; }
+  .badge-dot { width: 20px; height: 20px; border-radius: 50%; background: #EF3738; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+
+  /* CLOSING & FOOTER */
+  .closing { background: #0D0D0D; padding: 88px 48px; text-align: center; color: #fff; }
+  .closing-title { font-family: 'DM Serif Display', serif; font-size: 44px; line-height: 1.15; margin-bottom: 20px; font-weight: 400; }
+  .closing-title em { color: #EF3738; font-style: italic; }
+  .closing-sub { font-size: 16px; color: #aaa; max-width: 480px; margin: 0 auto 40px; line-height: 1.6; }
+  .closing-btn { display: inline-block; background: #EF3738; color: #fff; padding: 16px 36px; border-radius: 8px; font-size: 15px; font-weight: 600; text-decoration: none; transition: background 0.2s ease; }
+
+  .div { height: 1px; background: #eef0f2; margin: 0 48px; }
+  .tag-row { display: flex; flex-wrap: wrap; gap: 8px; padding: 24px 48px; background: #fff; }
+  .tag { background: #f5f5f5; color: #666; font-size: 12px; font-weight: 500; padding: 6px 14px; border-radius: 20px; border: 1px solid #eef0f2; }
+
+  .footer { background: #111; padding: 32px 48px; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid #222; }
+  .footer-logo { font-family: 'DM Serif Display', serif; font-size: 18px; color: #666; }
+  .footer-tag { font-size: 13px; color: #555; font-style: italic; font-family: 'DM Serif Display', serif; }
+
+  /* RESPONSIVE RESPONSES */
+  @media(max-width: 680px) {
+    .sec, .hero { padding: 48px 24px; }
+    .road-wrap { padding: 0 24px 32px; }
+    .nav, .tag-row, .footer { padding-left: 24px; padding-right: 24px; }
+    .div { margin: 0 24px; }
+    .h1 { font-size: 38px; }
+    .h2 { font-size: 30px; }
+    .closing-title { font-size: 32px; }
+    .split, .split-cmp, .badges { grid-template-columns: 1fr; gap: 16px; }
+    .card { padding: 28px; }
+    .badge { padding: 12px 14px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="nav">
+    <a href="#" class="nav-logo">KalviumX</a>
+    <span class="nav-meta">Engineering Intelligence · 2026</span>
+  </div>
+
+  <div class="hero">
+    <div class="hero-kicker">The Readiness Report</div>
+    <h1 class="h1">Why hiring isn't the<br>same as <em>readiness.</em></h1>
+    <p class="hero-sub">Most companies believe they've hired an engineer. What they've actually hired is potential that may take months to become productive.</p>
+    <div class="hero-meta">
+      <span>8 min read</span>
+      <span class="hero-pill">CHROs &amp; CTOs</span>
+      <span class="hero-pill">Engineering Leaders</span>
+      <span class="hero-pill">Founders</span>
+    </div>
+  </div>
+
+  <div class="road-wrap">
+    <div class="graphic-container" style="padding: 16px;">
+      <svg viewBox="0 0 704 310" width="100%" style="display:block; width:100%; height:auto;" role="img" aria-label="Illustration of the road from hiring to productivity">
+        <defs>
+          <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#FAFAFA"/>
+            <stop offset="100%" stop-color="#F0F2F5"/>
+          </linearGradient>
+          <marker id="arr-r" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M2 2L7 5L2 8" fill="none" stroke="#EF3738" stroke-width="2" stroke-linecap="round"/>
+          </marker>
+          <marker id="arr-g" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M2 2L7 5L2 8" fill="none" stroke="#2a9d5c" stroke-width="2" stroke-linecap="round"/>
+          </marker>
+        </defs>
+
+        <rect width="704" height="310" fill="url(#sky)" rx="8"/>
+
+        <path d="M60,230 C150,210 220,205 310,215 C400,225 460,210 520,205 C580,200 600,215 640,230" stroke="#DCE1E7" stroke-width="40" fill="none" stroke-linecap="round"/>
+        <path d="M80,226 C150,210 220,205 310,215 C400,225 460,210 520,205 C580,200 600,215 630,227" stroke="#fff" stroke-width="2" stroke-dasharray="12,10" fill="none" opacity="0.8"/>
+
+        <circle cx="80" cy="180" r="12" fill="#111"/>
+        <rect x="73" y="195" width="14" height="22" rx="3" fill="#333"/>
+        <circle cx="80" cy="150" r="12" fill="#fff" stroke="#EF3738" stroke-width="1.5"/>
+        <text x="80" y="154" text-anchor="middle" font-size="13" fill="#EF3738" font-family="Inter,sans-serif" font-weight="700">?</text>
+        <text x="80" y="270" text-anchor="middle" font-size="10" fill="#888" font-family="Inter,sans-serif" font-weight="600" letter-spacing="0.05em">NEW HIRE</text>
+
+        <rect x="202" y="70" width="300" height="90" rx="8" fill="#fff" stroke="#EF3738" stroke-width="1.5"/>
+        <text x="352" y="94" text-anchor="middle" font-size="10" fill="#EF3738" font-family="Inter,sans-serif" font-weight="700" letter-spacing="0.12em">THE GAP</text>
+        <text x="352" y="126" text-anchor="middle" font-size="24" fill="#111" font-family="DM Serif Display,serif">3–6 Months</text>
+        <text x="352" y="146" text-anchor="middle" font-size="10" fill="#777" font-family="Inter,sans-serif">before meaningful output begins</text>
+
+        <circle cx="210" cy="214" r="5" fill="#EF3738"/>
+        <text x="210" y="242" text-anchor="middle" font-size="10" fill="#555" font-family="Inter,sans-serif" font-weight="500">Onboarding</text>
+
+        <circle cx="340" cy="217" r="5" fill="#EF3738"/>
+        <text x="340" y="245" text-anchor="middle" font-size="10" fill="#555" font-family="Inter,sans-serif" font-weight="500">Codebase</text>
+
+        <circle cx="490" cy="206" r="5" fill="#EF3738"/>
+        <text x="490" y="234" text-anchor="middle" font-size="10" fill="#555" font-family="Inter,sans-serif" font-weight="500">Alignment</text>
+
+        <circle cx="624" cy="180" r="12" fill="#111"/>
+        <rect x="617" y="195" width="14" height="22" rx="3" fill="#333"/>
+        <circle cx="624" cy="150" r="12" fill="#E8F8EE" stroke="#2a9d5c" stroke-width="1.5"/>
+        <text x="624" y="154" text-anchor="middle" font-size="12" fill="#2a9d5c" font-family="Inter,sans-serif" font-weight="700">✓</text>
+        <text x="624" y="270" text-anchor="middle" font-size="10" fill="#888" font-family="Inter,sans-serif" font-weight="600" letter-spacing="0.05em">PRODUCTIVE</text>
+
+        <line x1="105" y1="218" x2="180" y2="214" stroke="#EF3738" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-r)"/>
+        <line x1="535" y1="204" x2="595" y2="208" stroke="#2a9d5c" stroke-width="1.5" marker-end="url(#arr-g)"/>
+
+        <rect x="220" y="282" width="264" height="20" rx="4" fill="#FFF0F0"/>
+        <text x="352" y="295" text-anchor="middle" font-size="10" fill="#EF3738" font-weight="600" font-family="Inter,sans-serif">Every day in the gap = cost with zero output</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="div"></div>
+
+  <div class="sec">
+    <div class="label">The Readiness Gap</div>
+    <h2 class="h2">What companies think<br>vs. what actually happens.</h2>
+    <p class="body body-max">There's a version of hiring that lives only in the offer letter. Then there's the version that lives in your sprint, your codebase, and your senior engineers' calendars.</p>
+
+    <div class="split">
+      <div class="card card--red">
+        <div>
+          <div class="card-label">What companies think</div>
+          <svg viewBox="0 0 100 60" width="70" style="display:block; margin-bottom:20px;">
+            <rect x="5" y="5" width="45" height="50" rx="4" fill="none" stroke="#fff" stroke-width="2"/>
+            <line x1="12" y1="18" x2="42" y2="18" stroke="rgba(255,255,255,0.7)" stroke-width="2"/>
+            <line x1="12" y1="28" x2="34" y2="28" stroke="rgba(255,255,255,0.7)" stroke-width="2"/>
+            <line x1="12" y1="38" x2="38" y2="38" stroke="rgba(255,255,255,0.4)" stroke-width="2"/>
+            <circle cx="45" cy="45" r="8" fill="#fff"/>
+            <path d="M41 45 l3 3 l5 -5" fill="none" stroke="#EF3738" stroke-width="2"/>
+
+            <rect x="62" y="15" width="32" height="30" rx="3" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="2"/>
+            <line x1="62" y1="24" x2="94" y2="24" stroke="rgba(255,255,255,0.6)" stroke-width="2"/>
+          </svg>
+          <div class="card-quote">"We hired an engineer."</div>
+        </div>
+        <p class="card-desc">Offer accepted. Onboarding scheduled. The management calendar assumes delivery starts next month.</p>
+      </div>
+
+      <div class="card card--dark">
+        <div>
+          <div class="card-label">The Reality</div>
+          <svg viewBox="0 0 100 60" width="70" style="display:block; margin-bottom:20px;">
+            <circle cx="30" cy="30" r="22" fill="none" stroke="#fff" stroke-width="2"/>
+            <line x1="30" y1="30" x2="30" y2="16" stroke="#fff" stroke-width="2"/>
+            <line x1="30" y1="30" x2="42" y2="30" stroke="#EF3738" stroke-width="2"/>
+
+            <circle cx="76" cy="30" r="14" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2"/>
+            <text x="76" y="35" text-anchor="middle" font-family="Inter" font-weight="bold" fill="#EF3738" font-size="16">$</text>
+            <line x1="66" y1="20" x2="86" y2="40" stroke="#EF3738" stroke-width="2"/>
+          </svg>
+          <div class="card-quote">"We hired future potential."</div>
+        </div>
+        <p class="card-desc">The engineering ramp is real. Costs aggregate silently across timelines before value catches up.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="div"></div>
+
+  <div class="sec">
+    <div class="label">The Hidden Cost</div>
+    <h2 class="h2">The hidden overheads<br>nobody budgets for.</h2>
+    <p class="body body-max">Every headcount request evaluates baseline salary. Almost none account for the continuous organizational drag that trails behind unprimed talent.</p>
+
+    <div class="iceberg-wrap">
+      <div class="graphic-container" style="max-width: 560px; padding: 12px; background: #E4EEF8;">
+        <svg viewBox="0 0 560 410" width="100%" style="display:block; width:100%; height:auto;">
+          <rect width="560" height="130" fill="#fff"/>
+
+          <polygon points="280,20 340,130 220,130" fill="#F4F8FC" stroke="#C8D8EE" stroke-width="2"/>
+          <text x="280" y="85" text-anchor="middle" font-size="13" font-weight="700" fill="#111" font-family="Inter,sans-serif" letter-spacing="0.05em">BASE SALARY</text>
+          <text x="280" y="105" text-anchor="middle" font-size="11" fill="#778899" font-family="Inter,sans-serif">Explicitly Budgeted</text>
+
+          <line x1="0" y1="130" x2="560" y2="130" stroke="#7A9AC2" stroke-width="2" stroke-dasharray="4,4"/>
+          <text x="16" y="148" font-size="10" fill="#5A7AAA" font-family="Inter,sans-serif" font-weight="700" letter-spacing="0.05em">WATERLINE (SURFACE VIEW)</text>
+
+          <polygon points="220,130 340,130 390,260 340,370 220,370 170,260" fill="#C8D8F0" stroke="#9AB0D8" stroke-width="1.5"/>
+
+          <text x="280" y="175" text-anchor="middle" font-size="12" font-weight="600" fill="#1A3A6A" font-family="Inter,sans-serif">System Ramp-Up Delays</text>
+          <line x1="190" y1="185" x2="370" y2="185" stroke="#A8C0E0" stroke-width="1"/>
+
+          <text x="280" y="210" text-anchor="middle" font-size="12" font-weight="600" fill="#1A3A6A" font-family="Inter,sans-serif">Manager Bandwidth Siphon</text>
+          <line x1="175" y1="220" x2="385" y2="220" stroke="#A8C0E0" stroke-width="1"/>
+
+          <text x="280" y="245" text-anchor="middle" font-size="12" font-weight="600" fill="#1A3A6A" font-family="Inter,sans-serif">Senior Engineer Hand-holding</text>
+          <line x1="170" y1="255" x2="390" y2="255" stroke="#A8C0E0" stroke-width="1"/>
+
+          <text x="280" y="280" text-anchor="middle" font-size="12" font-weight="600" fill="#1A3A6A" font-family="Inter,sans-serif">Review &amp; QA Bottlenecks</text>
+          <line x1="175" y1="290" x2="385" y2="290" stroke="#A8C0E0" stroke-width="1"/>
+
+          <text x="280" y="315" text-anchor="middle" font-size="12" font-weight="600" fill="#1A3A6A" font-family="Inter,sans-serif">Context-Switching Drag</text>
+          <line x1="190" y1="325" x2="370" y2="325" stroke="#A8C0E0" stroke-width="1"/>
+
+          <text x="280" y="352" text-anchor="middle" font-size="13" font-weight="700" fill="#EF3738" font-family="Inter,sans-serif">Slipped Release Timelines</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="insight-box">
+      <p>"The upfront salary isn't the expensive part. The downstream drag is."</p>
+      <span>Lost Velocity = Nonproductive Runway + Distracted Senior Oversight</span>
+    </div>
+  </div>
+
+  <div class="div"></div>
+
+  <div class="sec sec--light">
+    <div class="label label--muted">The Timeline</div>
+    <h2 class="h2">What your core team<br>actually absorbs.</h2>
+    <p class="body body-max" style="margin-bottom: 24px;">Month by month, hidden overhead compounds across standard engineering sprint setups.</p>
+
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-left">
+          <div class="tl-dot tl-dot--r">1</div>
+          <div class="tl-line"></div>
+        </div>
+        <div class="tl-body">
+          <div class="tl-tag tl-tag--r">Month 1</div>
+          <h4>Tooling Environment &amp; Configuration</h4>
+          <p>The candidate parses setup architecture, environment vars, and continuous integration architecture. Total functional contribution remains minimal.</p>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-left">
+          <div class="tl-dot tl-dot--g">2</div>
+          <div class="tl-line"></div>
+        </div>
+        <div class="tl-body">
+          <div class="tl-tag tl-tag--g">Month 2</div>
+          <h4>Codebase Intricacies &amp; Initial PRs</h4>
+          <p>Initial merge requests are heavily iterated. Senior engineers switch contexts frequently to critique design choices and avoid regression failures.</p>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-left">
+          <div class="tl-dot tl-dot--g">3</div>
+          <div class="tl-line"></div>
+        </div>
+        <div class="tl-body">
+          <div class="tl-tag tl-tag--g">Month 3</div>
+          <h4>Isolated Feature Tracking</h4>
+          <p>Comfort parameters allow execution of scoped, low-impact tasks. Core system design choices still require architectural guardrails.</p>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-left">
+          <div class="tl-dot tl-dot--m">4+</div>
+        </div>
+        <div class="tl-body">
+          <div class="tl-tag tl-tag--g">Months 4–6</div>
+          <h4>Autonomous Value Generation</h4>
+          <p>The hire reliably unblocks operational code modules without micro-reviews. The break-even cycle initiates long after capitalization begins.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="graphic-container">
+      <p style="font-size:12px; font-weight:700; color:#888; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:16px;">Productivity Output vs. Total Invested Capital</p>
+      <svg viewBox="0 0 640 220" width="100%" style="display:block; width:100%; height:auto;">
+        <defs>
+          <linearGradient id="inv-gradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#EF3738" stop-opacity="0.1"/>
+            <stop offset="100%" stop-color="#EF3738" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+
+        <line x1="50" y1="20" x2="50" y2="180" stroke="#E2E8F0" stroke-width="1.5"/>
+        <line x1="50" y1="180" x2="620" y2="180" stroke="#E2E8F0" stroke-width="1.5"/>
+        <line x1="50" y1="100" x2="620" y2="100" stroke="#F1F5F9" stroke-width="1" stroke-dasharray="4,4"/>
+
+        <text x="60" y="196" text-anchor="middle" font-size="11" fill="#94A3B8" font-family="Inter">Month 1</text>
+        <text x="170" y="196" text-anchor="middle" font-size="11" fill="#94A3B8" font-family="Inter">Month 2</text>
+        <text x="280" y="196" text-anchor="middle" font-size="11" fill="#94A3B8" font-family="Inter">Month 3</text>
+        <text x="390" y="196" text-anchor="middle" font-size="11" fill="#94A3B8" font-family="Inter">Month 4</text>
+        <text x="500" y="196" text-anchor="middle" font-size="11" fill="#94A3B8" font-family="Inter">Month 5</text>
+        <text x="590" y="196" text-anchor="middle" font-size="11" fill="#94A3B8" font-family="Inter">Month 6</text>
+
+        <path d="M50,170 C120,130 250,70 420,40 C500,26 560,22 620,20" fill="none" stroke="#EF3738" stroke-width="3" stroke-dasharray="6,4"/>
+        <path d="M50,170 C120,130 250,70 420,40 C500,26 560,22 620,20 L620,180 L50,180 Z" fill="url(#inv-gradient)"/>
+
+        <path d="M50,178 C130,175 220,170 310,150 C410,128 500,90 620,45" fill="none" stroke="#2a9d5c" stroke-width="3"/>
+
+        <rect x="65" y="25" width="12" height="12" fill="#EF3738" rx="2"/>
+        <text x="84" y="35" font-size="11" font-weight="600" fill="#EF3738" font-family="Inter">Cumulative Burn</text>
+
+        <rect x="65" y="45" width="12" height="12" fill="#2a9d5c" rx="2"/>
+        <text x="84" y="55" font-size="11" font-weight="600" fill="#2a9d5c" font-family="Inter">Effective Output</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="div"></div>
+
+  <div class="sec">
+    <div class="label">The KalviumX Advantage</div>
+    <h2 class="h2">Ready before day one.</h2>
+    <p class="body body-max">KalviumX engineers skip standard entry latency entirely. They onboard primed by production environments, structured delivery metrics, and professional automated feedback frameworks.</p>
+
+    <div class="split-cmp">
+      <div class="cmp-card cmp-card--r">
+        <h4 class="red">Traditional Onboarding</h4>
+        <svg viewBox="0 0 200 80" width="100%" style="display:block; margin:12px 0 20px;">
+          <line x1="10" y1="70" x2="190" y2="70" stroke="#E2E8F0" stroke-width="1"/>
+          <path d="M10,65 C60,62 110,50 190,15" fill="none" stroke="#EF3738" stroke-width="2" stroke-dasharray="4,3"/>
+          <circle cx="190" cy="15" r="4" fill="#EF3738"/>
+        </svg>
+        <div class="cmp-val" style="color:#EF3738">3–6 Months</div>
+        <div class="cmp-desc">Average latency period before an engineer drives independent production value and releases autonomy blocks.</div>
+      </div>
+
+      <div class="cmp-card">
+        <h4 class="dark">KalviumX Alignment</h4>
+        <svg viewBox="0 0 200 80" width="100%" style="display:block; margin:12px 0 20px;">
+          <line x1="10" y1="70" x2="190" y2="70" stroke="#E2E8F0" stroke-width="1"/>
+          <path d="M10,45 C50,20 100,12 190,10" fill="none" stroke="#111" stroke-width="2.5"/>
+          <circle cx="190" cy="10" r="4" fill="#111"/>
+        </svg>
+        <div class="cmp-val" style="color:#111">1–2 Weeks</div>
+        <div class="cmp-desc">Immediate tracking to code commits. Familiar with enterprise sprints, source control parameters, and test strategies out of the box.</div>
+      </div>
+    </div>
+
+    <p style="font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#888; margin:40px 0 16px;">Core Competency Vectors Map:</p>
+    <div class="badges">
+      <div class="badge"><span class="badge-dot">✓</span>Production Code Shipments</div>
+      <div class="badge"><span class="badge-dot">✓</span>Sprint Cadence Competency</div>
+      <div class="badge"><span class="badge-dot">✓</span>Structured CI/CD Execution</div>
+      <div class="badge"><span class="badge-dot">✓</span>Cross-functional Architecture Logs</div>
+    </div>
+  </div>
+
+  <div class="div"></div>
+
+  <div class="sec sec--light">
+    <div class="label label--muted">Productivity Comparison</div>
+    <h2 class="h2">The variance is engineering readiness.</h2>
+    <p class="body body-max">Two profiles can present identical programmatic logic solving benchmarks. The core delta is real-world exposure to production constraints.</p>
+
+    <div class="graphic-container">
+      <p style="font-size:12px; font-weight:700; color:#888; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:20px;">Real Output Track Over First 180 Days</p>
+      <svg viewBox="0 0 640 220" width="100%" style="display:block; width:100%; height:auto;">
+        <line x1="50" y1="20" x2="50" y2="180" stroke="#CBD5E1" stroke-width="1.5"/>
+        <line x1="50" y1="180" x2="620" y2="180" stroke="#CBD5E1" stroke-width="1.5"/>
+
+        <line x1="50" y1="135" x2="620" y2="135" stroke="#F1F5F9" stroke-width="1"/>
+        <line x1="50" y1="90" x2="620" y2="90" stroke="#F1F5F9" stroke-width="1"/>
+        <line x1="50" y1="45" x2="620" y2="45" stroke="#F1F5F9" stroke-width="1"/>
+
+        <text x="40" y="183" text-anchor="end" font-size="10" fill="#94A3B8" font-family="Inter">0%</text>
+        <text x="40" y="138" text-anchor="end" font-size="10" fill="#94A3B8" font-family="Inter">40%</text>
+        <text x="40" y="93" text-anchor="end" font-size="10" fill="#94A3B8" font-family="Inter">75%</text>
+        <text x="40" y="48" text-anchor="end" font-size="10" fill="#94A3B8" font-family="Inter">100%</text>
+
+        <text x="70" y="196" text-anchor="middle" font-size="11" fill="#94A3B8" font-family="Inter">M1</text>
+        <text x="180" y="196" text-anchor="middle" font-size="11" fill="#94A3B8" font-family="Inter">M2</text>
+        <text x="290" y="196" text-anchor="middle" font-size="11" fill="#94A3B8" font-family="Inter">M3</text>
+        <text x="400" y="196" text-anchor="middle" font-size="11" fill="#94A3B8" font-family="Inter">M4</text>
+        <text x="510" y="196" text-anchor="middle" font-size="11" fill="#94A3B8" font-family="Inter">M5</text>
+        <text x="600" y="196" text-anchor="middle" font-size="11" fill="#94A3B8" font-family="Inter">M6</text>
+
+        <path d="M50,175 C120,170 200,160 300,140 C420,115 520,75 620,50" fill="none" stroke="#EF3738" stroke-width="2.5" stroke-dasharray="6,4"/>
+        <path d="M50,105 C130,80 240,50 380,35 C480,25 550,22 620,20" fill="none" stroke="#111" stroke-width="3"/>
+
+        <text x="500" y="55" font-size="11" font-weight="700" fill="#111" font-family="Inter">KalviumX Cohort</text>
+        <text x="500" y="115" font-size="11" font-weight="600" fill="#EF3738" font-family="Inter">Traditional Path</text>
+      </svg>
+      <div style="margin-top:20px; padding:16px; background:#FAFAFA; border-radius:8px; border-left:4px solid #EF3738">
+        <p style="font-family:'DM Serif Display',serif; font-size:18px; font-style:italic; color:#111">"Organizations require immediate contextual contributions over legacy structural potential."</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="div"></div>
+
+  <div class="closing">
+    <div style="font-size:11px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:#EF3738; margin-bottom:32px;">The Closing Insight</div>
+
+    <svg viewBox="0 0 560 160" width="100%" style="display:block; max-width:500px; margin:0 auto 36px;">
+      <line x1="20" y1="120" x2="540" y2="120" stroke="#333" stroke-width="4"/>
+      <line x1="160" y1="50" x2="160" y2="120" stroke="#EF3738" stroke-width="3"/>
+      <line x1="400" y1="50" x2="400" y2="120" stroke="#EF3738" stroke-width="3"/>
+
+      <path d="M20,120 Q160,30 280,75 Q400,30 540,120" fill="none" stroke="#EF3738" stroke-width="2" opacity="0.8"/>
+
+      <text x="80" y="142" text-anchor="middle" font-size="11" font-weight="700" fill="#888" font-family="Inter">SOURCING</text>
+      <text x="280" y="110" text-anchor="middle" font-size="12" font-weight="700" fill="#fff" font-family="Inter" letter-spacing="0.1em">KALVIUMX BRIDGE</text>
+      <text x="480" y="142" text-anchor="middle" font-size="11" font-weight="700" fill="#888" font-family="Inter">PRODUCTION</text>
+    </svg>
+
+    <h2 class="closing-title">Hiring builds capacity.<br><em>Readiness</em> creates velocity.</h2>
+    <p class="closing-sub">The definitive lever for expanding scaling output isn't accelerated talent sourcing. It's embedding engineers verified for delivery targets.</p>
+    <a href="#" class="closing-btn">Integrate KalviumX Engineers →</a>
+  </div>
+
+  <div class="tag-row">
+    <span class="tag">Engineering Capacity</span>
+    <span class="tag">Readiness Assessment Matrix</span>
+    <span class="tag">GCC Enterprise Integration</span>
+    <span class="tag">Technical Architecture Strategy</span>
+  </div>
+
+  <div class="footer">
+    <span class="footer-logo">KalviumX</span>
+    <span class="footer-tag">Engineering Intelligence Platform</span>
+  </div>
+
+</div>
+</body>
+</html>
