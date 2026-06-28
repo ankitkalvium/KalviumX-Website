@@ -12,15 +12,6 @@ const roleTiles = [
     featured: true,
   },
   {
-    name: "AI Product Engineering",
-    icon: "Product Engineering",
-    label: "AI-native products",
-    description:
-      "Ship AI-assisted product experiences, internal copilots, workflow automation, and API-connected tools.",
-    stacks: ["AI Apps", "Copilots", "Automation", "API Integration"],
-    featured: true,
-  },
-  {
     name: "Full-Stack",
     icon: "Full-Stack",
     label: "Web engineering",
