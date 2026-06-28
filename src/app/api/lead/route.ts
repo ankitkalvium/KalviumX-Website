@@ -5,6 +5,7 @@ import { validateLead, isRateLimited } from "@/lib/lead-validation";
 import { upsertZohoLead } from "@/lib/zoho";
 import { getPostHogClient } from "@/lib/posthog-server";
 import { fetchWithRetry } from "@/lib/fetch-retry";
+import { insertLead } from "@/lib/db";
 
 function getClientIp(request: Request): string {
   const forwarded = request.headers.get("x-forwarded-for");
@@ -51,6 +52,15 @@ export async function POST(request: Request) {
   });
   if (!zoho.ok) {
     console.error("Zoho lead upsert failed", zoho.error);
+  }
+
+  // Mirror into Postgres so the admin dashboard's "Hiring Interest" view can
+  // list these without a live Zoho API call. Best-effort — Zoho stays the
+  // source of truth for outreach, this is just for internal visibility.
+  try {
+    await insertLead({ ...lead, zohoId: zoho.ok ? zoho.id : null });
+  } catch (error: unknown) {
+    console.error("Lead DB insert failed", error);
   }
 
   // Optional secondary webhook (Slack/Brevo/etc.) when configured.

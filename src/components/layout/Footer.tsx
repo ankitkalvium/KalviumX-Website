@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { navLinks } from "@/lib/data";
+import { CAL_LINK } from "@/components/ui/CalBookingButton";
 
 export default function Footer() {
   return (
@@ -47,13 +48,14 @@ export default function Footer() {
               </Link>
             </li>
             <li>
-              <a
-                href="tel:+919483200300"
-                aria-label="Call KalviumX sales at +91 9483 200 300"
+              <button
+                type="button"
+                data-cal-link={CAL_LINK}
+                data-cal-origin="https://cal.com"
                 className="hover:text-red transition-colors"
               >
-                Call +91 9483 200 300
-              </a>
+                Let&apos;s Talk
+              </button>
             </li>
           </ul>
         </div>

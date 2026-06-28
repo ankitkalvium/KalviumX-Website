@@ -5,12 +5,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 
+const INBOUNDS_ICON = "M3 7l9-4 9 4-9 4-9-4zm0 6l9 4 9-4M3 13v4l9 4 9-4v-4";
+
+const INBOUNDS_CHILDREN = [
+  { href: "/admin/opportunities", label: "Kal Ai" },
+  { href: "/admin/opportunities/hiring-interest", label: "Hiring Interest" },
+];
+
 const NAV_ITEMS = [
-  {
-    href: "/admin/opportunities",
-    label: "Inbounds",
-    icon: "M3 7l9-4 9 4-9 4-9-4zm0 6l9 4 9-4M3 13v4l9 4 9-4v-4",
-  },
   {
     href: "/admin/meetings",
     label: "Meetings",
@@ -79,6 +81,43 @@ export default function AdminSidebar({
       </div>
 
       <nav className="mt-8 flex flex-col gap-1 text-sm font-extrabold">
+        {(() => {
+          const inboundsActive = pathname.startsWith("/admin/opportunities");
+          return (
+            <div>
+              <Link
+                href={INBOUNDS_CHILDREN[0].href}
+                title="Inbounds"
+                className={`flex items-center gap-2 rounded-lg py-2.5 transition-colors ${
+                  collapsed ? "justify-center px-2" : "px-3"
+                } ${inboundsActive ? "bg-red/5 text-red" : "text-ink hover:bg-soft"}`}
+              >
+                <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0 fill-none stroke-current" strokeWidth="2">
+                  <path d={INBOUNDS_ICON} />
+                </svg>
+                {collapsed ? null : "Inbounds"}
+              </Link>
+              {!collapsed && inboundsActive ? (
+                <div className="ml-[26px] mt-1 flex flex-col gap-1 border-l border-line pl-3">
+                  {INBOUNDS_CHILDREN.map((child) => {
+                    const childActive = pathname === child.href;
+                    return (
+                      <Link
+                        key={child.href}
+                        href={child.href}
+                        className={`rounded-lg px-3 py-2 text-xs transition-colors ${
+                          childActive ? "bg-red/5 text-red" : "text-muted hover:bg-soft hover:text-ink"
+                        }`}
+                      >
+                        {child.label}
+                      </Link>
+                    );
+                  })}
+                </div>
+              ) : null}
+            </div>
+          );
+        })()}
         {NAV_ITEMS.map((item) => {
           const active = pathname.startsWith(item.href);
           return (
