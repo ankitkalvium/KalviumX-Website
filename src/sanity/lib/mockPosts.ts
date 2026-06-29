@@ -143,5 +143,6 @@ export const previewPost: BlogPost = {
   coverImageUrl: "/images/hero-team.png",
   authorName: "KalviumX Team",
   publishedAt: new Date().toISOString(),
+  published: true,
   body: previewBody,
 };

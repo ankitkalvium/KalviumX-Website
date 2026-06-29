@@ -80,14 +80,16 @@ export default async function BlogPage() {
                   className="group flex flex-col overflow-hidden rounded-lg border border-line border-b-2 border-b-red bg-white hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200"
                 >
                   <div className="relative aspect-[16/10] w-full overflow-hidden bg-soft">
-                    {post.coverImageUrl || post.coverImage?.asset ? (
+                    {post.coverImageUrl || post.coverImage?.asset || post.ogImageUrl ? (
                       <Image
                         src={
                           post.coverImageUrl ||
+                          post.ogImageUrl ||
                           urlForImage(post.coverImage!).width(640).height(400).fit("crop").auto("format").url()
                         }
                         alt={post.coverImage?.alt || post.title}
                         fill
+                        unoptimized={Boolean(post.ogImageUrl && !post.coverImage?.asset)}
                         className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
                         sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                       />

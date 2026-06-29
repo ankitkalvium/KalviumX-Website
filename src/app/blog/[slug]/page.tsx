@@ -3,7 +3,10 @@ import { PortableText } from "@portabletext/react";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { getAdminEmail } from "@/auth";
+import FullPageHtmlRenderer from "@/components/blog/FullPageHtmlRenderer";
 import Button from "@/components/ui/Button";
+import { scopeCss } from "@/lib/css-scope";
 import { isSanityConfigured } from "@/sanity/env";
 import { urlForImage } from "@/sanity/lib/image";
 import { portableTextComponents } from "@/sanity/lib/portableTextComponents";
@@ -31,12 +34,14 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
   const title = post.seoTitle || post.title;
   const description = post.seoDescription || post.excerpt;
   const ogImage =
+    post.ogImageUrl ||
     post.coverImageUrl ||
     (post.coverImage?.asset ? urlForImage(post.coverImage).width(1200).height(630).fit("crop").url() : undefined);
 
   return {
     title,
     description,
+    alternates: post.canonicalUrl ? { canonical: post.canonicalUrl } : undefined,
     openGraph: {
       title: `${title} | KalviumX`,
       description,
@@ -51,6 +56,15 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const { slug } = await params;
   const post = await getPostBySlug(slug);
   if (!post) notFound();
+
+  // Drafts are invisible to the public — only a signed-in admin can preview
+  // one via its real URL before publishing. Posts predating the `published`
+  // field (no value at all) are treated as published, not as drafts.
+  const isDraft = post.published === false;
+  if (isDraft) {
+    const adminEmail = await getAdminEmail();
+    if (!adminEmail) notFound();
+  }
 
   const articleSchema = {
     "@context": "https://schema.org",
@@ -80,14 +94,32 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       <>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
-        <div className="border-b border-line py-3">
-          <div className="container-x">
-            <Link href="/blog" className="text-sm font-extrabold text-red hover:underline">
+        {isDraft ? (
+          <div className="border-b border-amber-200 bg-amber-50 py-2.5 text-center text-sm font-extrabold text-amber-900">
+            Draft preview — only visible to signed-in admins
+          </div>
+        ) : null}
+        <div className="border-b border-line py-4">
+          <div className="container-x flex items-center justify-between gap-5">
+            <div className="flex items-center gap-2 text-sm font-bold text-[#777]">
+              <Link href="/blog" className="text-red hover:underline">Blog</Link>
+              <span aria-hidden>›</span>
+              <span className="truncate max-w-[60vw]">{post.title}</span>
+            </div>
+            <Link href="/blog" className="hidden sm:inline-flex text-sm font-extrabold text-red">
               ← Back to blog
             </Link>
           </div>
         </div>
-        <div dangerouslySetInnerHTML={{ __html: post.fullPageHtml }} />
+        <div className="container-x py-2">
+          <FullPageHtmlRenderer
+            html={post.fullPageHtml}
+            scripts={post.scripts}
+            useBrandStyling={post.useBrandStyling ?? false}
+            customStyles={post.customStyles ? scopeCss(post.customStyles, `kx-post-${post.slug}`) : undefined}
+            scopeClass={`kx-post-${post.slug}`}
+          />
+        </div>
       </>
     );
   }
@@ -96,6 +128,12 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+
+      {isDraft ? (
+        <div className="border-b border-amber-200 bg-amber-50 py-2.5 text-center text-sm font-extrabold text-amber-900">
+          Draft preview — only visible to signed-in admins
+        </div>
+      ) : null}
 
       <section className="border-b border-line py-9 lg:py-12">
         <div className="container-x">
