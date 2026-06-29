@@ -83,3 +83,102 @@ body {
     animation-duration: 80s;
   }
 }
+
+/* Brand typography for imported HTML blog posts ("Match KalviumX brand
+   styling" on, the default). Mirrors src/sanity/lib/portableTextComponents.tsx
+   so an HTML import reads identically to a Studio-authored post, regardless
+   of whatever fonts/colors the source file's own <style> brought with it.
+   The imported HTML's own <style> tag is never injected in this mode. */
+.kx-imported-post {
+  font-family: var(--font-inter), Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: var(--text);
+  max-width: 760px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 48px 24px 80px;
+}
+
+.kx-imported-post * {
+  font-family: inherit !important;
+  color: inherit !important;
+  background: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+
+.kx-imported-post h1 {
+  font-size: clamp(32px, 5vw, 48px);
+  font-weight: 900;
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+  margin: 0 0 16px;
+}
+
+.kx-imported-post h2 {
+  font-size: clamp(24px, 3vw, 32px);
+  font-weight: 900;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  margin: 48px 0 0;
+}
+
+.kx-imported-post h3 {
+  font-size: clamp(20px, 2.4vw, 26px);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin: 36px 0 0;
+}
+
+.kx-imported-post p {
+  margin: 20px 0 0;
+  font-size: 17px;
+  line-height: 1.7;
+  color: #444;
+  font-weight: 500;
+}
+
+.kx-imported-post ul,
+.kx-imported-post ol {
+  margin: 20px 0 0;
+  padding-left: 22px;
+  font-size: 17px;
+  line-height: 1.7;
+  color: #444;
+  font-weight: 500;
+}
+
+.kx-imported-post li {
+  margin-top: 8px;
+}
+
+.kx-imported-post blockquote {
+  margin: 24px 0 0;
+  border-left: 4px solid var(--red);
+  padding-left: 20px;
+  font-size: 18px;
+  font-weight: 600;
+  font-style: italic;
+  color: var(--black);
+}
+
+.kx-imported-post a {
+  font-weight: 700;
+  color: var(--red);
+  text-decoration: underline;
+}
+
+.kx-imported-post img,
+.kx-imported-post video {
+  max-width: 100%;
+  height: auto;
+  margin: 32px 0 0;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+}
+
+.kx-imported-post strong,
+.kx-imported-post b {
+  font-weight: 800;
+  color: var(--black);
+}

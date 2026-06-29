@@ -28,6 +28,11 @@ const NAV_ITEMS = [
     label: "Students",
     icon: "M12 14l9-5-9-5-9 5 9 5zM12 14l6.16-3.42A8 8 0 0112 21a8 8 0 01-6.16-10.42L12 14z",
   },
+  {
+    href: "/admin/blog",
+    label: "Blog",
+    icon: "M4 19.5A2.5 2.5 0 016.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z",
+  },
 ];
 
 export default function AdminSidebar({

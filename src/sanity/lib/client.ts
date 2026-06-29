@@ -19,3 +19,23 @@ export function getClient(): SanityClient {
   }
   return cachedClient;
 }
+
+let cachedWriteClient: SanityClient | null = null;
+
+// Server-only — requires SANITY_API_WRITE_TOKEN (editor-scoped token, not a
+// user session). Used by admin tooling (e.g. the HTML blog importer) that
+// needs to write documents without an interactive `sanity login`.
+export function getWriteClient(): SanityClient {
+  const token = process.env.SANITY_API_WRITE_TOKEN;
+  if (!token) throw new Error("SANITY_API_WRITE_TOKEN is not configured");
+  if (!cachedWriteClient) {
+    cachedWriteClient = createClient({
+      projectId,
+      dataset,
+      apiVersion,
+      token,
+      useCdn: false,
+    });
+  }
+  return cachedWriteClient;
+}
