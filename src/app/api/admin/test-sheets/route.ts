@@ -68,7 +68,8 @@ export async function POST(request: Request) {
 
       // Read back and verify
       const rows = await readAllRows(name);
-      const foundIdx = rows.findIndex((r) => r[0] === id);
+      // Search by the actual value written to col 0 (not bare id — some rows prefix/suffix it)
+      const foundIdx = rows.findIndex((r) => r[0] === row[0]);
       if (foundIdx === -1) throw new Error("row not found after write");
       const rowNum = foundIdx + 1;
 
