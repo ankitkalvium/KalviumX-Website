@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import AdminSidebar from "@/components/admin/AdminSidebar";
-import type { BlogPostSummary } from "@/sanity/lib/queries";
+import type { PostRecord } from "@/lib/repo/posts";
 
 function formatDate(value?: string) {
   if (!value) return "—";
@@ -15,7 +15,7 @@ export default function BlogAdminDashboard({
   adminEmail,
   onSignOut,
 }: {
-  posts: BlogPostSummary[];
+  posts: PostRecord[];
   adminEmail: string;
   onSignOut?: () => Promise<void>;
 }) {
@@ -26,7 +26,6 @@ export default function BlogAdminDashboard({
   const [useBrandStyling, setUseBrandStyling] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-  const [uploadingCover, setUploadingCover] = useState(false);
   const [error, setError] = useState("");
   const [result, setResult] = useState<{ title: string; url: string } | null>(null);
 
@@ -34,24 +33,6 @@ export default function BlogAdminDashboard({
     const file = event.target.files?.[0];
     if (!file) return;
     setHtml(await file.text());
-  }
-
-  async function handleCoverImageFile(event: React.ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0];
-    if (!file) return;
-    setUploadingCover(true);
-    setError("");
-    const formData = new FormData();
-    formData.append("file", file);
-    const response = await fetch("/api/admin/blog/upload-image", { method: "POST", body: formData });
-    const data = await response.json();
-    setUploadingCover(false);
-    event.target.value = "";
-    if (!response.ok) {
-      setError(data.error || "Could not upload this image.");
-      return;
-    }
-    setCoverImageUrl(data.url);
   }
 
   function resetForm() {
@@ -64,17 +45,15 @@ export default function BlogAdminDashboard({
     setError("");
   }
 
-  async function loadForEdit(post: BlogPostSummary) {
-    if (!post.hasFullPageHtml) {
-      setError(
-        `"${post.title}" was authored in Sanity Studio (structured content, not an HTML import) — edit it there instead.`,
-      );
+  async function loadForEdit(post: PostRecord) {
+    if (!post.fullPageHtml) {
+      setError(`"${post.title}" is a structured post, not an HTML import — edit its content in the Posts sheet directly.`);
       return;
     }
     setBusy(true);
     setError("");
     setResult(null);
-    const response = await fetch(`/api/admin/blog/${post._id}`);
+    const response = await fetch(`/api/admin/blog/${post.id}`);
     const data = await response.json();
     setBusy(false);
     if (!response.ok) {
@@ -85,7 +64,7 @@ export default function BlogAdminDashboard({
     setSlug(data.post.slug || "");
     setCoverImageUrl(data.post.ogImageUrl || "");
     setUseBrandStyling(data.post.useBrandStyling ?? false);
-    setEditingId(post._id);
+    setEditingId(post.id);
   }
 
   async function handleSave(publishNow?: boolean) {
@@ -119,10 +98,10 @@ export default function BlogAdminDashboard({
     router.refresh();
   }
 
-  async function togglePublish(post: BlogPostSummary) {
+  async function togglePublish(post: PostRecord) {
     setBusy(true);
     setError("");
-    const response = await fetch(`/api/admin/blog/${post._id}`, {
+    const response = await fetch(`/api/admin/blog/${post.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ published: !post.published }),
@@ -136,18 +115,18 @@ export default function BlogAdminDashboard({
     router.refresh();
   }
 
-  async function deletePost(post: BlogPostSummary) {
+  async function deletePost(post: PostRecord) {
     if (!window.confirm(`Delete "${post.title}"? This cannot be undone.`)) return;
     setBusy(true);
     setError("");
-    const response = await fetch(`/api/admin/blog/${post._id}`, { method: "DELETE" });
+    const response = await fetch(`/api/admin/blog/${post.id}`, { method: "DELETE" });
     const data = await response.json();
     setBusy(false);
     if (!response.ok) {
       setError(data.error || "Could not delete this post.");
       return;
     }
-    if (editingId === post._id) resetForm();
+    if (editingId === post.id) resetForm();
     router.refresh();
   }
 
@@ -240,17 +219,6 @@ export default function BlogAdminDashboard({
               placeholder="Paste an image URL..."
               className="flex-1 min-w-[220px] rounded-lg border border-line px-3 py-2.5 text-sm"
             />
-            <span className="text-xs font-bold text-muted">or</span>
-            <label className="inline-flex h-10 cursor-pointer items-center rounded-lg border-2 border-ink px-4 text-xs font-extrabold disabled:opacity-50">
-              {uploadingCover ? "Uploading..." : "Upload image"}
-              <input
-                type="file"
-                accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml"
-                onChange={(event) => void handleCoverImageFile(event)}
-                disabled={uploadingCover}
-                className="hidden"
-              />
-            </label>
           </div>
           {coverImageUrl ? (
             // eslint-disable-next-line @next/next/no-img-element -- arbitrary external/uploaded URL, not a known remote pattern for next/image
@@ -316,7 +284,7 @@ export default function BlogAdminDashboard({
                 </thead>
                 <tbody className="divide-y divide-line">
                   {posts.map((post) => (
-                    <tr key={post._id}>
+                    <tr key={post.id}>
                       <td className="px-5 py-4">
                         <p className="font-extrabold">{post.title}</p>
                         <p className="text-xs text-muted">/blog/{post.slug}</p>
@@ -335,14 +303,14 @@ export default function BlogAdminDashboard({
                       <td className="px-5 py-4 text-sm text-muted">{formatDate(post.updatedAt)}</td>
                       <td className="px-5 py-4">
                         <div className="flex flex-wrap gap-3 text-xs font-extrabold">
-                          {post.hasFullPageHtml ? (
+                          {post.fullPageHtml ? (
                             <button type="button" disabled={busy} onClick={() => void loadForEdit(post)} className="text-ink hover:text-red disabled:opacity-50">
                               Edit
                             </button>
                           ) : (
-                            <a href="/studio" target="_blank" rel="noopener noreferrer" className="text-muted hover:text-ink" title="Authored in Sanity Studio, not an HTML import">
-                              Edit in Studio
-                            </a>
+                            <span className="text-muted" title="Structured post — edit its content in the Posts sheet directly">
+                              Structured post
+                            </span>
                           )}
                           <button type="button" disabled={busy} onClick={() => void togglePublish(post)} className="text-ink hover:text-red disabled:opacity-50">
                             {post.published ? "Unpublish" : "Publish"}

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getAdminEmail } from "@/auth";
 import { buildPostFromHtml } from "@/lib/html-to-post";
-import { getWriteClient } from "@/sanity/lib/client";
+import { getPostById, upsertPost } from "@/lib/repo/posts";
 
 const schema = z.object({
   html: z.string().min(1).max(2_000_000),
@@ -20,10 +20,6 @@ export async function POST(request: Request) {
   const adminEmail = await getAdminEmail();
   if (!adminEmail) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  if (!process.env.SANITY_API_WRITE_TOKEN) {
-    return NextResponse.json({ error: "Blog publishing is not configured on the server." }, { status: 503 });
-  }
-
   const parsed = schema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) return NextResponse.json({ error: "Invalid request." }, { status: 400 });
 
@@ -36,24 +32,18 @@ export async function POST(request: Request) {
   }
 
   try {
-    const client = getWriteClient();
-    // Editing an existing post (same slug) should keep its original
-    // publishedAt and published state unless explicitly overridden —
-    // createOrReplace would otherwise reset both on every save.
-    const existing = await client.fetch<{ publishedAt?: string; published?: boolean } | null>(
-      `*[_id == $id][0]{ publishedAt, published }`,
-      { id: post.id },
-    );
+    // Editing an existing post (same slug/id) should keep its original
+    // publishedAt and published state unless explicitly overridden.
+    const existing = await getPostById(post.id);
     const published = parsed.data.publish ?? existing?.published ?? false;
     const publishedAt = existing?.publishedAt ?? post.publishedAt;
     const useBrandStyling = parsed.data.useBrandStyling ?? false;
     const ogImageUrl = parsed.data.coverImageUrl || post.ogImageUrl || undefined;
 
-    const result = await client.createOrReplace({
-      _id: post.id,
-      _type: "post",
+    const result = await upsertPost({
+      id: post.id,
+      slug: post.slug,
       title: post.title,
-      slug: { _type: "slug", current: post.slug },
       excerpt: post.excerpt,
       authorName: post.authorName,
       publishedAt,
@@ -69,14 +59,14 @@ export async function POST(request: Request) {
     });
     return NextResponse.json({
       ok: true,
-      id: result._id,
+      id: result.id,
       title: result.title,
       slug: post.slug,
       published,
       url: `/blog/${post.slug}`,
     });
   } catch (error: unknown) {
-    console.error("Sanity HTML import failed", error);
+    console.error("Blog post save failed", error);
     const message = error instanceof Error ? error.message : "Could not publish this post.";
     return NextResponse.json({ error: message }, { status: 502 });
   }

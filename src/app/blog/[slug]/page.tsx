@@ -1,16 +1,13 @@
 import type { Metadata } from "next";
-import { PortableText } from "@portabletext/react";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getAdminEmail } from "@/auth";
 import FullPageHtmlRenderer from "@/components/blog/FullPageHtmlRenderer";
+import SimpleBodyRenderer from "@/components/blog/SimpleBodyRenderer";
 import Button from "@/components/ui/Button";
 import { scopeCss } from "@/lib/css-scope";
-import { isSanityConfigured } from "@/sanity/env";
-import { urlForImage } from "@/sanity/lib/image";
-import { portableTextComponents } from "@/sanity/lib/portableTextComponents";
-import { getPostBySlug, getPostSlugs } from "@/sanity/lib/queries";
+import { getPostBySlug, getPostSlugs } from "@/lib/repo/posts";
 
 // x.kalvium.com is an unrelated WordPress site, not this project.
 const SITE_URL = "https://kalvium-x-website.vercel.app";
@@ -22,7 +19,7 @@ interface BlogPostPageProps {
 }
 
 export async function generateStaticParams() {
-  const slugs = await getPostSlugs();
+  const slugs = await getPostSlugs().catch(() => []);
   return slugs.map((slug) => ({ slug }));
 }
 
@@ -33,10 +30,7 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
 
   const title = post.seoTitle || post.title;
   const description = post.seoDescription || post.excerpt;
-  const ogImage =
-    post.ogImageUrl ||
-    post.coverImageUrl ||
-    (post.coverImage?.asset ? urlForImage(post.coverImage).width(1200).height(630).fit("crop").url() : undefined);
+  const ogImage = post.ogImageUrl || post.coverImageUrl || undefined;
 
   return {
     title,
@@ -137,11 +131,6 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
       <section className="border-b border-line py-9 lg:py-12">
         <div className="container-x">
-          {!isSanityConfigured() ? (
-            <div className="mb-7 rounded-lg border border-amber-200 bg-amber-50 px-5 py-3 text-sm font-bold text-amber-900">
-              Preview content. Connect Sanity to replace this with your real posts.
-            </div>
-          ) : null}
           <div className="flex items-center justify-between gap-5 mb-9">
             <div className="flex items-center gap-2 text-sm font-bold text-[#777]">
               <Link href="/blog" className="text-red hover:underline">Blog</Link>
@@ -164,16 +153,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         </div>
       </section>
 
-      {post.coverImageUrl || post.coverImage?.asset ? (
+      {post.coverImageUrl ? (
         <section className="pt-9">
           <div className="container-x">
             <div className="relative aspect-[16/8] w-full overflow-hidden rounded-lg border border-line">
               <Image
-                src={
-                  post.coverImageUrl ||
-                  urlForImage(post.coverImage!).width(1600).height(800).fit("crop").auto("format").url()
-                }
-                alt={post.coverImage?.alt || post.title}
+                src={post.coverImageUrl}
+                alt={post.title}
                 fill
                 priority
                 className="object-cover"
@@ -186,7 +172,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
       <section className="py-12">
         <div className="container-x max-w-3xl">
-          <PortableText value={post.body} components={portableTextComponents} />
+          <SimpleBodyRenderer blocks={post.body} />
         </div>
       </section>
 

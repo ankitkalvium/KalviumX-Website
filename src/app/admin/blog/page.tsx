@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { getAdminEmail, signOut } from "@/auth";
 import BlogAdminDashboard from "@/components/admin/BlogAdminDashboard";
-import { getAllPostsForAdmin } from "@/sanity/lib/queries";
+import { getAllPostsForAdmin } from "@/lib/repo/posts";
 
 export const dynamic = "force-dynamic";
 

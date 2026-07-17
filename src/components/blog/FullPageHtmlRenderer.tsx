@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import type { ExtractedScript } from "@/sanity/lib/queries";
+import type { ExtractedScript } from "@/lib/repo/posts";
 
 // Browsers never execute <script> tags inserted via innerHTML, so the
 // importer strips them out and stores them separately (see html-to-post.ts).
