@@ -102,10 +102,23 @@ export async function getDeal(id: string): Promise<DealRecord | null> {
   return found ? toDeal(found.row) : null;
 }
 
+// Magic-link tokens never expired before this — a leaked link (forwarded
+// email, browser history, referrer header) stayed valid forever. Derived
+// from the existing created_at column so no sheet migration is needed.
+const FORM_TOKEN_TTL_MS = 60 * 24 * 60 * 60 * 1000; // 60 days
+
+function isTokenExpired(deal: DealRecord): boolean {
+  const createdAt = Date.parse(deal.createdAt);
+  if (Number.isNaN(createdAt)) return false;
+  return Date.now() - createdAt > FORM_TOKEN_TTL_MS;
+}
+
 export async function getDealByToken(token: string): Promise<DealRecord | null> {
   await readyDeals();
   const found = await findRow(DEALS_TAB, D.formToken, token);
-  return found ? toDeal(found.row) : null;
+  if (!found) return null;
+  const deal = toDeal(found.row);
+  return isTokenExpired(deal) ? null : deal;
 }
 
 export async function updateDealStage(id: string, stage: DealStage): Promise<DealRecord | null> {
@@ -126,6 +139,7 @@ export async function submitDealForm(
   const found = await findRow(DEALS_TAB, D.formToken, token);
   if (!found) return null;
   const existing = toDeal(found.row);
+  if (isTokenExpired(existing)) return null;
   const updated: DealRecord = {
     ...existing,
     formData,
