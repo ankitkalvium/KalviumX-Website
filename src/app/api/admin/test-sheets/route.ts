@@ -70,7 +70,10 @@ export async function POST(request: Request) {
       const rows = await readAllRows(name);
       // Search by the actual value written to col 0 (not bare id — some rows prefix/suffix it)
       const foundIdx = rows.findIndex((r) => r[0] === row[0]);
-      if (foundIdx === -1) throw new Error("row not found after write");
+      if (foundIdx === -1) {
+        const debug = `looking for "${row[0]}", got ${rows.length} rows, col0 values: ${rows.slice(-3).map(r => r[0]).join(" | ")}`;
+        throw new Error(`row not found after write — ${debug}`);
+      }
       const rowNum = foundIdx + 1;
 
       // Delete it
