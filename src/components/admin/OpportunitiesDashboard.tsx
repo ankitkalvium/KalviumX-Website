@@ -287,6 +287,14 @@ export default function OpportunitiesDashboard({
             <span className="text-sm font-extrabold text-ink">{selected.size} selected</span>
             <button
               type="button"
+              disabled
+              title="CRM sync is set up but not active yet"
+              className="h-9 rounded-lg border-2 border-line px-3.5 text-xs font-extrabold text-muted opacity-60"
+            >
+              Sync to CRM
+            </button>
+            <button
+              type="button"
               disabled={busy}
               onClick={() => void bulkUpdate("reviewed")}
               className="h-9 rounded-lg bg-red px-3.5 text-xs font-extrabold text-white disabled:opacity-50"
@@ -530,7 +538,15 @@ export default function OpportunitiesDashboard({
             </div>
           </div>
 
-          <div className="flex gap-2 border-t border-line px-6 py-4">
+          <div className="flex flex-wrap gap-2 border-t border-line px-6 py-4">
+            <button
+              type="button"
+              disabled
+              title="CRM sync is set up but not active yet"
+              className="h-10 flex-1 rounded-lg border-2 border-line text-sm font-extrabold text-muted opacity-60"
+            >
+              Sync to CRM
+            </button>
             {openOpportunity.status === "pending" ? (
               <>
                 <button
