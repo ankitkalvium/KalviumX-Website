@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getAdminEmail } from "@/auth";
-import { deleteStudent, updateStudent } from "@/lib/db-students";
+import { deleteStudent, updateStudent } from "@/lib/repo/students";
 
 const schema = z.object({
   name: z.string().trim().min(1).max(160).optional(),

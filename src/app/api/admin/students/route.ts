@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getAdminEmail } from "@/auth";
-import { createStudent } from "@/lib/db-students";
+import { createStudent } from "@/lib/repo/students";
 
 const schema = z.object({
   name: z.string().trim().min(1).max(160),

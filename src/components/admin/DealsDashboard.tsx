@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import AdminSidebar from "@/components/admin/AdminSidebar";
-import { DEAL_STAGES, type DealRecord, type DealStage, type DealStudentRound } from "@/lib/db-deals";
-import type { StudentRecord } from "@/lib/db-students";
+import { DEAL_STAGES, type DealRecord, type DealStage, type DealStudentRound } from "@/lib/repo/deals";
+import type { StudentRecord } from "@/lib/repo/students";
 
 const STAGE_LABELS: Record<DealStage, string> = {
   form_sent: "Form Sent",

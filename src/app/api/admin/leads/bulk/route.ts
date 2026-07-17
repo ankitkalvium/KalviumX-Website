@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getAdminEmail } from "@/auth";
-import { deleteLeadsBulk, updateLeadStatusBulk } from "@/lib/db";
+import { deleteLeadsBulk, updateLeadStatusBulk } from "@/lib/repo/leads";
 
 const patchSchema = z.object({
   ids: z.array(z.string().min(1)).min(1).max(200),

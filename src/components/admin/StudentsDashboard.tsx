@@ -3,8 +3,8 @@
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import AdminSidebar from "@/components/admin/AdminSidebar";
-import type { DealRecord, DealStudentRound } from "@/lib/db-deals";
-import type { StudentRecord, StudentStatus } from "@/lib/db-students";
+import type { DealRecord, DealStudentRound } from "@/lib/repo/deals";
+import type { StudentRecord, StudentStatus } from "@/lib/repo/students";
 
 const STATUS_LABELS: Record<StudentStatus, string> = {
   eligible: "Eligible",

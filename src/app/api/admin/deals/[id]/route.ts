@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getAdminEmail } from "@/auth";
-import { DEAL_STAGES, deleteDeal, updateDealStage } from "@/lib/db-deals";
+import { DEAL_STAGES, deleteDeal, updateDealStage } from "@/lib/repo/deals";
 
 const schema = z.object({ stage: z.enum(DEAL_STAGES) });
 

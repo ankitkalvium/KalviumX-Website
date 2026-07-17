@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { getAdminEmail, signOut } from "@/auth";
 import MeetingsDashboard from "@/components/admin/MeetingsDashboard";
-import { listMeetings } from "@/lib/db-meetings";
+import { listMeetings } from "@/lib/repo/meetings";
 
 export const dynamic = "force-dynamic";
 

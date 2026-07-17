@@ -5,7 +5,7 @@ import { validateLead, isRateLimited } from "@/lib/lead-validation";
 import { upsertZohoLead } from "@/lib/zoho";
 import { getPostHogClient } from "@/lib/posthog-server";
 import { fetchWithRetry } from "@/lib/fetch-retry";
-import { insertLead } from "@/lib/db";
+import { insertLead } from "@/lib/repo/leads";
 
 function getClientIp(request: Request): string {
   const forwarded = request.headers.get("x-forwarded-for");

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getAdminEmail } from "@/auth";
-import { deleteLead, updateLeadStatus } from "@/lib/db";
+import { deleteLead, updateLeadStatus } from "@/lib/repo/leads";
 
 const schema = z.object({
   status: z.enum(["new", "contacted"]),

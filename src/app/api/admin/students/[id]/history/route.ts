@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getAdminEmail } from "@/auth";
-import { getDeal, listDealStudentRoundsForStudent } from "@/lib/db-deals";
+import { getDeal, listDealStudentRoundsForStudent } from "@/lib/repo/deals";
 
 // Powers the "Student history" panel — every deal/round this student has
 // ever been put forward for, across every company, with feedback attached.

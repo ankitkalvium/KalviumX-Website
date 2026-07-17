@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import AdminSidebar from "@/components/admin/AdminSidebar";
-import type { MeetingRecord, MeetingStatus } from "@/lib/db-meetings";
+import type { MeetingRecord, MeetingStatus } from "@/lib/repo/meetings";
 
 const STATUS_LABELS: Record<MeetingStatus, string> = {
   upcoming: "Upcoming",

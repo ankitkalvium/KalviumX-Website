@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { getAdminEmail, signOut } from "@/auth";
 import LeadsDashboard from "@/components/admin/LeadsDashboard";
-import { listLeads } from "@/lib/db";
+import { listLeads } from "@/lib/repo/leads";
 
 export const dynamic = "force-dynamic";
 

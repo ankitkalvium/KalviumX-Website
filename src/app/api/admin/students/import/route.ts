@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getAdminEmail } from "@/auth";
-import { importStudents, type StudentInput } from "@/lib/db-students";
+import { importStudents, type StudentInput } from "@/lib/repo/students";
 
 const schema = z.object({ csv: z.string().min(1).max(2_000_000) });
 

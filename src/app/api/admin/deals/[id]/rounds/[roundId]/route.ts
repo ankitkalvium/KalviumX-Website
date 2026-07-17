@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getAdminEmail } from "@/auth";
-import { removeDealStudentRound, updateDealStudentRound } from "@/lib/db-deals";
+import { removeDealStudentRound, updateDealStudentRound } from "@/lib/repo/deals";
 
 const schema = z.object({
   status: z.enum(["shared", "interviewing", "selected", "rejected"]).optional(),

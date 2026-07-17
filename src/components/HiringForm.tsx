@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import type { DealRecord, DealRound } from "@/lib/db-deals";
+import type { DealRecord, DealRound } from "@/lib/repo/deals";
 
 export default function HiringForm({ deal }: { deal: DealRecord }) {
   const [companyName, setCompanyName] = useState(deal.companyName);

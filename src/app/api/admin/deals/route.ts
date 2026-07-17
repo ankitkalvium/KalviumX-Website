@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getAdminEmail } from "@/auth";
-import { createDeal } from "@/lib/db-deals";
+import { createDeal } from "@/lib/repo/deals";
 
 const schema = z.object({
   companyName: z.string().trim().min(1).max(200),

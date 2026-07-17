@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { getDealByToken, submitDealForm } from "@/lib/db-deals";
+import { getDealByToken, submitDealForm } from "@/lib/repo/deals";
 import { isRateLimited } from "@/lib/lead-validation";
 
 // Public route — the token itself is the access control (a long random

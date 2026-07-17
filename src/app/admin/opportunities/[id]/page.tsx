@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { getAdminEmail } from "@/auth";
 import OpportunityActions from "@/components/admin/OpportunityActions";
-import { getOpportunity } from "@/lib/db";
+import { getOpportunity } from "@/lib/repo/opportunities";
 
 export const dynamic = "force-dynamic";
 

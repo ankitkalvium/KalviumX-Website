@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getAdminEmail } from "@/auth";
-import { deleteOpportunity, updateOpportunityStatus } from "@/lib/db";
+import { deleteOpportunity, updateOpportunityStatus } from "@/lib/repo/opportunities";
 
 const schema = z.object({
   status: z.enum(["reviewed", "rejected"]),

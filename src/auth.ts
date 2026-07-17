@@ -1,6 +1,6 @@
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
-import { recordAdminLogin } from "@/lib/db";
+import { recordAdminLogin } from "@/lib/repo/admin-users";
 
 const ADMIN_SESSION_MAX_AGE_SECONDS = 60 * 60 * 24 * 90; // 90 days
 

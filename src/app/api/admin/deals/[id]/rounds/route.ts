@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getAdminEmail } from "@/auth";
-import { associateStudentToDeal, listDealStudentRounds } from "@/lib/db-deals";
+import { associateStudentToDeal, listDealStudentRounds } from "@/lib/repo/deals";
 
 const schema = z.object({
   studentId: z.string().min(1).max(200),

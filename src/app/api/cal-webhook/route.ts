@@ -2,8 +2,8 @@ import { NextResponse } from "next/server";
 import { upsertZohoLead, verifyCalSignature } from "@/lib/zoho";
 import { getPostHogClient } from "@/lib/posthog-server";
 import { fetchWithRetry } from "@/lib/fetch-retry";
-import { getLatestOpportunityForEmail } from "@/lib/db";
-import { upsertMeeting, type MeetingStatus } from "@/lib/db-meetings";
+import { getLatestOpportunityForEmail } from "@/lib/repo/opportunities";
+import { upsertMeeting, type MeetingStatus } from "@/lib/repo/meetings";
 
 interface CalAttendee {
   email: string;

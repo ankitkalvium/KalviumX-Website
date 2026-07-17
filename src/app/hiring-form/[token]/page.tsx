@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import HiringForm from "@/components/HiringForm";
-import { getDealByToken } from "@/lib/db-deals";
+import { getDealByToken } from "@/lib/repo/deals";
 
 export const dynamic = "force-dynamic";
 

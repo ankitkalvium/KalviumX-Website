@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { getOpportunity, updateOpportunityJourney } from "@/lib/db";
+import { getOpportunity, updateOpportunityJourney } from "@/lib/repo/opportunities";
 import { isRateLimited } from "@/lib/lead-validation";
 import { JOURNEY_STATUSES } from "@/lib/opportunity-types";
 

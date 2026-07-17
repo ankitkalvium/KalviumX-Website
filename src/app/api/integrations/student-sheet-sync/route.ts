@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { upsertStudentsFromSheet } from "@/lib/db-students";
+import { upsertStudentsFromSheet } from "@/lib/repo/students";
 
 // Public endpoint, protected by a shared secret header (same trust model as
 // the Cal.com webhook signature) — called by an installable Apps Script

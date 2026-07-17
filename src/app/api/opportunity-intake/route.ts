@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { companyFromEmail } from "@/lib/company-domain";
-import { getLatestOpportunityForEmail, getLatestOpportunityForIp, startOpportunity } from "@/lib/db";
+import { getLatestOpportunityForEmail, getLatestOpportunityForIp, startOpportunity } from "@/lib/repo/opportunities";
 import { isRateLimited, validateWorkEmail } from "@/lib/lead-validation";
 
 const startSchema = z.object({
