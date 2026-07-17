@@ -43,8 +43,14 @@ const TABS: { name: string; headers: string[]; makeRow: (id: string) => string[]
   },
 ];
 
-export async function POST() {
-  const adminEmail = await getAdminEmail();
+export async function POST(request: Request) {
+  // Accept either an admin session or the SHEETS_TEST_SECRET bearer token
+  // so this can be called via curl without a browser session.
+  const bearer = request.headers.get("authorization")?.replace("Bearer ", "");
+  const testSecret = process.env.SHEETS_TEST_SECRET;
+  const validBearer = testSecret && bearer === testSecret;
+
+  const adminEmail = validBearer ? "cron-test" : await getAdminEmail();
   if (!adminEmail) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const results: { tab: string; ok: boolean; write?: boolean; read?: boolean; delete?: boolean; error?: string; ms?: number }[] = [];
