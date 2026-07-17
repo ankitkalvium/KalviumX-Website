@@ -15,8 +15,8 @@ Companies share a JD, get a pre-assessed, mentor-managed intern shortlist in day
 | Framework | Next.js (App Router) |
 | Language | TypeScript |
 | Styling | Tailwind CSS v4 |
-| CMS | Sanity (blog, admin at `/studio`) |
-| Database | Neon Postgres (serverless) |
+| Data storage | Google Sheets (one tab per table, via `src/lib/repo/*`) |
+| Blog | Sheets-backed posts (`src/lib/repo/posts.ts`) -- HTML-import or simple structured content, no CMS vendor |
 | Auth | NextAuth.js v5, Google OAuth restricted to `@kalvium.com` |
 | CRM | Zoho CRM (India DC) via REST API |
 | Analytics | PostHog |
@@ -32,13 +32,12 @@ src/
   app/                   Next.js App Router pages and API routes
     api/                 Server-side API routes (lead, cal webhook, cron, blog)
     admin/               Internal dashboard (auth-gated, @kalvium.com only)
-    blog/                Public blog (Sanity + HTML-import posts)
-    studio/              Sanity Studio embed
+    blog/                Public blog (HTML-import + simple structured posts)
   components/
     layout/              Navbar, Footer, SiteShell
     sections/            Page section components (Hero, CTA, FAQ, etc.)
     ui/                  Shared UI primitives (Button, SectionHeading, etc.)
-    blog/                Blog-specific components including FullPageHtmlRenderer
+    blog/                Blog-specific components (FullPageHtmlRenderer, SimpleBodyRenderer)
     admin/               Admin dashboard UI components
   lib/
     data.ts              Nav links and role data
@@ -46,12 +45,13 @@ src/
     html-to-post.ts      HTML parsing and SEO extraction for blog imports
     zoho.ts              Zoho CRM API client (lead upsert with dedup)
     lead-validation.ts   Email validation, bot detection, rate limiting
-  sanity/
-    schemaTypes/         Sanity content schemas (post, blocks)
-    lib/                 Sanity client, queries, portable text components
+    repo/                Google Sheets-backed data layer -- one file per table
+      _sheets.ts         Shared Sheets API client (JWT auth, read/write/ensureTab)
+      posts.ts           Blog posts (title/excerpt/body or fullPageHtml)
+      leads.ts, deals.ts, students.ts, meetings.ts, opportunities.ts, admin-users.ts
 public/
   images/brand/          Logo and mark assets -- always use these, never recreate in code
-scripts/                 Seed scripts and Google Apps Script for sheet sync
+scripts/                 Google Apps Script for student sheet sync, smoke tests
 ```
 
 ---
@@ -61,8 +61,7 @@ scripts/                 Seed scripts and Google Apps Script for sheet sync
 ### Prerequisites
 
 - Node.js 20+
-- A Sanity account (free tier is fine)
-- A Neon Postgres database (free tier)
+- A Google Cloud service account with Sheets API access, and a Google Sheet shared with it (Editor role)
 - Google OAuth app for admin auth
 - Zoho CRM account with API access
 
@@ -84,9 +83,8 @@ Key variables:
 
 | Variable | Required | Purpose |
 |---|---|---|
-| `NEXT_PUBLIC_SANITY_PROJECT_ID` | Yes | Sanity CMS project |
-| `SANITY_API_WRITE_TOKEN` | Yes | Blog HTML importer and admin reads |
-| `DATABASE_URL` | Yes | Neon Postgres (lead storage, opportunity intake) |
+| `GOOGLE_SHEETS_SPREADSHEET_ID` | Yes | The spreadsheet every `src/lib/repo/*` module reads/writes |
+| `GOOGLE_SERVICE_ACCOUNT_JSON` | Yes | Service account credentials (JSON), Editor access on that spreadsheet |
 | `AUTH_SECRET` | Yes | NextAuth session signing |
 | `AUTH_GOOGLE_ID` / `AUTH_GOOGLE_SECRET` | Yes | Admin dashboard Google OAuth |
 | `ZOHO_CLIENT_ID` / `ZOHO_CLIENT_SECRET` / `ZOHO_REFRESH_TOKEN` | Yes | CRM lead push |
@@ -104,7 +102,6 @@ npm run dev
 Open [http://localhost:3000](http://localhost:3000).
 
 Admin dashboard: [http://localhost:3000/admin](http://localhost:3000/admin)
-Sanity Studio: [http://localhost:3000/studio](http://localhost:3000/studio)
 
 ---
 
@@ -119,16 +116,16 @@ Sanity Studio: [http://localhost:3000/studio](http://localhost:3000/studio)
 
 ### Blog
 
-- Sanity-authored posts: full Portable Text structured content
-- HTML-import posts: paste full article HTML into admin, SEO fields auto-extracted
+- Posts live in a "Posts" tab in the same Google Sheet as everything else (`src/lib/repo/posts.ts`) -- no CMS vendor, deliberately left open for whatever integration is picked next
+- Two content shapes: a complete standalone `fullPageHtml` document (HTML importer), or a plain array of typed blocks (`SimpleBlock`: h2/h3/p/blockquote/bullet-list/number-list) rendered by `SimpleBodyRenderer`
 - Imported post CSS is scoped server-side via PostCSS (`src/lib/css-scope.ts`) to prevent style leaks into the global page chrome
 - Draft/publish workflow: posts with `published: false` are visible only to signed-in admins
-- Cover image: Sanity asset upload or plain URL (for HTML imports)
+- Cover image: plain URL only (paste a link, or commit an image under `public/images/blog/`)
 
 ### Admin dashboard (`/admin`)
 
 - Gated behind Google OAuth, `@kalvium.com` domain only
-- Blog management: import HTML, publish/unpublish, upload cover images, view/delete
+- Blog management: import HTML, publish/unpublish, view/delete (structured non-HTML posts are edited directly in the Posts sheet)
 - Inbound leads: view and action opportunity intake submissions
 - Student pool: synced from Google Sheets via Apps Script installable trigger
 
@@ -177,6 +174,6 @@ See [DESIGN_SYSTEM.md](./DESIGN_SYSTEM.md) for the full visual language referenc
 ## Team
 
 Built and maintained by the KalviumX team.
-For access to the Vercel project, Sanity dataset, or Zoho API credentials, contact Ankit Singh (`ankit.singh@kalvium.com`).
+For access to the Vercel project, Google Sheet, or Zoho API credentials, contact Ankit Singh (`ankit.singh@kalvium.com`).
 
 **GitHub org:** [github.com/Kalvi-Education/kalviumx](https://github.com/Kalvi-Education/kalviumx)
