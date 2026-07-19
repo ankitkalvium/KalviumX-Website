@@ -51,14 +51,16 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const post = await getPostBySlug(slug);
   if (!post) notFound();
 
-  // Drafts are invisible to the public — only a signed-in admin can preview
-  // one via its real URL before publishing. Posts predating the `published`
-  // field (no value at all) are treated as published, not as drafts.
+  // The whole blog is hidden from the public while the rebuild is in
+  // progress (see src/app/blog/page.tsx and src/lib/data.ts) — only a
+  // signed-in admin can preview any post, published or draft, via its
+  // real URL.
+  const adminEmail = await getAdminEmail();
+  if (!adminEmail) notFound();
+
+  // Drafts get an extra visible banner below even for the admin previewing
+  // them, so it's obvious this isn't the live version yet.
   const isDraft = post.published === false;
-  if (isDraft) {
-    const adminEmail = await getAdminEmail();
-    if (!adminEmail) notFound();
-  }
 
   const articleSchema = {
     "@context": "https://schema.org",

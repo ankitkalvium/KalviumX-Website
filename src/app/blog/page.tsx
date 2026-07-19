@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { notFound } from "next/navigation";
+import { getAdminEmail } from "@/auth";
 import Button from "@/components/ui/Button";
 import SectionHeading from "@/components/ui/SectionHeading";
 import { getAllPosts } from "@/lib/repo/posts";
@@ -32,6 +34,11 @@ const breadcrumbSchema = {
 };
 
 export default async function BlogPage() {
+  // Hidden from the public while the blog rebuild is in progress — nav link
+  // removed too (see src/lib/data.ts). Signed-in admins can still preview.
+  const adminEmail = await getAdminEmail();
+  if (!adminEmail) notFound();
+
   const posts = await getAllPosts().catch(() => []);
 
   return (
